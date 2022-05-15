@@ -1,12 +1,12 @@
-:host{
+:host {
     display: flex;
-    justify-content: center
+    justify-content: center;
 }
 
 .wrapper {
     display: flex;
     flex-direction: column;
 }
-mat-form-field{
+mat-form-field {
     margin: 5px 0px;
 }
