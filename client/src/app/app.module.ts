@@ -10,9 +10,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { HomePageComponent } from './pages/home-page/home-page.component';
 
 @NgModule({
-    declarations: [AppComponent, LoginPageComponent],
+    declarations: [AppComponent, LoginPageComponent, HomePageComponent],
     imports: [
         HttpClientModule,
         ReactiveFormsModule,
