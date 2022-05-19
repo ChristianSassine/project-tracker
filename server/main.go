@@ -11,8 +11,7 @@ import (
 )
 
 var users = map[string]string{
-	"user1": "password1",
-	"user2": "password2",
+	"newGame": "plus",
 }
 
 type Credentials struct {
@@ -63,20 +62,29 @@ func main() {
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())
+	superGroup := router.Group("/api")
+	superGroup.POST("", func(c *gin.Context) {
+		creds := &Credentials{}
 
-	router.POST("/", func(c *gin.Context) {
-		c.SetCookie("JWT_TOKEN", signing(), 15, "/", "localhost", true, false)
-		c.SetCookie("JWT_REFRESH", signing(), 15, "/", "localhost", true, false)
+		if err := c.ShouldBind(creds); err != nil {
+			log.Println("An error has occured :", err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		if _, ok := users[creds.Username]; ok == false {
+			log.Println("Wrong authentication for the user :", creds.Username)
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+		c.SetCookie("JWT_TOKEN", signing(), 30, "/", "localhost", true, false)
+		c.SetCookie("JWT_REFRESH", signing(), 30, "/", "localhost", true, false)
 	})
-
-	router.GET("/", func(c *gin.Context) {
+	superGroup.GET("/auth", func(c *gin.Context) {
 		_, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
 			fmt.Println(err)
-			return
+			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 		c.Status(http.StatusOK)
 	})
-
 	router.Run("localhost:8080")
 }

@@ -29,7 +29,8 @@ export class LoginPageComponent {
 
 	submit() {
 		if (this.form.get('username')?.valid && this.form.get('password')?.valid){
-			this.authService.login(this.form.value.username, this.form.value.password).then(()=> this.router.navigate(['/home']));
+			//TODO : Handle catch
+			this.authService.login(this.form.value.username, this.form.value.password).then(()=> this.router.navigate(['/home'])).catch(()=> console.log('error occured'));
 		}
 	}
 }
