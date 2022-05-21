@@ -1,25 +1,10 @@
-<form [formGroup]="form">
-    <mat-card class="wrapper">
-        <mat-card-title>{{ this.title }}</mat-card-title>
-        <mat-form-field appearance="fill" [formGroup]="form">
-            <mat-label>{{ this.usernameLabel }}</mat-label>
-            <mat-error *ngIf="form.get('username')?.invalid">{{ this.usernameError }}</mat-error>
-            <input matInput name="username" formControlName="username" [placeholder]="this.usernamePlaceholder" />
-        </mat-form-field>
-        <mat-form-field appearance="fill" [formGroup]="form">
-            <mat-label>{{ this.passwordLabel }}</mat-label>
-            <input matInput name="password" formControlName="password" type="password" [placeholder]="this.passwordPlaceholder" />
-            <mat-error *ngIf="form.get('password')?.invalid">{{ this.passwordError }}</mat-error>
-        </mat-form-field>
-        <button
-            mat-raised-button
-            type="submit"
-            color="primary"
-            (click)="submit()"
-            (keyup.enter)="submit()"
-            [disabled]="form.get('username')?.invalid || form.get('password')?.invalid"
-        >
-            {{ this.loginButtonText }}
-        </button>
-    </mat-card>
-</form>
+<mat-stepper label>
+    <mat-step label="Login">
+        <app-login></app-login>
+        <button mat-button matStepperNext>Don't have an account? Create one!</button>
+    </mat-step>
+    <mat-step label="Register">
+        <button mat-button matStepperPrevious><mat-icon>arrow_back</mat-icon> Go back</button>
+        <app-register></app-register>
+    </mat-step>
+</mat-stepper>
