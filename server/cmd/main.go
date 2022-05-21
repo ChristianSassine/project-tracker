@@ -24,13 +24,15 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+var signingKey []byte = []byte("davidLavariete")
+
 func signing() string {
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
 		Username: "HelloMister",
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Second * 15).Unix(),
+			ExpiresAt: time.Now().Add(time.Second * 10).Unix(),
 		},
-	}).SignedString([]byte("davidLavariete"))
+	}).SignedString([]byte(signingKey))
 
 	if err != nil {
 		fmt.Println("Error occured: ", err)
@@ -57,9 +59,6 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 func main() {
-	log.SetPrefix("[LOG] -> ")
-	log.SetFlags(log.Lmsgprefix | log.LstdFlags)
-
 	router := gin.Default()
 	router.Use(CORSMiddleware())
 	superGroup := router.Group("/api")
@@ -75,16 +74,36 @@ func main() {
 			log.Println("Wrong authentication for the user :", creds.Username)
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
-		c.SetCookie("JWT_TOKEN", signing(), 30, "/", "localhost", true, false)
-		c.SetCookie("JWT_REFRESH", signing(), 30, "/", "localhost", true, false)
+		c.SetCookie("JWT_TOKEN", signing(), 30, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", signing(), 30, "/", "localhost", true, true)
 	})
 	superGroup.GET("/auth", func(c *gin.Context) {
-		_, err := c.Cookie("JWT_TOKEN")
+		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
-		c.Status(http.StatusOK)
+
+		claims := &Claims{}
+
+		tkn, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
+			return signingKey, nil
+		})
+
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				log.Println(err)
+				c.AbortWithStatus(http.StatusUnauthorized)
+			}
+			log.Println(err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+		if !tkn.Valid {
+			log.Println("Token not valid :", tkn)
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+		log.Println("User", claims.Username, "successfully authorized")
+		c.AbortWithStatus(http.StatusOK)
 	})
 	router.Run("localhost:8080")
 }
