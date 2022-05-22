@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError, of } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -35,9 +36,9 @@ export class RegisterComponent {
         if (this.form.get('username')?.valid && this.form.get('password')?.valid) {
             //TODO : Handle catch
             this.authService
-                .login(this.form.value.username, this.form.value.password)
-                .then(() => this.router.navigate(['/home']))
-                .catch(() => console.log('error occured'));
+                .createAccount(this.form.value.username, this.form.value.email, this.form.value.password)
+                .pipe(catchError(() => of({})))
+                .subscribe(() => this.router.navigate(['/home']));
         }
     }
 }

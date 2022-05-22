@@ -9,7 +9,7 @@ import (
 
 var signingKey []byte = []byte("davidLavariete")
 
-func GenerateToken(username string, isRefreshToken bool) (string, error) {
+func GenerateToken(username string, expiryTime time.Duration, isRefreshToken bool) (string, error) {
 	tknType := "validation"
 	if isRefreshToken {
 		tknType = "refresh"
@@ -18,7 +18,7 @@ func GenerateToken(username string, isRefreshToken bool) (string, error) {
 		Username: username,
 		Type:     tknType,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Second * 10).Unix(),
+			ExpiresAt: time.Now().Add(expiryTime).Unix(),
 		},
 	}).SignedString([]byte(signingKey))
 

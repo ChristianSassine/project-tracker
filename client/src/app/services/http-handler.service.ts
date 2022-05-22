@@ -11,11 +11,15 @@ export class HttpHandlerService {
 
     private baseUrl = environment.serverUrl;
 
-	loginRequest(username: string, password: string): Observable<{}> {
-		return this.http.post(`${this.baseUrl}/auth/login`, { username, password }, { withCredentials: true })
-	}
+    loginRequest(username: string, password: string): Observable<{}> {
+        return this.http.post(`${this.baseUrl}/auth/login`, { username, password }, { withCredentials: true });
+    }
 
-	validateAuth(): Observable<{}> {
-		return this.http.get(`${this.baseUrl}/auth/validate`, { withCredentials: true });
-	}
+    validateAuth(): Observable<{}> {
+        return this.http.get(`${this.baseUrl}/auth/validate`, { withCredentials: true });
+    }
+
+    createAccountRequest(username: string, email: string, password: string): Observable<{}> {
+        return this.http.post(`${this.baseUrl}/auth/create`, { username, email, password }, { withCredentials: true });
+    }
 }

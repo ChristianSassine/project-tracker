@@ -6,6 +6,7 @@ import (
 	"BugTracker/utilities"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -18,11 +19,12 @@ var users = map[string]string{
 
 func AuthMiddleware(r *gin.RouterGroup) {
 	group := r.Group("/auth")
+
 	group.POST("/login", func(c *gin.Context) {
 		creds := &api.LoginCreds{}
 
 		if err := c.ShouldBind(creds); err != nil {
-			utilities.ErrorLog.Println("An error has occured :", err)
+			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -33,21 +35,21 @@ func AuthMiddleware(r *gin.RouterGroup) {
 			return
 		}
 
-		jwtTkn, err := jwtToken.GenerateToken(creds.Username, false)
+		jwtTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*5, false)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		// TODO: generateRefreshToken
-		refreshTkn, err := jwtToken.GenerateToken(creds.Username, true)
+		// TODO: handle Refresh token
+		refreshTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*10, true)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		c.SetCookie("JWT_TOKEN", jwtTkn, 30, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", refreshTkn, 30, "/", "localhost", true, true)
+		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
 	})
 	group.GET("/validate", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
@@ -72,5 +74,41 @@ func AuthMiddleware(r *gin.RouterGroup) {
 
 		utilities.InfoLog.Println("User", claims.Username, "is validated")
 		c.AbortWithStatus(http.StatusOK)
+	})
+
+	group.POST("/create", func(c *gin.Context) {
+		creds := &api.RegistrationCreds{}
+
+		if err := c.ShouldBind(creds); err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		if _, ok := users[creds.Username]; ok == true {
+			utilities.InfoLog.Println("User", creds.Username, "already exists")
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		users[creds.Username] = creds.Password
+
+		utilities.InfoLog.Println("User", creds.Username, "has been created")
+		c.Status(http.StatusCreated)
+
+		jwtTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*5, false)
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		// TODO: handle Refresh token
+		refreshTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*10, true)
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
 	})
 }
