@@ -22,13 +22,13 @@ func AuthMiddleware(r *gin.RouterGroup) {
 		creds := &api.LoginCreds{}
 
 		if err := c.ShouldBind(creds); err != nil {
-			log.Println("An error has occured :", err)
+			utilities.ErrorLog.Println("An error has occured :", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		if _, ok := users[creds.Username]; ok == false {
-			log.Println("Wrong authentication for the user :", creds.Username)
+			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
