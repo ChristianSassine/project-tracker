@@ -2,6 +2,7 @@ package routes
 
 import (
 	"BugTracker/api"
+	"BugTracker/services/db"
 	jwtToken "BugTracker/services/jwt"
 	"BugTracker/utilities"
 	"log"
@@ -17,7 +18,7 @@ var users = map[string]string{
 	"newGame": "plus",
 }
 
-func AuthMiddleware(r *gin.RouterGroup) {
+func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 	group := r.Group("/auth")
 
 	group.POST("/login", func(c *gin.Context) {
@@ -29,8 +30,8 @@ func AuthMiddleware(r *gin.RouterGroup) {
 			return
 		}
 
-		if _, ok := users[creds.Username]; ok == false {
-			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username)
+		if valid, err := db.ValidateUser(creds.Username, creds.Password); !valid {
+			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username, "error :", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -51,6 +52,7 @@ func AuthMiddleware(r *gin.RouterGroup) {
 		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
 		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
 	})
+
 	group.GET("/validate", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {

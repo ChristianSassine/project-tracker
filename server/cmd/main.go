@@ -2,6 +2,7 @@ package main
 
 import (
 	"BugTracker/routes"
+	"BugTracker/services/db"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,10 +25,20 @@ func CORSMiddleware() gin.HandlerFunc {
 }
 
 func main() {
+	// Initializing the server and middlewares
 	router := gin.Default()
 	router.Use(CORSMiddleware())
-	superGroup := router.Group("/api")
-	routes.AuthMiddleware(superGroup)
 
+	// Creating a big route
+	superGroup := router.Group("/api")
+
+	// Initializing database
+	database := &db.DB{}
+	database.Connect()
+
+	// Adding routes
+	routes.AuthMiddleware(superGroup, database)
+
+	// Launching the server
 	router.Run("localhost:8080")
 }
