@@ -3,6 +3,11 @@
     flex-direction: column;
 }
 
+.submitButton{
+    display: flex;
+    justify-content: center;
+}
+
 mat-form-field {
     margin: 5px 0px;
 }

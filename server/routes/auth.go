@@ -13,14 +13,10 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-// TODO : remove and add database
-var users = map[string]string{
-	"newGame": "plus",
-}
-
 func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 	group := r.Group("/auth")
 
+	// Login with identifiers
 	group.POST("/login", func(c *gin.Context) {
 		creds := &api.LoginCreds{}
 
@@ -30,8 +26,8 @@ func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		if valid, err := db.ValidateUser(creds.Username, creds.Password); !valid {
-			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username, "error :", err)
+		if valid := db.ValidateUser(creds.Username, creds.Password); !valid {
+			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -53,6 +49,7 @@ func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
 	})
 
+	// Validate a jwt token
 	group.GET("/validate", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
@@ -78,6 +75,7 @@ func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 		c.AbortWithStatus(http.StatusOK)
 	})
 
+	// Create a user
 	group.POST("/create", func(c *gin.Context) {
 		creds := &api.RegistrationCreds{}
 
@@ -87,12 +85,16 @@ func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		if _, ok := users[creds.Username]; ok == true {
-			utilities.InfoLog.Println("User", creds.Username, "already exists")
+		if exists, err := db.CheckIfUserExists(creds.Username); exists {
+			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-		users[creds.Username] = creds.Password
+		if err := db.AddUser(creds.Username, creds.Password, creds.Email); err != nil {
+			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 
 		utilities.InfoLog.Println("User", creds.Username, "has been created")
 		c.Status(http.StatusCreated)
@@ -113,4 +115,6 @@ func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
 		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
 	})
+
+	// TODO : Handle refresh token
 }

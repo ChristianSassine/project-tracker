@@ -27,60 +27,55 @@ func (db *DB) Connect() {
 
 var UserDoesntExistError error = errors.New("User doesn't exist")
 
-func (db *DB) AddUser(username string, email string, password string) error {
+func (db *DB) AddUser(username string, password string, email string) error {
 	username = strings.ToLower(username)
-	_, err := db.DB.Exec("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, password)
+	var parsedEmail = &sql.NullString{}
+	if email != "" {
+		parsedEmail.String = strings.ToLower(email)
+		parsedEmail.Valid = true
+		parsedEmail.Value()
+	}
+	_, err := db.DB.Exec("INSERT INTO users (username, email, password) VALUES ($1, $2, $3)", username, parsedEmail, password)
 	return err
+}
+
+func (db *DB) CheckIfUserExists(username string) (bool, error) {
+	username = strings.ToLower(username)
+	count := 0
+
+	row := db.DB.QueryRow("SELECT COUNT(1) users WHERE users.username = $1", username)
+	err := row.Scan(&count)
+	if err != nil || count != 1 {
+		return false, err
+	}
+	return true, nil
 }
 
 func (db *DB) getUser(username string) (*api.User, error) {
 	user := &api.User{}
-	users := []api.User{}
 
 	username = strings.ToLower(username)
-	rows, err := db.DB.Query("SELECT * FROM users WHERE users.username = ?", username)
+	row := db.DB.QueryRow("SELECT * FROM users WHERE users.username = $1", username)
 
-	if err != nil {
-		return &api.User{}, err
+	if err := row.Scan(&user.Id, &user.Username, &user.Password, &user.Email); err != nil {
+		return nil, err
 	}
 
-	for rows.Next() {
-		if err := rows.Scan(user.Username, user.Email, user.Password); err != nil {
-			return &api.User{}, err
-		}
-		users = append(users, *user)
-	}
-	if len(users) != 1 {
-		err = errors.New("User doesn't exist ")
-		return &api.User{}, UserDoesntExistError
-	}
 	return user, nil
 }
 
-func (db *DB) ValidateUser(username string, password string) (bool, error) {
+func (db *DB) ValidateUser(username string, password string) bool {
 	user := &api.User{}
-	users := []api.User{}
 
 	username = strings.ToLower(username)
-	// TODO : use QueryRow instead to simplify code
-	rows, err := db.DB.Query("SELECT * FROM users WHERE users.username = $1 AND users.password = $2", username, password)
+	row := db.DB.QueryRow("SELECT * FROM users WHERE users.username = $1 AND users.password = $2", username, password)
 
-	if err != nil {
-		return false, err
+	if err := row.Scan(&user.Id, &user.Username, &user.Password, &user.Email); err != nil {
+		return false
 	}
 
-	for rows.Next() {
-		if err := rows.Scan(&user.Id, &user.Username, &user.Password, &user.Email); err != nil {
-			return false, err
-		}
-		users = append(users, *user)
-	}
-	if len(users) != 1 {
-		err = errors.New("User doesn't exist")
-		return false, nil
-	}
 	utilities.InfoLog.Println("User", username, "is in the database")
-	return true, nil
+	return true
 }
 
 func PrintQuery(db *sql.DB) {

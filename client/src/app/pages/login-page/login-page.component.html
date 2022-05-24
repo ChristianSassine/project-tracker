@@ -1,10 +1,10 @@
 <mat-stepper label>
     <mat-step label="Login">
-        <app-login></app-login>
-        <button mat-button matStepperNext>Don't have an account? Create one!</button>
+        <app-login [isLoading]="isLoading"></app-login>
+        <button mat-button matStepperNext [disabled]="isLoading">Don't have an account? Create one!</button>
     </mat-step>
     <mat-step label="Register">
-        <button mat-button matStepperPrevious><mat-icon>arrow_back</mat-icon> Go back</button>
-        <app-register></app-register>
+        <button mat-button matStepperPrevious [disabled]="isLoading"><mat-icon>arrow_back</mat-icon> Go back</button>
+        <app-register [isLoading]="isLoading"></app-register>
     </mat-step>
 </mat-stepper>

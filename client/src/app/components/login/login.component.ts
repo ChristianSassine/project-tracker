@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -9,8 +11,9 @@ import { AuthService } from 'src/app/services/auth.service';
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+    @ViewChild('loginButton', { read: ElementRef, static: false }) private loginButton!: ElementRef;
     form: FormGroup;
-	usernameLabel: string = 'Username';
+    usernameLabel: string = 'Username';
     passwordLabel: string = 'Password';
     usernamePlaceholder: string = 'Ex: Bart';
     passwordPlaceholder: string = 'Ex: 123IloveCookies';
@@ -19,17 +22,27 @@ export class LoginComponent {
     loginButtonText: string = 'Login';
     title: string = 'User login';
 
-    constructor(private fb : FormBuilder, private authService : AuthService, private router : Router) {
-		this.form = this.fb.group({
+    @Input() isLoading: boolean;
+    buttonHeight: number;
+    
+    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+        this.form = this.fb.group({
             username: ['', Validators.required],
             password: ['', Validators.required],
         });
-	}
 
-	submit() {
-		if (this.form.get('username')?.valid && this.form.get('password')?.valid){
-			//TODO : Handle catch
-			this.authService.login(this.form.value.username, this.form.value.password).then(()=> this.router.navigate(['/home'])).catch(()=> console.log('error occured'));
-		}
-	}
+        this.isLoading = false;
+        this.buttonHeight = 0;
+    }
+
+    submit() {
+        if (this.form.get('username')?.valid && this.form.get('password')?.valid) {
+            //TODO : Handle catch
+            this.buttonHeight = this.loginButton.nativeElement.offsetHeight;
+            this.authService
+                .login(this.form.value.username, this.form.value.password)
+                .then(() => this.router.navigate(['/home']))
+                .catch(() => console.log('error occured'));
+        }
+    }
 }
