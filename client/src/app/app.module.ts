@@ -13,9 +13,10 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { ProjectsPageComponent } from './pages/projects-page/projects-page.component';
 
 @NgModule({
-    declarations: [AppComponent, HomePageComponent, LoginComponent, RegisterComponent, LoginPageComponent],
+    declarations: [AppComponent, HomePageComponent, LoginComponent, RegisterComponent, LoginPageComponent, ProjectsPageComponent],
     imports: [
         HttpClientModule,
         ReactiveFormsModule,
