@@ -3,6 +3,8 @@ package routes
 import (
 	"BugTracker/middlewares"
 	"BugTracker/services/db"
+	jwtToken "BugTracker/services/jwt"
+	"BugTracker/utilities"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,25 +15,28 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 
 	// Validate a jwt token
 	group.GET("/projects", func(c *gin.Context) {
-		// token, err := c.Cookie("JWT_TOKEN")
-		// if err != nil {
-		// 	utilities.ErrorLog.Println(err)
-		// 	c.AbortWithStatus(http.StatusUnauthorized)
-		// 	return
-		// }
+		token, err := c.Cookie("JWT_TOKEN")
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 
-		// if err := jwtToken.ValidateToken(token); err != nil {
-		// 	if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
-		// 		utilities.ErrorLog.Println(err)
-		// 		c.AbortWithStatus(http.StatusUnauthorized)
-		// 		return
-		// 	}
-		// 	utilities.ErrorLog.Println(err)
-		// 	c.AbortWithStatus(http.StatusUnauthorized)
-		// 	return
-		// }
+		info, err := jwtToken.ExtractInformation(token)
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
 
-		// utilities.InfoLog.Println("User", claims.Username, "is validated")
-		c.AbortWithStatus(http.StatusOK)
+		projects, err := db.GetUserProjects(info.Username)
+
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		c.AbortWithStatusJSON(http.StatusOK, projects)
 	})
 }

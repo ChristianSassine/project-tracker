@@ -77,24 +77,3 @@ func (db *DB) ValidateUser(username string, password string) bool {
 	utilities.InfoLog.Println("User", username, "is in the database")
 	return true
 }
-
-func PrintQuery(db *sql.DB) {
-	var res api.LoginCreds
-	var creds []api.LoginCreds
-
-	rows, err := db.Query("SELECT * FROM users")
-	defer rows.Close()
-
-	if err != nil {
-		utilities.ErrorLog.Fatal(err)
-	}
-
-	for rows.Next() {
-		if err := rows.Scan(&res.Username, &res.Password); err != nil {
-			utilities.ErrorLog.Fatal(err)
-		}
-		creds = append(creds, res)
-	}
-
-	utilities.InfoLog.Print(creds)
-}

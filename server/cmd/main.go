@@ -12,6 +12,7 @@ func main() {
 	// Initializing the server and middlewares
 	router := gin.Default()
 	router.Use(middlewares.CORSMiddleware())
+	router.SetTrustedProxies(nil)
 
 	// Creating a big route
 	superGroup := router.Group("/api")
