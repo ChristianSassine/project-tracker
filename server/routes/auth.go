@@ -5,7 +5,6 @@ import (
 	"BugTracker/services/db"
 	jwtToken "BugTracker/services/jwt"
 	"BugTracker/utilities"
-	"log"
 	"net/http"
 	"time"
 
@@ -13,7 +12,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
+func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 	group := r.Group("/auth")
 
 	// Login with identifiers
@@ -53,14 +52,14 @@ func AuthMiddleware(r *gin.RouterGroup, db *db.DB) {
 	group.GET("/validate", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			log.Println(err)
+			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		claims := &api.Claims{}
 
-		if _, err := jwtToken.ValidateToken(token, claims); err != nil {
+		if err := jwtToken.ValidateToken(token); err != nil {
 			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
 				utilities.ErrorLog.Println(err)
 				c.AbortWithStatus(http.StatusUnauthorized)

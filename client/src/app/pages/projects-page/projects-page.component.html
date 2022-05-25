@@ -3,10 +3,10 @@
         <mat-card-title>Projects</mat-card-title>
         <mat-card-subtitle>Choose a project or create one</mat-card-subtitle>
         <mat-card *ngFor="let project of projects" class="project">
-            <button mat-button><span>{{ project.title }}</span></button>
+            <button mat-button><span>{{ project.title }}</span><mat-icon>arrow_forward</mat-icon></button>
         </mat-card>
         <mat-card class="create-project">
-            <button mat-button (click)="submit()"><span>Create a new project <mat-icon>note_add</mat-icon></span></button>
+            <button mat-button (click)="submit()"><span>Create a new project</span><mat-icon>note_add</mat-icon></button>
         </mat-card>
     </mat-card>
 </div>
