@@ -2,11 +2,20 @@
     <mat-card class="projects">
         <mat-card-title>Projects</mat-card-title>
         <mat-card-subtitle>Choose a project or create one</mat-card-subtitle>
-        <mat-card *ngFor="let project of projects" class="project">
-            <button mat-button><span>{{ project.title }}</span><mat-icon>arrow_forward</mat-icon></button>
-        </mat-card>
-        <mat-card class="create-project">
-            <button mat-button (click)="submit()"><span>Create a new project</span><mat-icon>note_add</mat-icon></button>
-        </mat-card>
+        <div class="projects" *ngIf="!isLoading">
+            <mat-card *ngFor="let project of projects" class="project">
+                <button mat-button>
+                    <div class="button-content">
+                        <span>{{ project.title }}</span
+                        ><mat-icon class="button-icon">arrow_forward</mat-icon>
+                    </div>
+                </button>
+            </mat-card>
+            <mat-card class="create-project">
+                <button mat-button>
+                    <div class="button-content"><span>Create a new project</span><mat-icon class="button-icon">note_add</mat-icon></div>
+                </button>
+            </mat-card>
+        </div>
     </mat-card>
 </div>

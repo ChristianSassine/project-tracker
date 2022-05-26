@@ -5,8 +5,14 @@
     height: 100%;
 }
 
-mat-icon{
-    vertical-align:middle;
+.button-content{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.button-icon{
+    margin-left: auto;
 }
 
 .create-project, .project{

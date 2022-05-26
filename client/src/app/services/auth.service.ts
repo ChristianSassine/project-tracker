@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import { finalize, firstValueFrom, Observable, of, startWith, Subject, switchMap, tap } from 'rxjs';
-import { HttpHandlerService } from './http-handler.service';
-
-
-
-export function tapOnSubscribe<T>(callback: () => void) {
-  return (source: Observable<T>) =>
-    of({}).pipe(tap(callback), switchMap(() => source));
-}
+import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
 
 @Injectable({
     providedIn: 'root',
