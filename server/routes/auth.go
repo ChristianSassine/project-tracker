@@ -24,26 +24,72 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-
-		if valid := db.ValidateUser(creds.Username, creds.Password); !valid {
+		id, valid := db.ValidateUser(creds.Username, creds.Password)
+		if !valid {
 			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		jwtTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*5, false)
+		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*5, false)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 		// TODO: handle Refresh token
-		refreshTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*10, true)
+		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*10, true)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
+		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
+	})
+
+	// Create a user
+	group.POST("/create", func(c *gin.Context) {
+		creds := &api.RegistrationCreds{}
+
+		if err := c.ShouldBind(creds); err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		if exists, err := db.CheckIfUserExists(creds.Username); exists {
+			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		id, err := db.AddUser(creds.Username, creds.Password, creds.Email)
+
+		if err != nil {
+			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		utilities.InfoLog.Println("User", creds.Username, "has been created")
+		c.Status(http.StatusCreated)
+
+		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*5, false)
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
+		// TODO: handle Refresh token
+		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*10, true)
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
 		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
 		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
 	})
@@ -72,47 +118,6 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		utilities.InfoLog.Println("User", claims.Username, "is validated")
 		c.AbortWithStatus(http.StatusOK)
-	})
-
-	// Create a user
-	group.POST("/create", func(c *gin.Context) {
-		creds := &api.RegistrationCreds{}
-
-		if err := c.ShouldBind(creds); err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
-
-		if exists, err := db.CheckIfUserExists(creds.Username); exists {
-			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-		if err := db.AddUser(creds.Username, creds.Password, creds.Email); err != nil {
-			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
-		utilities.InfoLog.Println("User", creds.Username, "has been created")
-		c.Status(http.StatusCreated)
-
-		jwtTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*5, false)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-		// TODO: handle Refresh token
-		refreshTkn, err := jwtToken.GenerateToken(creds.Username, time.Minute*10, true)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
 	})
 
 	// TODO : Handle refresh token

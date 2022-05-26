@@ -34,6 +34,10 @@ export class HttpHandlerService {
         return this.http.post(`${this.baseUrl}/auth/create`, { username, email, password }, { withCredentials: true });
     }
 
+    createProjectRequest(title : string): Observable<{}> {
+        return this.http.post(`${this.baseUrl}/data/project`, { title }, { withCredentials: true });
+    }
+
     getAllProjects(): Observable<Project[]>{
         return this.chainAfterAuth(this.http.get<Project[]>(`${environment.serverUrl}/data/projects`, {withCredentials: true}));
     }

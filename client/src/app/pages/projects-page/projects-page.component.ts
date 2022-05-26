@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateProjectComponent } from 'src/app/components/create-project/create-project.component';
 import { Project } from 'src/app/interfaces/project';
 import { HttpHandlerService } from 'src/app/services/http-handler.service';
 import { ProjectService } from 'src/app/services/project.service';
@@ -9,7 +11,9 @@ import { ProjectService } from 'src/app/services/project.service';
     styleUrls: ['./projects-page.component.scss'],
 })
 export class ProjectsPageComponent implements OnInit {
-    constructor(private projectService: ProjectService) {}
+    private readonly minimumDialogWidth = '17vw'
+
+    constructor(private projectService: ProjectService, private dialog: MatDialog) {}
 
     get projects(): Project[] {
         return this.projectService.projects;
@@ -21,6 +25,10 @@ export class ProjectsPageComponent implements OnInit {
 
     ngOnInit(): void {
         this.projectService.fetchProjects();
+    }
+
+    openDialog() {
+        this.dialog.open(CreateProjectComponent, {minWidth: this.minimumDialogWidth});
     }
 
 }

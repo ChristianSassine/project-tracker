@@ -1,5 +1,4 @@
-<div>
-    <mat-card class="projects">
+    <mat-card class="projects wrapper">
         <mat-card-title>Projects</mat-card-title>
         <mat-card-subtitle>Choose a project or create one</mat-card-subtitle>
         <div class="projects" *ngIf="!isLoading">
@@ -12,10 +11,9 @@
                 </button>
             </mat-card>
             <mat-card class="create-project">
-                <button mat-button>
+                <button mat-button (click)="openDialog()">
                     <div class="button-content"><span>Create a new project</span><mat-icon class="button-icon">note_add</mat-icon></div>
                 </button>
             </mat-card>
         </div>
     </mat-card>
-</div>

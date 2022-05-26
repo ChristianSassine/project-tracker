@@ -2,6 +2,7 @@ package jwtToken
 
 import (
 	"BugTracker/api"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -9,7 +10,7 @@ import (
 
 var signingKey []byte = []byte("davidLavariete")
 
-func GenerateToken(username string, expiryTime time.Duration, isRefreshToken bool) (string, error) {
+func GenerateToken(username string, id int, expiryTime time.Duration, isRefreshToken bool) (string, error) {
 	tknType := "validation"
 	if isRefreshToken {
 		tknType = "refresh"
@@ -19,6 +20,7 @@ func GenerateToken(username string, expiryTime time.Duration, isRefreshToken boo
 		Type:     tknType,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(expiryTime).Unix(),
+			Subject:   strconv.Itoa(id),
 		},
 	}).SignedString([]byte(signingKey))
 

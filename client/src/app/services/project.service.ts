@@ -20,4 +20,8 @@ export class ProjectService {
 	fetchProjects(){
         this.http.getAllProjects().pipe(tapOnSubscribe(()=> this.isLoading = true), finalize(()=> this.isLoading = false)).subscribe((data)=> this.projects = [...data]);
 	}
+
+	createProject(title : string){
+		this.http.createProjectRequest(title).subscribe();
+	}
 }
