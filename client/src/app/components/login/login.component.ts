@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent {
     @ViewChild('loginButton', { read: ElementRef, static: false }) private loginButton!: ElementRef;
-    form: FormGroup;
+    
     usernameLabel: string = 'Username';
     passwordLabel: string = 'Password';
     usernamePlaceholder: string = 'Ex: Bart';
@@ -21,7 +21,8 @@ export class LoginComponent {
     passwordError: string = 'A password is required';
     loginButtonText: string = 'Login';
     title: string = 'User login';
-
+    
+    form: FormGroup;
     @Input() isLoading: boolean;
     buttonHeight: number;
     
