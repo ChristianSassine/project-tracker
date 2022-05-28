@@ -1,6 +1,6 @@
 <form [formGroup]="form">
     <mat-card class="wrapper">
-        <mat-card-title>{{ title }}</mat-card-title>
+        <mat-card-title><mat-icon>person</mat-icon>{{ title }}</mat-card-title>
         <mat-form-field appearance="fill" [formGroup]="form">
             <mat-label>{{ usernameLabel }}</mat-label>
             <mat-error *ngIf="form.get('username')?.invalid">{{ usernameError }}</mat-error>

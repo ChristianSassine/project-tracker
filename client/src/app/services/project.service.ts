@@ -8,13 +8,20 @@ import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
 })
 export class ProjectService {
 	public projects : Project[];
-	public currentProject : string;
+	public currentProject : Project;
+	public isProjectSelected : boolean;
 	public isLoading : boolean;
 
     constructor(private http: HttpHandlerService) {
 		this.projects = [{title: 'Hello' , id : 1}, {title: 'MisterJohn', id : 2}]
-		this.currentProject = "";
+		this.currentProject = {} as Project;
+		this.isProjectSelected = false;
 		this.isLoading = true;
+	}
+
+	setCurrentProject(project: Project){
+		this.isProjectSelected = true;
+		this.currentProject = project;
 	}
 
 	fetchProjects(){

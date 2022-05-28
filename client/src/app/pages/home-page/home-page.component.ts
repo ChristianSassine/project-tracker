@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpHandlerService } from 'src/app/services/http-handler.service';
 import { ProjectService } from 'src/app/services/project.service';
+import { TasksService } from 'src/app/services/tasks.service';
 import { Paths } from 'src/common/paths';
 
 @Component({
@@ -10,11 +10,17 @@ import { Paths } from 'src/common/paths';
     styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent implements OnInit {
-    constructor(private projectService: ProjectService, private router: Router) {}
+    constructor(private projectService: ProjectService, private tasksService: TasksService, private router: Router) {}
 
 	ngOnInit(): void {
-		if (!this.projectService.currentProject) this.router.navigate([Paths.Projects]);
+		if (!this.projectService.isProjectSelected) {
+            this.router.navigate([Paths.Projects]);
+            return;
+        }
+        this.tasksService.getTasks();
 	}
 
-    submit() {}
+    get tasks(){
+        return this.tasksService.tasks;
+    }
 }

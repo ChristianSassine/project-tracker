@@ -1,19 +1,19 @@
-    <mat-card class="projects wrapper">
-        <mat-card-title>Projects</mat-card-title>
-        <mat-card-subtitle>Choose a project or create one</mat-card-subtitle>
-        <div class="projects" *ngIf="!isLoading">
-            <mat-card *ngFor="let project of projects" class="project">
-                <button mat-button>
-                    <div class="button-content">
-                        <span>{{ project.title }}</span
-                        ><mat-icon class="button-icon">arrow_forward</mat-icon>
-                    </div>
-                </button>
-            </mat-card>
-            <mat-card class="create-project">
-                <button mat-button (click)="openDialog()">
-                    <div class="button-content"><span>Create a new project</span><mat-icon class="button-icon">note_add</mat-icon></div>
-                </button>
-            </mat-card>
-        </div>
-    </mat-card>
+<mat-card class="projects wrapper">
+    <mat-card-title>Projects</mat-card-title>
+    <mat-card-subtitle>Choose a project or create one</mat-card-subtitle>
+    <div class="projects" *ngIf="!isLoading">
+        <mat-card *ngFor="let project of projects" class="project">
+            <button mat-button>
+                <div class="button-content" (click)="onProjectSelection(project)">
+                    <span>{{ project.title }}</span
+                    ><mat-icon class="button-icon">arrow_forward</mat-icon>
+                </div>
+            </button>
+        </mat-card>
+        <mat-card class="create-project">
+            <button mat-button (click)="openDialog()">
+                <div class="button-content"><span>Create a new project</span><mat-icon class="button-icon">note_add</mat-icon></div>
+            </button>
+        </mat-card>
+    </div>
+</mat-card>

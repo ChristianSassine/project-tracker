@@ -47,3 +47,28 @@ func (db *DB) CreateProject(userId int, title string) error {
 
 	return nil
 }
+
+func (db *DB) GetTasks(userId int, projectId int) (*[]api.Task, error) {
+	tasks := []api.Task{}
+	task := api.Task{}
+
+	rows, err := db.DB.Query(`
+	SELECT tasks.id, tasks.title, tasks.description, tasks.type, tasks.color, tasks.importance FROM tasks 
+	INNER JOIN projects ON tasks.project_id = projects.id
+	INNER JOIN users_projects ON projects.id = users_projects.project_id
+	INNER JOIN users ON users.id = users_projects.user_id
+	WHERE users.id = $1 AND projects.id = $2`, userId, projectId)
+
+	if err != nil {
+		return &[]api.Task{}, err
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&task.Id, &task.Title, &task.Description, &task.Type, &task.Color, &task.Importance); err != nil {
+			return &[]api.Task{}, err
+		}
+		tasks = append(tasks, task)
+	}
+
+	return &tasks, nil
+}

@@ -1,15 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, finalize, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
+import { mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Project } from '../interfaces/project';
+import { ProjectTask } from '../interfaces/project-task';
 
-type Callback = ()=> void;
+type Callback = () => void;
 
 export function tapOnSubscribe<T>(callback: () => void) {
     return (source: Observable<T>) =>
-      of({}).pipe(tap(callback), switchMap(() => source));
-  }
+        of({}).pipe(
+            tap(callback),
+            switchMap(() => source),
+        );
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -18,8 +23,8 @@ export class HttpHandlerService {
 
     private baseUrl = environment.serverUrl;
 
-    private chainAfterAuth<T>(observable : Observable<T>) : Observable<T>{
-        return this.validateAuth().pipe(mergeMap(()=> observable));
+    private chainAfterAuth<T>(observable: Observable<T>): Observable<T> {
+        return this.validateAuth().pipe(mergeMap(() => observable));
     }
 
     loginRequest(username: string, password: string): Observable<{}> {
@@ -29,22 +34,25 @@ export class HttpHandlerService {
     validateAuth(): Observable<{}> {
         return this.http.get(`${this.baseUrl}/auth/validate`, { withCredentials: true });
     }
-    
+
     createAccountRequest(username: string, email: string, password: string): Observable<{}> {
         return this.http.post(`${this.baseUrl}/auth/create`, { username, email, password }, { withCredentials: true });
     }
 
-    createProjectRequest(title : string): Observable<{}> {
-        return this.http.post(`${this.baseUrl}/data/project`, { title }, { withCredentials: true });
+    createProjectRequest(title: string): Observable<{}> {
+        return this.chainAfterAuth(this.http.post(`${this.baseUrl}/data/project`, { title }, { withCredentials: true }));
     }
 
-    getAllProjects(): Observable<Project[]>{
-        return this.chainAfterAuth(this.http.get<Project[]>(`${environment.serverUrl}/data/projects`, {withCredentials: true}));
+    getAllProjects(): Observable<Project[]> {
+        return this.chainAfterAuth(this.http.get<Project[]>(`${environment.serverUrl}/data/projects`, { withCredentials: true }));
+    }
+
+    getAllTasks(projectId: number): Observable<ProjectTask[]> {
+        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks`, { withCredentials: true }));
     }
 
     // TODO : implement refresh token
     // refreshToken(): Observable<{}>{
     //     return this.http.get(`${this.baseUrl}/auth/refresh`, { withCredentials: true });
     // }
-
 }
