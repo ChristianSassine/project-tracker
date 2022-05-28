@@ -1,0 +1,60 @@
+:host {
+    display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.sidenav{
+    background-color: #007676;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.button, mat-divider{
+    margin: 10px;
+}
+
+.content{
+    margin-left: 20px;
+    display: flex;
+    height: 100%;
+}
+
+.right-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.history-container, .stats-container, .right-container, .left-container{
+    flex: 1;
+}
+
+.history-container, .stats-container, .left-container{
+    margin: 10px;
+}
+
+.username {
+    display: flex;
+    font-size: 2em;
+    margin-top: 1em;
+    align-self: center;
+    align-items: center;
+    h1{
+    margin: 0px;
+    }
+}
+
+mat-sidenav{
+    width: 200px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+mat-sidenav-container{
+    flex: 1;
+}

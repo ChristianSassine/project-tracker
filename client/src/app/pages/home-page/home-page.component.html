@@ -1,1 +1,25 @@
-<div *ngFor="let task of tasks">{{task.title}}</div>
+<mat-toolbar color="primary">
+    <span>{{ project.title }}</span>
+</mat-toolbar>
+<mat-sidenav-container>
+    <mat-sidenav opened mode="side">
+        <div class="sidenav">
+            <div class="username"><mat-icon>person</mat-icon> <span>{{username}}</span></div>
+            <mat-divider></mat-divider>
+            <button mat-button class="button"><mat-icon>view_quilt</mat-icon> Overview</button>
+            <button mat-button class="button"><mat-icon>task_alt</mat-icon> Tasks</button>
+            <button mat-button class="button"><mat-icon>history</mat-icon> History</button>
+            <button mat-button class="button"><mat-icon>change_circle</mat-icon>Change Projects</button>
+            <mat-divider></mat-divider>
+            <button mat-button class="button"><mat-icon>logout</mat-icon> Log out</button>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="content">
+            <mat-card class="tasks-container left-container"> HELLOWORLD </mat-card>
+            <div class="right-container">
+                <mat-card class="history-container"> NOWORLD </mat-card>
+                <mat-card class="stats-container"> YASWORLD </mat-card>
+            </div></div
+    ></mat-sidenav-content>
+</mat-sidenav-container>
