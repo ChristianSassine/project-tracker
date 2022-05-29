@@ -20,7 +20,7 @@ func ValidTokenMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if err := jwtToken.ValidateToken(token); err != nil {
+		if err := jwtToken.ValidateToken(token, false); err != nil {
 			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
 				utilities.ErrorLog.Println(err)
 				c.AbortWithStatus(http.StatusUnauthorized)

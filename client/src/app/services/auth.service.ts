@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { finalize, firstValueFrom, lastValueFrom, Observable, Subject, tap } from 'rxjs';
+import { finalize, firstValueFrom, lastValueFrom, Observable, Subject, tap, timeout } from 'rxjs';
 import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
 
 @Injectable({
@@ -7,11 +7,15 @@ import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
 })
 export class AuthService {
     ongoingRequestObservable: Subject<boolean>;
+    logoutObservable : Subject<boolean>;
+    isLoggedOut : boolean;
     username : string;
 
     constructor(private httpHandler: HttpHandlerService) {
         this.ongoingRequestObservable = new Subject();
+        this.logoutObservable = new Subject();
         this.username = '';
+        this.isLoggedOut = true;
     }
 
     login(username: string, password: string): Promise<{}> {
@@ -38,5 +42,10 @@ export class AuthService {
                 isLoggedIn = true;
             })
         return isLoggedIn;
+    }
+
+    logout(){
+        const timeToExpireToken = 1050;
+        this.httpHandler.logoutRequest().subscribe(()=>{setTimeout(()=> this.logoutObservable.next(true), timeToExpireToken)});
     }
 }

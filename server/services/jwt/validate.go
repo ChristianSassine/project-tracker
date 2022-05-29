@@ -9,7 +9,7 @@ import (
 
 var UnvalidTokenError error = errors.New("The token is not valid")
 
-func ValidateToken(token string) error {
+func ValidateToken(token string, isRefreshToken bool) error {
 
 	claims := &api.Claims{}
 
@@ -19,6 +19,14 @@ func ValidateToken(token string) error {
 
 	if !tkn.Valid {
 		return UnvalidTokenError
+	}
+
+	if isRefreshToken && claims.Type != "refresh" {
+		return UnvalidTokenError
+	}
+
+	if !isRefreshToken && claims.Type != "validation" {
+		err = UnvalidTokenError
 	}
 
 	return err
