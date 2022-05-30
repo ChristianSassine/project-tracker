@@ -32,20 +32,20 @@ func (db *DB) GetUserProjects(username string) (*[]api.Project, error) {
 	return &projects, nil
 }
 
-func (db *DB) CreateProject(userId int, title string) (int, error) {
-	var projectId int
+func (db *DB) CreateProject(userId int, title string) (*api.Project, error) {
+	var project api.Project
 
-	row := db.DB.QueryRow("INSERT INTO projects (title) VALUES ($1) RETURNING id", title)
+	row := db.DB.QueryRow("INSERT INTO projects (title) VALUES ($1) RETURNING id, title", title)
 
-	if err := row.Scan(&projectId); err != nil {
-		return 0, err
+	if err := row.Scan(&project.Id, &project.Title); err != nil {
+		return &api.Project{}, err
 	}
 
-	if _, err := db.DB.Query("INSERT INTO users_projects VALUES ($1, $2)", userId, projectId); err != nil {
-		return 0, err
+	if _, err := db.DB.Query("INSERT INTO users_projects VALUES ($1, $2)", userId, project.Id); err != nil {
+		return &api.Project{}, err
 	}
 
-	return projectId, nil
+	return &project, nil
 }
 
 func (db *DB) GetTasks(userId int, projectId int) (*[]api.Task, error) {
