@@ -33,7 +33,8 @@ export class ProjectService {
 	}
 
 	createProject(title : string){
-		this.http.createProjectRequest(title).subscribe(()=>{
+		this.http.createProjectRequest(title).subscribe((project)=>{
+			this.setCurrentProject(project);
 			this.changeToHomePageObservable.next(true);
 		});
 	}

@@ -50,8 +50,8 @@ export class HttpHandlerService {
     }
 
     // Project and tasks handling requests
-    createProjectRequest(title: string): Observable<{}> {
-        return this.chainAfterAuth(this.http.post(`${this.baseUrl}/data/project`, { title }, { withCredentials: true }));
+    createProjectRequest(title: string): Observable<Project> {
+        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project`, { title }, { withCredentials: true }));
     }
 
     getAllProjects(): Observable<Project[]> {

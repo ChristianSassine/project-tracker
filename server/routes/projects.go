@@ -116,13 +116,16 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		if err := db.CreateProject(id, requestInfo.Title); err != nil {
+		projectId, err := db.CreateProject(id, requestInfo.Title)
+		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
+		project := api.Project{Id: projectId, Title: requestInfo.Title}
+
 		utilities.InfoLog.Print("New project :'", requestInfo.Title, "' has been created")
-		c.AbortWithStatus(http.StatusCreated)
+		c.JSON(http.StatusCreated, project)
 	})
 }

@@ -32,20 +32,20 @@ func (db *DB) GetUserProjects(username string) (*[]api.Project, error) {
 	return &projects, nil
 }
 
-func (db *DB) CreateProject(userId int, title string) error {
+func (db *DB) CreateProject(userId int, title string) (int, error) {
 	var projectId int
 
 	row := db.DB.QueryRow("INSERT INTO projects (title) VALUES ($1) RETURNING id", title)
 
 	if err := row.Scan(&projectId); err != nil {
-		return err
+		return 0, err
 	}
 
-	if _, err := db.DB.Exec("INSERT INTO users_projects VALUES ($1, $2)", userId, projectId); err != nil {
-		return err
+	if _, err := db.DB.Query("INSERT INTO users_projects VALUES ($1, $2)", userId, projectId); err != nil {
+		return 0, err
 	}
 
-	return nil
+	return projectId, nil
 }
 
 func (db *DB) GetTasks(userId int, projectId int) (*[]api.Task, error) {
