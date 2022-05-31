@@ -1,0 +1,9 @@
+:host{
+    flex: 1;
+    display: flex;
+}
+
+#TODO-container, #ONGOING-container, #DONE-container{
+    flex: 1;
+    margin: 10px;
+}

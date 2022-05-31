@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Project } from 'src/app/interfaces/project';
 import { AuthService } from 'src/app/services/auth.service';
 import { ProjectService } from 'src/app/services/project.service';
 import { TasksService } from 'src/app/services/tasks.service';
@@ -25,7 +26,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        if (!this.projectService.isProjectSelected) {
+        if (!this.projectService.currentProject) {
             this.router.navigate([Paths.Projects]);
             return;
         }
@@ -38,11 +39,23 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }
 
     get project() {
-        return this.projectService.currentProject;
+        return this.projectService.currentProject as Project;
     }
 
     get tasks() {
         return this.tasksService.tasks;
+    }
+
+    onOverview(){
+        this.router.navigate([Paths.OverviewFull]);
+    }
+
+    onTasks(){
+        this.router.navigate([Paths.TasksFull]);
+    }
+
+    onHistory(){
+        this.router.navigate([Paths.HistoryFull]);
     }
 
     private capitalizeFirstLetter(word: string): string {

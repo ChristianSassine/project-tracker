@@ -11,6 +11,7 @@ export class TasksService {
 	constructor(private http: HttpHandlerService, private projectService: ProjectService) {}
 
 	getTasks(){
+		if (!this.projectService.currentProject) return;
 		this.http.getAllTasks(this.projectService.currentProject.id).subscribe((data)=> this.tasks = [...data])
 	}
 }

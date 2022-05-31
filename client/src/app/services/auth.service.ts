@@ -8,14 +8,12 @@ import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
 export class AuthService {
     ongoingRequestObservable: Subject<boolean>;
     logoutObservable : Subject<boolean>;
-    isLoggedOut : boolean;
     username : string;
 
     constructor(private httpHandler: HttpHandlerService) {
         this.ongoingRequestObservable = new Subject();
         this.logoutObservable = new Subject();
         this.username = '';
-        this.isLoggedOut = true;
     }
 
     login(username: string, password: string): Promise<{}> {

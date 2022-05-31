@@ -1,0 +1,22 @@
+:host{
+    flex: 1;
+    display: flex;
+}
+
+.right-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-container,
+.stats-container,
+.right-container,
+.left-container {
+    flex: 1;
+}
+
+.history-container,
+.stats-container,
+.left-container {
+    margin: 10px;
+}
