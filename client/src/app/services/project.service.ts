@@ -25,11 +25,11 @@ export class ProjectService {
 
 	setCurrentProject(project: Project){
 		const stringifiedProject = JSON.stringify(project)
-		localStorage.setItem(LOCAL_STORAGE_PROJECT_PREFIX + this.authService.username, stringifiedProject);
+		localStorage.setItem(LOCAL_STORAGE_PROJECT_PREFIX + this.authService.username.toLowerCase(), stringifiedProject);
 	}
 
 	get currentProject(): Project | null{
-		const stringifiedProject = localStorage.getItem(LOCAL_STORAGE_PROJECT_PREFIX + this.authService.username);
+		const stringifiedProject = localStorage.getItem(LOCAL_STORAGE_PROJECT_PREFIX + this.authService.username.toLowerCase());
 		const project = stringifiedProject ? JSON.parse(stringifiedProject) : null; 
 		return project;
 	}

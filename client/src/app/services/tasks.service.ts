@@ -7,11 +7,16 @@ import { ProjectTask } from '../interfaces/project-task';
     providedIn: 'root',
 })
 export class TasksService {
-    tasks : ProjectTask[]
-	constructor(private http: HttpHandlerService, private projectService: ProjectService) {}
+    tasks: ProjectTask[];
+    constructor(private http: HttpHandlerService, private projectService: ProjectService) {}
 
-	fetchTasks(){
-		if (!this.projectService.currentProject) return;
-		this.http.getAllTasks(this.projectService.currentProject.id).subscribe((data)=> this.tasks = [...data])
-	}
+    fetchTasks() {
+        if (!this.projectService.currentProject) return;
+        this.http.getAllTasks(this.projectService.currentProject.id).subscribe((data) => (this.tasks = [...data]));
+    }
+
+    uploadTask(task: ProjectTask) {
+        if (!this.projectService.currentProject?.id) return;
+        this.http.createTask(task, this.projectService.currentProject?.id as number).subscribe();
+    }
 }

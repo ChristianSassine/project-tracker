@@ -2,6 +2,7 @@ package db
 
 import (
 	"BugTracker/api"
+	"BugTracker/utilities"
 	"strings"
 )
 
@@ -48,27 +49,16 @@ func (db *DB) CreateProject(userId int, title string) (*api.Project, error) {
 	return &project, nil
 }
 
-func (db *DB) GetTasks(userId int, projectId int) (*[]api.Task, error) {
-	tasks := []api.Task{}
-	task := api.Task{}
+// TODO: maybe changing the name to something more understandable
+func (db *DB) ValidateUserProjectPermission(userId int, projectId int) bool {
 
-	rows, err := db.DB.Query(`
-	SELECT tasks.id, tasks.title, tasks.description, tasks.type, tasks.color, tasks.importance FROM tasks 
-	INNER JOIN projects ON tasks.project_id = projects.id
-	INNER JOIN users_projects ON projects.id = users_projects.project_id
-	INNER JOIN users ON users.id = users_projects.user_id
-	WHERE users.id = $1 AND projects.id = $2`, userId, projectId)
+	utilities.InfoLog.Print("UserId", userId)
+	utilities.InfoLog.Print("ProjectId", projectId)
 
-	if err != nil {
-		return &[]api.Task{}, err
+	var userIdCheck int
+	if err := db.DB.QueryRow(`SELECT user_id FROM users_projects WHERE user_id = $1 AND project_id = $2`, userId, projectId).Scan(&userIdCheck); err != nil {
+		return false
 	}
 
-	for rows.Next() {
-		if err := rows.Scan(&task.Id, &task.Title, &task.Description, &task.Type, &task.Color, &task.Importance); err != nil {
-			return &[]api.Task{}, err
-		}
-		tasks = append(tasks, task)
-	}
-
-	return &tasks, nil
+	return true
 }

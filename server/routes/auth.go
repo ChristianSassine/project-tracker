@@ -32,21 +32,24 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*5, false)
+		// TODO: Change time for refresh token and jwt token
+		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*30, false)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 
-		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*10, true)
+		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*30, true)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
+
+		// TODO: Change time for refresh token and jwt token
+		c.SetCookie("JWT_TOKEN", jwtTkn, 60*30, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", refreshTkn, 60*30, "/", "localhost", true, true)
 	})
 
 	// Create a user

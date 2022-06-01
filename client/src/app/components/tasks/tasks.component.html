@@ -1,6 +1,26 @@
-<mat-card id="TODO-container" *ngIf="isTODODisplayed"> TODO 
+<mat-card id="TODO-container" *ngIf="isTODODisplayed">
+    <mat-card-title class="tasks-title"
+        ><span id="TODO-title">TODO</span>
+        <button mat-mini-fab color="primary" aria-label="Add task" id="add-button" (click)="onAdd()">
+            <mat-icon>add</mat-icon>
+        </button></mat-card-title
+    >
     <app-task *ngFor="let task of tasks" [task]="task" (click)="onTodoTask()"></app-task>
 </mat-card>
-<mat-card id="ONGOING-container" *ngIf="isONGOINGDisplayed"> ONGOING </mat-card>
-<mat-card id="DONE-container" *ngIf="isDONEDisplayed"> DONE </mat-card>
+<mat-card id="ONGOING-container" *ngIf="isONGOINGDisplayed">
+    <mat-card-title class="tasks-title"
+        ><span id="ONGOING-title">ONGOING</span>
+        <button mat-mini-fab color="primary" aria-label="Add task" id="add-button" (click)="onAdd()">
+            <mat-icon>add</mat-icon>
+        </button></mat-card-title
+    >
+</mat-card>
+<mat-card id="DONE-container" *ngIf="isDONEDisplayed">
+    <mat-card-title class="tasks-title"
+        ><span id="DONE-title">DONE</span>
+        <button mat-mini-fab color="primary" aria-label="Add task" id="add-button" (click)="onAdd()">
+            <mat-icon>add</mat-icon>
+        </button></mat-card-title
+    >
+</mat-card>
 <mat-card id="Info" *ngIf="isINFOisplayed">TASK INFO</mat-card>

@@ -8,6 +8,12 @@
     margin: 10px;
 }
 
+.tasks-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 #Info{
     flex: 2;
     margin: 10px;

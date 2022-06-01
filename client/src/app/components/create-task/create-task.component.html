@@ -1,0 +1,37 @@
+<form [formGroup]="form" class="form">
+    <mat-card-title>Add a task</mat-card-title>
+    <mat-form-field appearance="fill" [formGroup]="form">
+        <mat-label>Title</mat-label>
+        <mat-error *ngIf="form.get('title')?.invalid">A title is required</mat-error>
+        <input matInput name="title" formControlName="title" [placeholder]="'Ex: Automate an automata'" />
+    </mat-form-field>
+    <mat-form-field appearance="fill" [formGroup]="form">
+        <mat-label>Select a task state</mat-label>
+        <mat-select name="state" formControlName="state" type="state">
+            <mat-option value="TODO">TODO</mat-option>
+            <mat-option value="ONGOING">ONGOING</mat-option>
+            <mat-option value="DONE">DONE</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="fill" [formGroup]="form">
+        <mat-label>Description</mat-label>
+        <textarea
+            matInput
+            name="description"
+            formControlName="description"
+            type="description"
+            [placeholder]="'Ex: Adding to the automata conscience will make it capable of moral reasoning'"
+        ></textarea>
+    </mat-form-field>
+    <button
+        #registerButton
+        class="submitButton"
+        mat-raised-button
+        type="submit"
+        color="primary"
+        (click)="submit()"
+        (keyup.enter)="submit()"
+        [disabled]="form.get('title')?.invalid"
+        mat-dialog-close
+    >Create</button>
+</form>

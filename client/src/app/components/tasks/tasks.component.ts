@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
+import { CreateTaskComponent } from '../create-task/create-task.component';
 
 @Component({
     selector: 'app-tasks',
@@ -12,7 +14,7 @@ export class TasksComponent implements OnInit {
     isONGOINGDisplayed: boolean;
     isDONEDisplayed: boolean;
     isINFOisplayed: boolean;
-    constructor(private tasksService: TasksService) {
+    constructor(private tasksService: TasksService, private dialog: MatDialog) {
         this.isTODODisplayed = true;
         this.isONGOINGDisplayed = true;
         this.isDONEDisplayed = true;
@@ -22,6 +24,10 @@ export class TasksComponent implements OnInit {
 
     ngOnInit(): void {
         this.tasksService.fetchTasks();
+    }
+
+    onAdd(){
+        this.dialog.open(CreateTaskComponent);
     }
 
     onTodoTask() {

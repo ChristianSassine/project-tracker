@@ -62,8 +62,7 @@ export class HttpHandlerService {
         return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks`, { withCredentials: true }));
     }
 
-    // TODO : implement refresh token
-    // refreshToken(): Observable<{}>{
-    //     return this.http.get(`${this.baseUrl}/auth/refresh`, { withCredentials: true });
-    // }
+    createTask(task : ProjectTask, projectId : number){
+        return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
+    }
 }

@@ -16,6 +16,7 @@ func main() {
 
 	// Creating a big route
 	superGroup := router.Group("/api")
+	dataGroup := superGroup.Group("/data", middlewares.ValidTokenMiddleware())
 
 	// Initializing database
 	database := &db.DB{}
@@ -23,7 +24,8 @@ func main() {
 
 	// Adding routes
 	routes.AuthRoutes(superGroup, database)
-	routes.ProjectsRoutes(superGroup, database)
+	routes.ProjectsRoutes(dataGroup, database)
+	routes.TasksRoutes(dataGroup, database)
 
 	// Launching the server
 	router.Run("localhost:8080")
