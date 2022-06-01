@@ -14,7 +14,7 @@ import { Paths } from 'src/common/paths';
 })
 export class HomePageComponent implements OnInit, OnDestroy {
     username: string;
-    logoutSubscription : Subscription;
+    logoutSubscription: Subscription;
 
     constructor(
         private projectService: ProjectService,
@@ -22,7 +22,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private router: Router,
     ) {
-        this.logoutSubscription = this.authService.logoutObservable.subscribe(()=> this.router.navigate([Paths.Login]))
+        this.logoutSubscription = this.authService.logoutObservable.subscribe(() => this.router.navigate([Paths.Login]));
     }
 
     ngOnInit(): void {
@@ -30,7 +30,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
             this.router.navigate([Paths.Projects]);
             return;
         }
-        this.tasksService.getTasks();
         this.username = this.capitalizeFirstLetter(this.authService.username);
     }
 
@@ -46,15 +45,27 @@ export class HomePageComponent implements OnInit, OnDestroy {
         return this.tasksService.tasks;
     }
 
-    onOverview(){
+    isOverviewSelected(): boolean {
+        return this.router.url === '/' + Paths.OverviewFull;
+    }
+
+    isTasksSelected(): boolean {
+        return this.router.url === '/' + Paths.TasksFull;
+    }
+
+    isHistorySelected(): boolean {
+        return this.router.url === '/' + Paths.HistoryFull;
+    }
+
+    onOverview() {
         this.router.navigate([Paths.OverviewFull]);
     }
 
-    onTasks(){
+    onTasks() {
         this.router.navigate([Paths.TasksFull]);
     }
 
-    onHistory(){
+    onHistory() {
         this.router.navigate([Paths.HistoryFull]);
     }
 
@@ -62,13 +73,13 @@ export class HomePageComponent implements OnInit, OnDestroy {
         return word.charAt(0).toUpperCase() + word.slice(1);
     }
 
-    onLogout(){
+    onLogout() {
         console.log('Attempting logout');
         this.authService.logout();
         this.router.navigate([Paths.Login]);
     }
 
-    onChangeProject(){
+    onChangeProject() {
         this.router.navigate([Paths.Projects]);
     }
 }

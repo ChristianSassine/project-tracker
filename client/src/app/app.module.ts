@@ -18,9 +18,10 @@ import { CreateProjectComponent } from './components/create-project/create-proje
 import { OverviewComponent } from './components/overview/overview.component';
 import { TasksComponent } from './components/tasks/tasks.component';
 import { HistoryComponent } from './components/history/history.component';
+import { TaskComponent } from './components/task/task.component';
 
 @NgModule({
-    declarations: [AppComponent, HomePageComponent, LoginComponent, RegisterComponent, LoginPageComponent, ProjectsPageComponent, CreateProjectComponent, OverviewComponent, TasksComponent, HistoryComponent],
+    declarations: [AppComponent, HomePageComponent, LoginComponent, RegisterComponent, LoginPageComponent, ProjectsPageComponent, CreateProjectComponent, OverviewComponent, TasksComponent, HistoryComponent, TaskComponent],
     imports: [
         HttpClientModule,
         ReactiveFormsModule,

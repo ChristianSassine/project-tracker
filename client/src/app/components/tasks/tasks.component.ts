@@ -8,14 +8,30 @@ import { TasksService } from 'src/app/services/tasks.service';
     styleUrls: ['./tasks.component.scss'],
 })
 export class TasksComponent implements OnInit {
-    constructor(private tasksService: TasksService,) {}
+    isTODODisplayed: boolean;
+    isONGOINGDisplayed: boolean;
+    isDONEDisplayed: boolean;
+    isINFOisplayed: boolean;
+    constructor(private tasksService: TasksService) {
+        this.isTODODisplayed = true;
+        this.isONGOINGDisplayed = true;
+        this.isDONEDisplayed = true;
+        this.isINFOisplayed = false;
+    }
     tasks = [{ title: 'Setup smart bulbs', creationDate: new Date() }] as ProjectTask[];
 
     ngOnInit(): void {
-		this.tasksService.fetchTasks();
-	}
+        this.tasksService.fetchTasks();
+    }
 
-	// get tasks(): ProjectTask[]{
-	// 	return this.tasksService.tasks
-	// }
+    onTodoTask() {
+        this.isTODODisplayed = true;
+        this.isONGOINGDisplayed = false;
+        this.isDONEDisplayed = false;
+        this.isINFOisplayed = true;
+    }
+
+    // get tasks(): ProjectTask[]{
+    // 	return this.tasksService.tasks
+    // }
 }

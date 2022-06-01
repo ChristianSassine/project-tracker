@@ -1,5 +1,6 @@
-<mat-card id="TODO-container"> TODO 
-    <app-task *ngFor="let task of tasks" [task]="task"></app-task>
+<mat-card id="TODO-container" *ngIf="isTODODisplayed"> TODO 
+    <app-task *ngFor="let task of tasks" [task]="task" (click)="onTodoTask()"></app-task>
 </mat-card>
-<mat-card id="ONGOING-container"> ONGOING </mat-card>
-<mat-card id="DONE-container"> DONE </mat-card>
+<mat-card id="ONGOING-container" *ngIf="isONGOINGDisplayed"> ONGOING </mat-card>
+<mat-card id="DONE-container" *ngIf="isDONEDisplayed"> DONE </mat-card>
+<mat-card id="Info" *ngIf="isINFOisplayed">TASK INFO</mat-card>

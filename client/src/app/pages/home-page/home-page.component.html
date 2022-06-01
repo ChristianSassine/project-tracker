@@ -8,9 +8,9 @@
                 <mat-icon>person</mat-icon> <span>{{ username }}</span>
             </div>
             <mat-divider></mat-divider>
-            <button mat-button class="button" (click)="onOverview()"><mat-icon>view_quilt</mat-icon> Overview</button>
-            <button mat-button class="button" (click)="onTasks()"><mat-icon>task_alt</mat-icon> Tasks</button>
-            <button mat-button class="button" (click)="onHistory()"><mat-icon>history</mat-icon> History</button>
+            <button mat-button class="button" [ngClass]="{'selected' : isOverviewSelected()}" (click)="onOverview()"><mat-icon>view_quilt</mat-icon> Overview</button>
+            <button mat-button class="button" [ngClass]="{'selected' : isTasksSelected()}" (click)="onTasks()"><mat-icon>task_alt</mat-icon> Tasks</button>
+            <button mat-button class="button" [ngClass]="{'selected' : isHistorySelected()}" (click)="onHistory()"><mat-icon>history</mat-icon> History</button>
             <mat-divider></mat-divider>
             <button mat-button class="button" (click)="onChangeProject()"><mat-icon>change_circle</mat-icon>Change Projects</button>
             <button mat-button class="button" (click)="onLogout()"><mat-icon>logout</mat-icon> Log out</button>
