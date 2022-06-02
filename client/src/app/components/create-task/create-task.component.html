@@ -30,8 +30,9 @@
         type="submit"
         color="primary"
         (click)="submit()"
-        (keyup.enter)="submit()"
         [disabled]="form.get('title')?.invalid"
         mat-dialog-close
-    >Create</button>
+    >
+        Create
+    </button>
 </form>

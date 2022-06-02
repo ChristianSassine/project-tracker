@@ -1,24 +1,45 @@
 package db
 
-import "BugTracker/api"
+import (
+	"BugTracker/api"
+)
 
-func (db *DB) GetTasks(userId int, projectId int) (*[]api.Task, error) {
+func (db *DB) GetAllTasks(projectId int) (*[]api.Task, error) {
 	tasks := []api.Task{}
 	task := api.Task{}
 
 	rows, err := db.DB.Query(`
-	SELECT tasks.id, tasks.title, tasks.description, tasks.type FROM tasks 
-	INNER JOIN projects ON tasks.project_id = projects.id
-	INNER JOIN users_projects ON projects.id = users_projects.project_id
-	INNER JOIN users ON users.id = users_projects.user_id
-	WHERE users.id = $1 AND projects.id = $2`, userId, projectId)
+	SELECT id, title, description, state FROM tasks 
+	WHERE project_id = $1`, projectId)
 
 	if err != nil {
 		return &[]api.Task{}, err
 	}
 
 	for rows.Next() {
-		if err := rows.Scan(&task.Id, &task.Title, &task.Description); err != nil {
+		if err := rows.Scan(&task.Id, &task.Title, &task.Description, &task.State); err != nil {
+			return &[]api.Task{}, err
+		}
+		tasks = append(tasks, task)
+	}
+
+	return &tasks, nil
+}
+
+func (db *DB) GetTasksByState(projectId int, state string) (*[]api.Task, error) {
+	tasks := []api.Task{}
+	task := api.Task{}
+
+	rows, err := db.DB.Query(`
+	SELECT id, title, description, state FROM tasks 
+	WHERE project_id = $1 AND state = $2`, projectId, state)
+
+	if err != nil {
+		return &[]api.Task{}, err
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&task.Id, &task.Title, &task.Description, &task.State); err != nil {
 			return &[]api.Task{}, err
 		}
 		tasks = append(tasks, task)

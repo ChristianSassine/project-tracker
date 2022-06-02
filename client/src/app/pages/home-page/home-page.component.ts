@@ -18,7 +18,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     constructor(
         private projectService: ProjectService,
-        private tasksService: TasksService,
         private authService: AuthService,
         private router: Router,
     ) {
@@ -39,10 +38,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     get project() {
         return this.projectService.currentProject as Project;
-    }
-
-    get tasks() {
-        return this.tasksService.tasks;
     }
 
     isOverviewSelected(): boolean {

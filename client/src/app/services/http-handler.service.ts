@@ -61,6 +61,9 @@ export class HttpHandlerService {
     getAllTasks(projectId: number): Observable<ProjectTask[]> {
         return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks`, { withCredentials: true }));
     }
+    getTasksByState(projectId: number, state : string): Observable<ProjectTask[]> {
+        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks?State=${state}`, { withCredentials: true }));
+    }
 
     createTask(task : ProjectTask, projectId : number){
         return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));

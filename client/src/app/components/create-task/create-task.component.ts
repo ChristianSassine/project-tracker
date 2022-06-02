@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TasksService } from 'src/app/services/tasks.service';
 import { ProjectTask } from 'src/app/interfaces/project-task';
+import { TaskState } from 'src/common/task-state';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-create-task',
@@ -11,13 +13,13 @@ import { ProjectTask } from 'src/app/interfaces/project-task';
 export class CreateTaskComponent implements OnInit {
     form: FormGroup;
 
-    constructor(private fb: FormBuilder, private tasksService: TasksService) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: TaskState, private fb: FormBuilder, private tasksService: TasksService) {}
 
     ngOnInit(): void {
         this.form = this.fb.group({
             title: ['', Validators.required],
             description: [''],
-            state: ['TODO', Validators.required],
+            state: [this.data, Validators.required],
         });
     }
 

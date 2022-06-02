@@ -14,13 +14,13 @@ func main() {
 	router.Use(middlewares.CORSMiddleware())
 	router.SetTrustedProxies(nil)
 
-	// Creating a big route
-	superGroup := router.Group("/api")
-	dataGroup := superGroup.Group("/data", middlewares.ValidTokenMiddleware())
-
 	// Initializing database
 	database := &db.DB{}
 	database.Connect()
+
+	// Creating a big route
+	superGroup := router.Group("/api")
+	dataGroup := superGroup.Group("/data", middlewares.ValidTokenMiddleware(), middlewares.ValidUserProjectAccessMiddleware(database))
 
 	// Adding routes
 	routes.AuthRoutes(superGroup, database)

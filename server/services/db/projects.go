@@ -2,7 +2,6 @@ package db
 
 import (
 	"BugTracker/api"
-	"BugTracker/utilities"
 	"strings"
 )
 
@@ -50,10 +49,7 @@ func (db *DB) CreateProject(userId int, title string) (*api.Project, error) {
 }
 
 // TODO: maybe changing the name to something more understandable
-func (db *DB) ValidateUserProjectPermission(userId int, projectId int) bool {
-
-	utilities.InfoLog.Print("UserId", userId)
-	utilities.InfoLog.Print("ProjectId", projectId)
+func (db *DB) IsUserInProject(userId int, projectId int) bool {
 
 	var userIdCheck int
 	if err := db.DB.QueryRow(`SELECT user_id FROM users_projects WHERE user_id = $1 AND project_id = $2`, userId, projectId).Scan(&userIdCheck); err != nil {
