@@ -154,7 +154,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		c.Status(http.StatusOK)
 		c.SetCookie("JWT_TOKEN", jwtTknOverwrite, 1, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", jwtRefreshOverwrite, 1, "/auth/refresh", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", jwtRefreshOverwrite, 1, "/api/auth/refresh", "localhost", true, true)
 	})
 }
 
@@ -172,7 +172,7 @@ func setTokens(c *gin.Context, username string, id int) error {
 	}
 
 	c.SetCookie("JWT_TOKEN", jwtTkn, secondsToMinute*minuteToHour, "/", "localhost", true, true)
-	c.SetCookie("JWT_REFRESH", refreshTkn, 0, "/auth/refresh", "localhost", true, true)
+	c.SetCookie("JWT_REFRESH", refreshTkn, 0, "/api/auth/refresh", "localhost", true, true)
 
 	return nil
 }
