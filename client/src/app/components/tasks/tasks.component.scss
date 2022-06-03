@@ -1,20 +1,43 @@
-:host{
+:host {
     flex: 1;
     display: flex;
 }
 
-#TODO-container, #ONGOING-container, #DONE-container{
+.tasks-container {
     flex: 1;
     margin: 10px;
 }
 
-.tasks-title{
+.tasks-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-#Info{
+.info-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.task {
+    margin-top: 1em;
+}
+
+.empty-positioning-box {
+    margin-left: auto;
+}
+
+#Info {
     flex: 2;
     margin: 10px;
+}
+
+#close-button {
+    margin-right: auto;
 }
