@@ -21,14 +21,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private router: Router,
     ) {
-        this.logoutSubscription = this.authService.logoutObservable.subscribe(() => this.router.navigate([Paths.Login]));
-    }
-
-    ngOnInit(): void {
         if (!this.projectService.currentProject) {
             this.router.navigate([Paths.Projects]);
             return;
         }
+        this.logoutSubscription = this.authService.logoutObservable.subscribe(() => this.router.navigate([Paths.Login]));
+    }
+
+    ngOnInit(): void {
         this.username = this.capitalizeFirstLetter(this.authService.username);
     }
 

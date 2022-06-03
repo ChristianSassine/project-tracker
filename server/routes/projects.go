@@ -22,7 +22,7 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		tokenInfo, err := jwtToken.ExtractInformation(token)
+		tokenInfo, err := jwtToken.ExtractClaims(token)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -51,7 +51,7 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		info, err := jwtToken.ExtractInformation(token)
+		info, err := jwtToken.ExtractClaims(token)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)

@@ -43,7 +43,7 @@ export class AuthService {
     }
 
     logout(){
-        const timeToExpireToken = 1050;
-        this.httpHandler.logoutRequest().subscribe(()=>{setTimeout(()=> this.logoutObservable.next(true), timeToExpireToken)});
+        // const timeToExpireToken = 1050;
+        this.httpHandler.logoutRequest().subscribe(()=>{setTimeout(()=> this.logoutObservable.next(true))});
     }
 }

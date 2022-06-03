@@ -6,7 +6,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func ExtractInformation(token string) (*api.Claims, error) {
+func ExtractClaims(token string) (*api.Claims, error) {
 
 	claims := &api.Claims{}
 

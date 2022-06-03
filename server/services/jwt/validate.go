@@ -17,6 +17,10 @@ func ValidateToken(token string, isRefreshToken bool) error {
 		return signingKey, nil
 	})
 
+	if err != nil {
+		return err
+	}
+
 	if !tkn.Valid {
 		return UnvalidTokenError
 	}

@@ -40,7 +40,6 @@ func ValidTokenMiddleware() gin.HandlerFunc {
 // Validating that user has permissions to access the project's tasks
 func ValidUserProjectAccessMiddleware(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		token, err := c.Cookie("JWT_TOKEN")
 
 		if err != nil {
@@ -49,7 +48,7 @@ func ValidUserProjectAccessMiddleware(db *db.DB) gin.HandlerFunc {
 			return
 		}
 
-		tokenInfo, err := jwtToken.ExtractInformation(token)
+		tokenInfo, err := jwtToken.ExtractClaims(token)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)

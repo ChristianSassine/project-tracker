@@ -32,24 +32,25 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		// TODO: Change time for refresh token and jwt token
-		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*30, false)
+		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*60, false)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 
-		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*30, true)
+		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Hour*24, true)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 
-		// TODO: Change time for refresh token and jwt token
-		c.SetCookie("JWT_TOKEN", jwtTkn, 60*30, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", refreshTkn, 60*30, "/", "localhost", true, true)
+		utilities.InfoLog.Print("access token:", jwtTkn)
+		utilities.InfoLog.Print("refresh token:", refreshTkn)
+
+		c.SetCookie("JWT_TOKEN", jwtTkn, 60*60, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", refreshTkn, 4*60, "/auth/refresh", "localhost", true, true)
 	})
 
 	// Create a user
@@ -69,7 +70,6 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		}
 
 		id, err := db.AddUser(creds.Username, creds.Password, creds.Email)
-
 		if err != nil {
 			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -93,8 +93,8 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		c.SetCookie("JWT_TOKEN", jwtTkn, 15, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/", "localhost", true, true)
+		c.SetCookie("JWT_TOKEN", jwtTkn, 60*60, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/auth/refresh", "localhost", true, true)
 	})
 
 	// Validate a jwt token
@@ -105,6 +105,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+		utilities.InfoLog.Print("Validation token:", token)
 
 		if err := jwtToken.ValidateToken(token, false); err != nil {
 			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
@@ -117,7 +118,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		claims, err := jwtToken.ExtractInformation(token)
+		claims, err := jwtToken.ExtractClaims(token)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -148,7 +149,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		claims, err := jwtToken.ExtractInformation(token)
+		claims, err := jwtToken.ExtractClaims(token)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -170,50 +171,11 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 	})
 
 	group.GET("/logout", func(c *gin.Context) {
-		token, err := c.Cookie("JWT_REFRESH")
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
-		if err := jwtToken.ValidateToken(token, true); err != nil {
-			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
-				utilities.ErrorLog.Println(err)
-				c.AbortWithStatus(http.StatusUnauthorized)
-				return
-			}
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
-
-		claims, err := jwtToken.ExtractInformation(token)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
-
-		id, _ := strconv.Atoi(claims.Subject)
-
-		jwtTkn, err := jwtToken.GenerateToken(claims.Username, id, time.Second*1, false)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-
-		jwtRefresh, err := jwtToken.GenerateToken(claims.Username, id, time.Second*1, true)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
+		jwtTknOverwrite := "loggedOut"
+		jwtRefreshOverwrite := "loggedOut"
 
 		c.Status(http.StatusOK)
-		c.SetCookie("JWT_TOKEN", jwtTkn, 1, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", jwtRefresh, 1, "/", "localhost", true, true)
-		utilities.InfoLog.Println("User", claims.Username, "has expired his refresh token")
+		c.SetCookie("JWT_TOKEN", jwtTknOverwrite, 1, "/", "localhost", true, true)
+		c.SetCookie("JWT_REFRESH", jwtRefreshOverwrite, 1, "/auth/refresh", "localhost", true, true)
 	})
 }
