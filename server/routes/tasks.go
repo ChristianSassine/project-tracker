@@ -2,6 +2,7 @@ package routes
 
 import (
 	"BugTracker/api"
+	"BugTracker/middlewares"
 	"BugTracker/services/db"
 	"BugTracker/utilities"
 	"net/http"
@@ -11,9 +12,10 @@ import (
 )
 
 func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
+	taskGroup := r.Group("", middlewares.ValidUserProjectAccessMiddleware(db))
 
 	// Getting all tasks endpoint
-	r.GET("/project/:projectId/tasks", func(c *gin.Context) {
+	taskGroup.GET("/project/:projectId/tasks", func(c *gin.Context) {
 
 		projectIdString := c.Param("projectId")
 		urlQueries := c.Request.URL.Query()
@@ -47,7 +49,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	})
 
 	// Creating a task endpoint
-	r.POST("/project/:projectId/task", func(c *gin.Context) {
+	taskGroup.POST("/project/:projectId/task", func(c *gin.Context) {
 		projectIdString := c.Param("projectId")
 
 		projectId, err := strconv.Atoi(projectIdString)
