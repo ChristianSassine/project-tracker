@@ -25,6 +25,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
 		id, valid := db.ValidateUser(creds.Username, creds.Password)
 		if !valid {
 			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username)
@@ -32,28 +33,15 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*60, false)
-		if err != nil {
+		if err := setTokens(c, creds.Username, id); err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
-			return
 		}
 
-		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Hour*24, true)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-
-		utilities.InfoLog.Print("access token:", jwtTkn)
-		utilities.InfoLog.Print("refresh token:", refreshTkn)
-
-		c.SetCookie("JWT_TOKEN", jwtTkn, 60*60, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", refreshTkn, 4*60, "/auth/refresh", "localhost", true, true)
+		c.Status(http.StatusOK)
 	})
 
-	// Create a user
+	// Create a user endpoint.
 	group.POST("/create", func(c *gin.Context) {
 		creds := &api.RegistrationCreds{}
 
@@ -76,28 +64,17 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
+		if err := setTokens(c, creds.Username, id); err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+		// TODO: remove useless logs
 		utilities.InfoLog.Println("User", creds.Username, "has been created")
+
 		c.Status(http.StatusCreated)
-
-		jwtTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Second*15, false)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-
-		refreshTkn, err := jwtToken.GenerateToken(creds.Username, id, time.Minute*10, true)
-		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-
-		c.SetCookie("JWT_TOKEN", jwtTkn, 60*60, "/", "localhost", true, true)
-		c.SetCookie("JWT_REFRESH", refreshTkn, 60*10, "/auth/refresh", "localhost", true, true)
 	})
 
-	// Validate a jwt token
+	// Validate a jwt token endpoint.
 	group.GET("/validate", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
@@ -130,6 +107,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 	})
 
 	// TODO : Handle refresh token
+	// Refreshing access token endpoint.
 	group.GET("/refresh", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_REFRESH")
 		if err != nil {
@@ -170,12 +148,31 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		c.JSON(http.StatusOK, claims.Username)
 	})
 
+	// Logout endpoint.
 	group.GET("/logout", func(c *gin.Context) {
-		jwtTknOverwrite := "loggedOut"
-		jwtRefreshOverwrite := "loggedOut"
+		jwtTknOverwrite, jwtRefreshOverwrite := "loggedOut", "loggedOut"
 
 		c.Status(http.StatusOK)
 		c.SetCookie("JWT_TOKEN", jwtTknOverwrite, 1, "/", "localhost", true, true)
 		c.SetCookie("JWT_REFRESH", jwtRefreshOverwrite, 1, "/auth/refresh", "localhost", true, true)
 	})
+}
+
+func setTokens(c *gin.Context, username string, id int) error {
+	secondsToMinute, minuteToHour := 60, 60
+
+	jwtTkn, err := jwtToken.GenerateToken(username, id, time.Minute*60, false)
+	if err != nil {
+		return err
+	}
+
+	refreshTkn, err := jwtToken.GenerateToken(username, id, time.Hour*24, true)
+	if err != nil {
+		return err
+	}
+
+	c.SetCookie("JWT_TOKEN", jwtTkn, secondsToMinute*minuteToHour, "/", "localhost", true, true)
+	c.SetCookie("JWT_REFRESH", refreshTkn, 0, "/auth/refresh", "localhost", true, true)
+
+	return nil
 }
