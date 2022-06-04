@@ -16,11 +16,8 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 
 	// Getting all tasks endpoint
 	taskGroup.GET("/project/:projectId/tasks", func(c *gin.Context) {
-
-		projectIdString := c.Param("projectId")
 		urlQueries := c.Request.URL.Query()
-
-		projectId, err := strconv.Atoi(projectIdString)
+		projectId, err := getProjectId(c)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -50,9 +47,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 
 	// Creating a task endpoint
 	taskGroup.POST("/project/:projectId/task", func(c *gin.Context) {
-		projectIdString := c.Param("projectId")
-
-		projectId, err := strconv.Atoi(projectIdString)
+		projectId, err := getProjectId(c)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -75,4 +70,40 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		c.Status(http.StatusCreated)
 	})
+
+	// Creating a task endpoint
+	taskGroup.PUT("/project/:projectId/task", func(c *gin.Context) {
+		task := &api.Task{}
+
+		if err := c.ShouldBind(task); err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		projectId := c.Param("projectId")
+		if task.ProjectId != projectId {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		if err := db.UpdateTask(task); err != nil {
+			utilities.ErrorLog.Print(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		c.Status(http.StatusCreated)
+	})
+
+}
+
+func getProjectId(c *gin.Context) (int, error) {
+	projectIdString := c.Param("projectId")
+
+	projectId, err := strconv.Atoi(projectIdString)
+	if err != nil {
+		return 0, err
+	}
+	return projectId, nil
 }

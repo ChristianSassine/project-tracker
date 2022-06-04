@@ -5,21 +5,20 @@ import { Paths } from 'src/common/paths';
 import { AuthService } from '../auth.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class LoginGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router){}
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.authService.isLoggedIn().then(()=>{
-      console.log('Authentication successful');
-      this.router.navigate([Paths.Home]);
-      return false;
-    }).catch(() => {
-      console.log('Failed to authenticate');
-      return true;
-  });
-  }
-  
+    constructor(private authService: AuthService, private router: Router) {}
+    canActivate(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot,
+    ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+        return this.authService
+            .isLoggedIn()
+            .then(() => {
+                this.router.navigate([Paths.Home]);
+                return false;
+            })
+            .catch(() => true);
+    }
 }

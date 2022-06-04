@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
-import { TaskState } from 'src/common/task-state';
 
 @Component({
     selector: 'app-task-info',
@@ -9,8 +9,14 @@ import { TaskState } from 'src/common/task-state';
     styleUrls: ['./task-info.component.scss'],
 })
 export class TaskInfoComponent {
+    form : FormGroup;
     @Output() public closeInfo = new EventEmitter();
-    constructor(private tasksService: TasksService) {}
+    constructor(private fb: FormBuilder, private tasksService: TasksService) {
+        this.form = this.fb.group({
+            username: [''],
+            password: [''],
+        });
+    }
 
     get task(): ProjectTask {
         return this.tasksService.currentTask;

@@ -24,12 +24,6 @@ export class HttpHandlerService {
     private chainAfterAuth<T>(observable: Observable<T>): Observable<T> {
         return this.validateAuth().pipe(mergeMap(() => observable));
     }
-
-    // TODO: Might need to remove it to handle errors better
-    private handleError<T>(result?: T): (error: Error) => Observable<T> {
-        return () => of(result as T);
-    }
-
     // Authentication requests
     loginRequest(username: string, password: string): Observable<{}> {
         return this.http.post(`${this.baseUrl}/auth/login`, { username, password }, { withCredentials: true });
@@ -40,9 +34,7 @@ export class HttpHandlerService {
     }
 
     validateAuth(): Observable<string> {
-        return this.http
-            .get<string>(`${this.baseUrl}/auth/validate`, { withCredentials: true })
-            .pipe(catchError((_) => this.refreshAuth().pipe(catchError(this.handleError<string>()))));
+        return this.http.get<string>(`${this.baseUrl}/auth/validate`, { withCredentials: true }).pipe(catchError((_) => this.refreshAuth()));
     }
 
     refreshAuth(): Observable<string> {
@@ -51,6 +43,10 @@ export class HttpHandlerService {
 
     createAccountRequest(username: string, email: string, password: string): Observable<{}> {
         return this.http.post(`${this.baseUrl}/auth/create`, { username, email, password }, { withCredentials: true });
+    }
+
+    fetchUsername(): Observable<string> {
+        return this.http.get<string>(`${this.baseUrl}/auth/user`, { withCredentials: true });
     }
 
     // Project and tasks handling requests

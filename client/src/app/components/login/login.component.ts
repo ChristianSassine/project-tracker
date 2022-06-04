@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent {
     @ViewChild('loginButton', { read: ElementRef, static: false }) private loginButton!: ElementRef;
-    
+
     usernameLabel: string = 'Username';
     passwordLabel: string = 'Password';
     usernamePlaceholder: string = 'Ex: Bart';
@@ -21,11 +21,11 @@ export class LoginComponent {
     passwordError: string = 'A password is required';
     loginButtonText: string = 'Login';
     title: string = 'User login';
-    
+
     form: FormGroup;
     @Input() isLoading: boolean;
     buttonHeight: number;
-    
+
     constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
         this.form = this.fb.group({
             username: ['', Validators.required],
@@ -37,6 +37,7 @@ export class LoginComponent {
     }
 
     submit() {
+
         if (this.form.get('username')?.valid && this.form.get('password')?.valid) {
             //TODO : Handle catch
             this.buttonHeight = this.loginButton.nativeElement.offsetHeight;

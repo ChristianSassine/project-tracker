@@ -74,6 +74,27 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		c.Status(http.StatusCreated)
 	})
 
+	// Fetch username endpoint.
+	group.GET("/user", func(c *gin.Context) {
+		token, err := c.Cookie("JWT_TOKEN")
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		// TODO : Might need to remove this piece of code
+		claims, err := jwtToken.ExtractClaims(token)
+		if err != nil {
+			utilities.ErrorLog.Println(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		utilities.InfoLog.Println("User", claims.Username, "has validated his token")
+		c.Status(http.StatusOK)
+	})
+
 	// Validate a jwt token endpoint.
 	group.GET("/validate", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
@@ -82,7 +103,6 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-		utilities.InfoLog.Print("Validation token:", token)
 
 		if err := jwtToken.ValidateToken(token, false); err != nil {
 			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
@@ -95,6 +115,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
+		// TODO : Might need to remove this piece of code
 		claims, err := jwtToken.ExtractClaims(token)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
@@ -102,8 +123,8 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		utilities.InfoLog.Println("User", claims.Username, "is validated")
-		c.JSON(http.StatusOK, claims.Username)
+		utilities.InfoLog.Println("User", claims.Username, "has validated his token")
+		c.Status(http.StatusOK)
 	})
 
 	// TODO : Handle refresh token

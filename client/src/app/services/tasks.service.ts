@@ -44,6 +44,6 @@ export class TasksService {
     }
 
     updateTask(task: ProjectTask) {
-        this.http.updateTask(task, (this.projectService.currentProject as Project).id);
+        this.http.updateTask(task, (this.projectService.currentProject as Project).id).subscribe();;
     }
 }
