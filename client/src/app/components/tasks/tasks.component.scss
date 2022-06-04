@@ -6,6 +6,8 @@
 .tasks-container {
     flex: 1;
     margin: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .tasks-wrapper {
@@ -18,26 +20,16 @@
     justify-content: space-between;
     align-items: center;
 }
-
-.info-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.mat-card-header-text {
+    flex: 1;
 }
+
 
 .task {
     margin-top: 1em;
 }
 
-.empty-positioning-box {
-    margin-left: auto;
-}
-
 #Info {
     flex: 2;
     margin: 10px;
-}
-
-#close-button {
-    margin-right: auto;
 }

@@ -31,11 +31,5 @@
         <app-task *ngFor="let task of tasksDONE" [task]="task" class="task" (click)="onTodoTask()"></app-task>
     </div>
 </mat-card>
-<mat-card id="Info" *ngIf="isINFOisplayed">
-    <mat-card-title class="info-title">
-        <button mat-icon-button aria-label="close task" id="close-button"><mat-icon>close</mat-icon></button>
-        <span id="TASKINFO-title">TASK INFO</span>
-        <div class="empty-positioning-box"></div>
-    </mat-card-title>
-    <app-task-info></app-task-info>
-</mat-card>
+
+<app-task-info id="Info" *ngIf="isINFOisplayed"></app-task-info>

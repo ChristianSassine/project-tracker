@@ -32,17 +32,16 @@ export class HttpHandlerService {
         return this.http.post(`${this.baseUrl}/auth/login`, { username, password }, { withCredentials: true });
     }
 
-    logoutRequest(): Observable<unknown>{
-        return this.http.get<unknown>(`${this.baseUrl}/auth/logout`, { withCredentials: true })
+    logoutRequest(): Observable<unknown> {
+        return this.http.get<unknown>(`${this.baseUrl}/auth/logout`, { withCredentials: true });
     }
 
     validateAuth(): Observable<string> {
-        return this.http.get<string>(`${this.baseUrl}/auth/validate`, { withCredentials: true })
-        .pipe(catchError(_ => this.refreshAuth()));
+        return this.http.get<string>(`${this.baseUrl}/auth/validate`, { withCredentials: true }).pipe(catchError((_) => this.refreshAuth()));
     }
 
     refreshAuth(): Observable<string> {
-        return this.http.get<string>(`${this.baseUrl}/auth/refresh`, { withCredentials: true })
+        return this.http.get<string>(`${this.baseUrl}/auth/refresh`, { withCredentials: true });
     }
 
     createAccountRequest(username: string, email: string, password: string): Observable<{}> {
@@ -59,13 +58,31 @@ export class HttpHandlerService {
     }
 
     getAllTasks(projectId: number): Observable<ProjectTask[]> {
-        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks`, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks`, { withCredentials: true }),
+        );
     }
-    getTasksByState(projectId: number, state : string): Observable<ProjectTask[]> {
-        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks?State=${state}`, { withCredentials: true }));
+    getTasksByState(projectId: number, state: string): Observable<ProjectTask[]> {
+        return this.chainAfterAuth(
+            this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks?State=${state}`, { withCredentials: true }),
+        );
     }
 
-    createTask(task : ProjectTask, projectId : number){
-        return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
+    createTask(task: ProjectTask, projectId: number) {
+        return this.chainAfterAuth(
+            this.http.post<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/task`, task, { withCredentials: true }),
+        );
+    }
+
+    updateTask(task: ProjectTask, projectId: number) {
+        return this.chainAfterAuth(
+            this.http.put<unknown>(`${environment.serverUrl}/data/project/${projectId}/task`, task, { withCredentials: true }),
+        );
+    }
+
+    deleteTask(taskId: number, projectId: number) {
+        return this.chainAfterAuth(
+            this.http.delete<unknown>(`${environment.serverUrl}/data/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),
+        );
     }
 }

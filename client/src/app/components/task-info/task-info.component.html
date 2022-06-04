@@ -1,0 +1,34 @@
+<mat-card class="wrapper">
+    <mat-card-title class="info-title">
+        <button mat-icon-button aria-label="close task" id="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
+        <span id="TASKINFO-title">TASK INFO</span>
+        <button mat-raised-button color="primary" class="empty-positioning-box" (click)="onUpdate()"><mat-icon>upgrade</mat-icon>Update</button>
+    </mat-card-title>
+
+    <mat-card-content class="content">
+        <mat-divider></mat-divider>
+
+        <mat-card-subtitle id="creation-date">Creation Date: {{task.creationDate | date}}</mat-card-subtitle>
+
+        <div class="task-content">
+            <mat-card-header>
+                <mat-card-subtitle>
+                    <span>Title:</span>
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-form-field class="field-area" appearance="outline">
+                <textarea matInput name="title" type="title">{{ task.title }}</textarea>
+            </mat-form-field>
+        </div>
+        <div class="task-content">
+            <mat-card-header>
+                <mat-card-subtitle>
+                    <span>Description:</span>
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-form-field class="field-area" appearance="outline">
+                <textarea matInput name="description" type="description">{{ task.description }}</textarea>
+            </mat-form-field>
+        </div>
+    </mat-card-content>
+</mat-card>
