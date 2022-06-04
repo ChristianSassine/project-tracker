@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
+import { TaskState } from 'src/common/task-state';
 
 @Component({
     selector: 'app-task-info',
@@ -10,15 +11,13 @@ import { TasksService } from 'src/app/services/tasks.service';
 export class TaskInfoComponent {
     @Output() public closeInfo = new EventEmitter();
     constructor(private tasksService: TasksService) {}
-    task = {
-        title: 'Make a HelloWorld',
-        description: 'Start by plugging in the keyboard and recreating the universe',
-        creationDate: new Date(),
-        state: 'TODO',
-    } as ProjectTask;
+
+    get task(): ProjectTask {
+        return this.tasksService.currentTask;
+    }
 
     onClose() {
-        this.closeInfo.next(true);
+        this.closeInfo.emit(true);
     }
 
     onUpdate() {

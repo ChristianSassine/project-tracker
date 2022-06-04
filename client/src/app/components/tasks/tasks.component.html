@@ -6,7 +6,7 @@
         </button>
     </mat-card-title>
     <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksTODO" [task]="task" class="task" (click)="onTodoTask()"></app-task>
+        <app-task *ngFor="let task of tasksTODO" [task]="task" class="task" (click)="onTask(task)"></app-task>
     </div>
 </mat-card>
 <mat-card id="ONGOING-container" class="tasks-container" *ngIf="isONGOINGDisplayed">
@@ -17,7 +17,7 @@
         </button>
     </mat-card-title>
     <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksONGOING" [task]="task" class="task" (click)="onTodoTask()"></app-task>
+        <app-task *ngFor="let task of tasksONGOING" [task]="task" class="task" (click)="onTask(task)"></app-task>
     </div>
 </mat-card>
 <mat-card id="DONE-container" class="tasks-container" *ngIf="isDONEDisplayed">
@@ -28,8 +28,8 @@
         </button>
     </mat-card-title>
     <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksDONE" [task]="task" class="task" (click)="onTodoTask()"></app-task>
+        <app-task *ngFor="let task of tasksDONE" [task]="task" class="task" (click)="onTask(task)"></app-task>
     </div>
 </mat-card>
 
-<app-task-info id="Info" *ngIf="isINFOisplayed"></app-task-info>
+<app-task-info (closeInfo)="onClose()" id="Info" *ngIf="isINFOisplayed"></app-task-info>

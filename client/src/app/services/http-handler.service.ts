@@ -5,8 +5,6 @@ import { environment } from 'src/environments/environment';
 import { Project } from '../interfaces/project';
 import { ProjectTask } from '../interfaces/project-task';
 
-type Callback = () => void;
-
 export function tapOnSubscribe<T>(callback: () => void) {
     return (source: Observable<T>) =>
         of({}).pipe(
@@ -27,6 +25,11 @@ export class HttpHandlerService {
         return this.validateAuth().pipe(mergeMap(() => observable));
     }
 
+    // TODO: Might need to remove it to handle errors better
+    private handleError<T>(result?: T): (error: Error) => Observable<T> {
+        return () => of(result as T);
+    }
+
     // Authentication requests
     loginRequest(username: string, password: string): Observable<{}> {
         return this.http.post(`${this.baseUrl}/auth/login`, { username, password }, { withCredentials: true });
@@ -37,7 +40,9 @@ export class HttpHandlerService {
     }
 
     validateAuth(): Observable<string> {
-        return this.http.get<string>(`${this.baseUrl}/auth/validate`, { withCredentials: true }).pipe(catchError((_) => this.refreshAuth()));
+        return this.http
+            .get<string>(`${this.baseUrl}/auth/validate`, { withCredentials: true })
+            .pipe(catchError((_) => this.refreshAuth().pipe(catchError(this.handleError<string>()))));
     }
 
     refreshAuth(): Observable<string> {
