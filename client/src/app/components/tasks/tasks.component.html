@@ -6,9 +6,10 @@
         </button>
     </mat-card-title>
     <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksTODO" [task]="task" class="task" (click)="onTask(task)"></app-task>
+        <app-task *ngFor="let task of tasksTODO" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
     </div>
 </mat-card>
+
 <mat-card id="ONGOING-container" class="tasks-container" *ngIf="isONGOINGDisplayed">
     <mat-card-title class="tasks-title">
         <span id="ONGOING-title">ONGOING</span>
@@ -17,9 +18,10 @@
         </button>
     </mat-card-title>
     <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksONGOING" [task]="task" class="task" (click)="onTask(task)"></app-task>
+        <app-task *ngFor="let task of tasksONGOING" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
     </div>
 </mat-card>
+
 <mat-card id="DONE-container" class="tasks-container" *ngIf="isDONEDisplayed">
     <mat-card-title class="tasks-title"
         ><span id="DONE-title">DONE</span>
@@ -28,7 +30,7 @@
         </button>
     </mat-card-title>
     <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksDONE" [task]="task" class="task" (click)="onTask(task)"></app-task>
+        <app-task *ngFor="let task of tasksDONE" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
     </div>
 </mat-card>
 

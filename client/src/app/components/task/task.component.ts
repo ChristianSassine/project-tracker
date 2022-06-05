@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 
 @Component({
@@ -8,5 +8,13 @@ import { ProjectTask } from 'src/app/interfaces/project-task';
 })
 export class TaskComponent {
     @Input() task: ProjectTask;
-    constructor() {}
+    @Output() delete: EventEmitter<unknown>;
+    constructor() {
+        this.delete = new EventEmitter();
+    }
+
+    onDelete($event: Event){
+        this.delete.emit();
+        $event.stopPropagation();
+    }
 }

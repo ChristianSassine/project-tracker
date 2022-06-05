@@ -5,6 +5,7 @@ import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
 import { TaskState } from 'src/common/task-state';
 import { CreateTaskComponent } from '../create-task/create-task.component';
+import { DeleteTaskComponent } from '../delete-task/delete-task.component';
 
 @Component({
     selector: 'app-tasks',
@@ -90,6 +91,13 @@ export class TasksComponent implements OnInit, OnDestroy {
     onTask(task: ProjectTask) {
         this.tasksService.setCurrentTask(task);
         this.showView(task.state);
+    }
+
+    onDelete(task: ProjectTask) {
+        // this.tasksService.deleteTask(taskId);
+        this.dialog.open(DeleteTaskComponent, {
+            data: task,
+        });
     }
 
     onClose() {

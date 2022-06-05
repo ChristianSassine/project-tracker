@@ -15,7 +15,7 @@ export class TasksService {
     tasksDONE: ProjectTask[];
 
     currentTask: ProjectTask;
-    newTaskSetObservable: Subject<ProjectTask>; 
+    newTaskSetObservable: Subject<ProjectTask>;
 
     constructor(private http: HttpHandlerService, private projectService: ProjectService) {
         this.tasksTODO = [];
@@ -40,12 +40,19 @@ export class TasksService {
 
     uploadTask(task: ProjectTask) {
         if (!this.projectService.currentProject?.id) return;
-        this.http.createTask(task, this.projectService.currentProject?.id as number).subscribe();
+        this.http.createTask(task, (this.projectService.currentProject as Project).id).subscribe(() => this.fetchStateTasks());
     }
 
     updateTask(task: ProjectTask) {
-        this.http.updateTask(task, (this.projectService.currentProject as Project).id).subscribe(()=> {
-            this.setCurrentTask(task)
+        this.http.updateTask(task, (this.projectService.currentProject as Project).id).subscribe(() => {
+            this.setCurrentTask(task);
+            this.fetchStateTasks();
+        });
+    }
+
+    deleteTask(taskId: number) {
+        this.http.deleteTask(taskId, (this.projectService.currentProject as Project).id).subscribe(() => {
+            if (taskId === this.currentTask.id) this.setCurrentTask({} as ProjectTask);
             this.fetchStateTasks();
         });
     }

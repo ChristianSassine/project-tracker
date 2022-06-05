@@ -2,3 +2,12 @@
     flex: 1;
     cursor: pointer;
 }
+
+.task-header{
+    display: flex;
+    align-items: center;
+}
+
+.delete-button{
+    margin-left: auto;
+}

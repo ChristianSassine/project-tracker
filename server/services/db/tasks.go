@@ -72,9 +72,9 @@ func (db *DB) UpdateTask(task *api.Task, projectId int) error {
 	return nil
 }
 
-func (db *DB) DeleteTask(taskId int) error {
+func (db *DB) DeleteTask(taskId int, projectId int) error {
 
-	_, err := db.DB.Exec(`DELETE FROM tasks WHERE id = $1`, taskId)
+	_, err := db.DB.Exec(`DELETE FROM tasks WHERE id = $1 AND project_id = $2`, taskId, projectId)
 	if err != nil {
 		return err
 	}

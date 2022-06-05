@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, finalize, firstValueFrom, lastValueFrom, Observable, of, Subject, tap, timeout } from 'rxjs';
+import { finalize, firstValueFrom, lastValueFrom, Observable, of, Subject, tap, timeout } from 'rxjs';
 import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
 
 @Injectable({
@@ -14,6 +14,10 @@ export class AuthService {
         this.ongoingRequestObservable = new Subject();
         this.logoutObservable = new Subject();
         this.username = '';
+    }
+
+    private getUsername() : Promise<unknown> {
+        return lastValueFrom(this.http.fetchUsername()).then((username)=> this.username = username);
     }
 
     login(username: string, password: string): Promise<{}> {
@@ -33,7 +37,7 @@ export class AuthService {
     }
 
     async isLoggedIn(): Promise<unknown> {
-        return lastValueFrom(this.http.validateAuth());
+        return lastValueFrom(this.http.validateAuth()).then(()=> this.getUsername().then());
     }
 
     logout() {

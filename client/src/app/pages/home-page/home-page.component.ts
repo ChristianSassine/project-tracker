@@ -14,6 +14,7 @@ import { Paths } from 'src/common/paths';
 })
 export class HomePageComponent implements OnInit, OnDestroy {
     username: string;
+    title : string;
     logoutSubscription: Subscription;
 
     constructor(
@@ -21,14 +22,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private router: Router,
     ) {
-        if (!this.projectService.currentProject) {
-            this.router.navigate([Paths.Projects]);
-            return;
-        }
+        this.title = '';
         this.logoutSubscription = this.authService.logoutObservable.subscribe(() => this.router.navigate([Paths.Login]));
     }
 
     ngOnInit(): void {
+        if (!this.projectService.currentProject) {
+            this.router.navigate([Paths.Projects]);
+            return;
+        }
         this.username = this.capitalizeFirstLetter(this.authService.username);
     }
 

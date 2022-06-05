@@ -30,6 +30,7 @@ export class ProjectService {
     }
 
     get currentProject(): Project | null {
+        if (!this.authService.username) return null;
         const stringifiedProject = localStorage.getItem(LOCAL_STORAGE_PROJECT_PREFIX + this.authService.username.toLowerCase());
         const project = stringifiedProject ? JSON.parse(stringifiedProject) : null;
         return project;

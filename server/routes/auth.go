@@ -83,7 +83,6 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		// TODO : Might need to remove this piece of code
 		claims, err := jwtToken.ExtractClaims(token)
 		if err != nil {
 			utilities.ErrorLog.Println(err)
@@ -91,8 +90,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		utilities.InfoLog.Println("User", claims.Username, "has validated his token")
-		c.Status(http.StatusOK)
+		c.JSON(http.StatusOK, claims.Username)
 	})
 
 	// Validate a jwt token endpoint.
