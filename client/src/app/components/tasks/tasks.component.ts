@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
 import { TaskState } from 'src/common/task-state';
@@ -11,7 +11,7 @@ import { CreateTaskComponent } from '../create-task/create-task.component';
     templateUrl: './tasks.component.html',
     styleUrls: ['./tasks.component.scss'],
 })
-export class TasksComponent implements OnInit {
+export class TasksComponent implements OnInit, OnDestroy {
     stateTODO = TaskState.TODO;
     stateONGOING = TaskState.ONGOING;
     stateDONE = TaskState.DONE;
@@ -21,6 +21,8 @@ export class TasksComponent implements OnInit {
     isDONEDisplayed: boolean;
     isINFOisplayed: boolean;
 
+    taskChangeSubscription: Subscription;
+    fetchingTasksInterval: unknown;
     constructor(private tasksService: TasksService, private dialog: MatDialog) {
         this.isTODODisplayed = true;
         this.isONGOINGDisplayed = true;
@@ -30,6 +32,14 @@ export class TasksComponent implements OnInit {
 
     ngOnInit(): void {
         this.tasksService.fetchStateTasks();
+        this.taskChangeSubscription = this.tasksService.newTaskSetObservable.subscribe((task) => this.showView(task.state));
+        const minuteInMilliseconds = 1000 * 60;
+        this.fetchingTasksInterval = setInterval(() => this.tasksService.fetchStateTasks(), minuteInMilliseconds);
+    }
+
+    ngOnDestroy(): void {
+        this.taskChangeSubscription.unsubscribe();
+        clearInterval(this.fetchingTasksInterval as number);
     }
 
     get tasksTODO(): ProjectTask[] {
@@ -82,7 +92,7 @@ export class TasksComponent implements OnInit {
         this.showView(task.state);
     }
 
-    onClose(){
+    onClose() {
         this.showView(null);
     }
 }

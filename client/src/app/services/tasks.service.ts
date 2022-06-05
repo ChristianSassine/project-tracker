@@ -15,13 +15,15 @@ export class TasksService {
     tasksDONE: ProjectTask[];
 
     currentTask: ProjectTask;
-    newTaskSetObservable: Subject<boolean> = new Subject(); 
+    newTaskSetObservable: Subject<ProjectTask>; 
 
     constructor(private http: HttpHandlerService, private projectService: ProjectService) {
         this.tasksTODO = [];
         this.tasksDONE = [];
         this.tasksONGOING = [];
         this.currentTask = {} as ProjectTask;
+
+        this.newTaskSetObservable = new Subject();
     }
 
     fetchStateTasks() {
@@ -31,14 +33,9 @@ export class TasksService {
         this.http.getTasksByState(this.projectService.currentProject.id, TaskState.DONE).subscribe((data) => (this.tasksDONE = [...data]));
     }
 
-    fetchTasksByState() {
-        if (!this.projectService.currentProject) return;
-        this.http.getTasksByState(this.projectService.currentProject.id, 'TODO').subscribe();
-    }
-
     setCurrentTask(task: ProjectTask) {
         this.currentTask = task;
-        this.newTaskSetObservable.next(true);
+        this.newTaskSetObservable.next(task);
     }
 
     uploadTask(task: ProjectTask) {
@@ -47,6 +44,9 @@ export class TasksService {
     }
 
     updateTask(task: ProjectTask) {
-        this.http.updateTask(task, (this.projectService.currentProject as Project).id).subscribe();;
+        this.http.updateTask(task, (this.projectService.currentProject as Project).id).subscribe(()=> {
+            this.setCurrentTask(task)
+            this.fetchStateTasks();
+        });
     }
 }
