@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
 
@@ -8,14 +9,27 @@ import { TasksService } from 'src/app/services/tasks.service';
     templateUrl: './task-info.component.html',
     styleUrls: ['./task-info.component.scss'],
 })
-export class TaskInfoComponent {
-    form : FormGroup;
+export class TaskInfoComponent implements OnInit, OnDestroy{
+    form: FormGroup;
+
+    taskSubscription : Subscription;
     @Output() public closeInfo = new EventEmitter();
-    constructor(private fb: FormBuilder, private tasksService: TasksService) {
+    constructor(private fb: FormBuilder, private tasksService: TasksService) {}
+    ngOnInit(): void {
         this.form = this.fb.group({
-            username: [''],
-            password: [''],
+            title: [this.task.title],
+            description: [this.task.description],
+            state: [this.task.state]
         });
+
+        this.taskSubscription = this.tasksService.newTaskSetObservable.subscribe(()=>{
+            this.ngOnInit();
+            this.taskSubscription.unsubscribe();
+        })
+    }
+
+    ngOnDestroy(): void {
+        this.taskSubscription.unsubscribe();
     }
 
     get task(): ProjectTask {
@@ -27,6 +41,9 @@ export class TaskInfoComponent {
     }
 
     onUpdate() {
-        this.tasksService.updateTask(this.task);
+        const sentObject = { ...this.task, ...this.form.value };
+        this.tasksService.updateTask({ ...this.task, ...this.form.value });
+        console.log(sentObject);
+        this.form.markAsPristine();
     }
 }

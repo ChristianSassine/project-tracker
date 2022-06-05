@@ -60,11 +60,11 @@ func (db *DB) AddTask(task *api.Task, projectId int) error {
 	return nil
 }
 
-func (db *DB) UpdateTask(task *api.Task) error {
+func (db *DB) UpdateTask(task *api.Task, projectId int) error {
 
 	_, err := db.DB.Exec(`
 	UPDATE tasks SET title = $1, state = $2, description = $3
-	WHERE id = $4`, task.Title, task.State, task.Description, task.Id)
+	WHERE id = $4 AND project_id = $5`, task.Title, task.State, task.Description, task.Id, projectId)
 	if err != nil {
 		return err
 	}

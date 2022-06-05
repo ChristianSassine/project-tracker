@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
 import { TaskState } from 'src/common/task-state';
@@ -19,6 +20,7 @@ export class TasksComponent implements OnInit {
     isONGOINGDisplayed: boolean;
     isDONEDisplayed: boolean;
     isINFOisplayed: boolean;
+
     constructor(private tasksService: TasksService, private dialog: MatDialog) {
         this.isTODODisplayed = true;
         this.isONGOINGDisplayed = true;

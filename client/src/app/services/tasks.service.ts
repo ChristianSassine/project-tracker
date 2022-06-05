@@ -4,6 +4,7 @@ import { ProjectService } from './project.service';
 import { ProjectTask } from '../interfaces/project-task';
 import { TaskState } from 'src/common/task-state';
 import { Project } from '../interfaces/project';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -14,6 +15,7 @@ export class TasksService {
     tasksDONE: ProjectTask[];
 
     currentTask: ProjectTask;
+    newTaskSetObservable: Subject<boolean> = new Subject(); 
 
     constructor(private http: HttpHandlerService, private projectService: ProjectService) {
         this.tasksTODO = [];
@@ -36,6 +38,7 @@ export class TasksService {
 
     setCurrentTask(task: ProjectTask) {
         this.currentTask = task;
+        this.newTaskSetObservable.next(true);
     }
 
     uploadTask(task: ProjectTask) {

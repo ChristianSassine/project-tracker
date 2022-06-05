@@ -1,14 +1,29 @@
-<mat-card class="wrapper">
+<mat-card [formGroup]="form" class="wrapper">
     <mat-card-title class="info-title">
         <button mat-icon-button aria-label="close task" id="close-button" (click)="onClose()"><mat-icon>close</mat-icon></button>
         <span id="TASKINFO-title">TASK INFO</span>
-        <button mat-raised-button color="primary" class="empty-positioning-box" (click)="onUpdate()"><mat-icon>upgrade</mat-icon>Update</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.pristine" class="empty-positioning-box" (click)="onUpdate()">
+            <mat-icon>upgrade</mat-icon>Update
+        </button>
     </mat-card-title>
 
     <mat-card-content class="content">
         <mat-divider></mat-divider>
 
-        <mat-card-subtitle id="creation-date">Creation Date: {{task.creationDate | date}}</mat-card-subtitle>
+        <mat-card-subtitle id="creation-date">Creation Date: {{ task.creationDate | date }}</mat-card-subtitle>
+
+        <div >
+            <mat-card-header>
+                <mat-card-subtitle>
+                    State:
+                    <mat-button-toggle-group name="state group" formControlName="state" aria-label="State Group">
+                        <mat-button-toggle value="TODO">TODO</mat-button-toggle>
+                        <mat-button-toggle value="ONGOING">ONGOING</mat-button-toggle>
+                        <mat-button-toggle value="DONE">DONE</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-card-subtitle>
+            </mat-card-header>
+        </div>
 
         <div class="task-content">
             <mat-card-header>
@@ -17,9 +32,10 @@
                 </mat-card-subtitle>
             </mat-card-header>
             <mat-form-field class="field-area" appearance="outline">
-                <textarea matInput name="title" type="title">{{ task.title }}</textarea>
+                <textarea matInput name="title" formControlName="title" type="title"></textarea>
             </mat-form-field>
         </div>
+
         <div class="task-content">
             <mat-card-header>
                 <mat-card-subtitle>
@@ -27,7 +43,7 @@
                 </mat-card-subtitle>
             </mat-card-header>
             <mat-form-field class="field-area" appearance="outline">
-                <textarea matInput name="description" type="description">{{ task.description }}</textarea>
+                <textarea matInput name="description" formControlName="description" type="description"></textarea>
             </mat-form-field>
         </div>
     </mat-card-content>

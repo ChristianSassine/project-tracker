@@ -81,13 +81,14 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		projectId := c.Param("projectId")
-		if task.ProjectId != projectId {
+		projectId, err := getProjectId(c)
+		if err != nil {
+			utilities.ErrorLog.Print(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		if err := db.UpdateTask(task); err != nil {
+		if err := db.UpdateTask(task, projectId); err != nil {
 			utilities.ErrorLog.Print(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
