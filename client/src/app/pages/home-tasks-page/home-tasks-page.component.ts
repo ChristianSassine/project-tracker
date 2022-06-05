@@ -1,18 +1,19 @@
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { CreateTaskComponent } from 'src/app/components/create-task/create-task.component';
+import { DeleteTaskComponent } from 'src/app/components/delete-task/delete-task.component';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
 import { TaskState } from 'src/common/task-state';
-import { CreateTaskComponent } from '../create-task/create-task.component';
-import { DeleteTaskComponent } from '../delete-task/delete-task.component';
 
 @Component({
-    selector: 'app-tasks',
-    templateUrl: './tasks.component.html',
-    styleUrls: ['./tasks.component.scss'],
+    selector: 'app-home-tasks-page',
+    templateUrl: './home-tasks-page.component.html',
+    styleUrls: ['./home-tasks-page.component.scss'],
 })
-export class TasksComponent implements OnInit, OnDestroy {
+export class HomeTasksPageComponent implements OnInit, OnDestroy {
     stateTODO = TaskState.TODO;
     stateONGOING = TaskState.ONGOING;
     stateDONE = TaskState.DONE;
@@ -98,6 +99,15 @@ export class TasksComponent implements OnInit, OnDestroy {
         this.dialog.open(DeleteTaskComponent, {
             data: task,
         });
+    }
+
+    onDrop(event: CdkDragDrop<ProjectTask[]>) {
+        if (!event.currentIndex) return; // Might not be necessary
+        if (event.previousContainer === event.container) {
+            moveItemInArray(this.tasksService.tasksTODO, event.previousIndex, event.currentIndex);
+            return;
+        }
+        transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
 
     onClose() {

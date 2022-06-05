@@ -5,8 +5,8 @@
             <mat-icon>add</mat-icon>
         </button>
     </mat-card-title>
-    <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksTODO" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
+    <div cdkDropList class="tasks-wrapper" id="todo-list" [cdkDropListConnectedTo]="['ongoing-list', 'done-list']" (cdkDropListDropped)="onDrop($event)">
+        <app-task cdkDrag *ngFor="let task of tasksTODO" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
     </div>
 </mat-card>
 
@@ -17,8 +17,8 @@
             <mat-icon>add</mat-icon>
         </button>
     </mat-card-title>
-    <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksONGOING" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
+    <div class="tasks-wrapper" id="ongoing-list" cdkDropList [cdkDropListConnectedTo]="['todo-list', 'done-list']" (cdkDropListDropped)="onDrop($event)">
+        <app-task cdkDrag *ngFor="let task of tasksONGOING" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
     </div>
 </mat-card>
 
@@ -29,8 +29,8 @@
             <mat-icon>add</mat-icon>
         </button>
     </mat-card-title>
-    <div class="tasks-wrapper">
-        <app-task *ngFor="let task of tasksDONE" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
+    <div class="tasks-wrapper" id="done-list" cdkDropList [cdkDropListConnectedTo]="['ongoing-list', 'todo-list']" (cdkDropListDropped)="onDrop($event)">
+        <app-task cdkDrag *ngFor="let task of tasksDONE" [task]="task" class="task" (click)="onTask(task)" (delete)="onDelete(task)"></app-task>
     </div>
 </mat-card>
 

@@ -15,16 +15,32 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { ProjectsPageComponent } from './pages/projects-page/projects-page.component';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
-import { OverviewComponent } from './components/overview/overview.component';
-import { TasksComponent } from './components/tasks/tasks.component';
-import { HistoryComponent } from './components/history/history.component';
 import { TaskComponent } from './components/task/task.component';
 import { CreateTaskComponent } from './components/create-task/create-task.component';
 import { TaskInfoComponent } from './components/task-info/task-info.component';
 import { DeleteTaskComponent } from './components/delete-task/delete-task.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { HomeTasksPageComponent } from './pages/home-tasks-page/home-tasks-page.component';
+import { HomeOverviewPageComponent } from './pages/home-overview-page/home-overview-page.component';
+import { HomeHistoryPageComponent } from './pages/home-history-page/home-history-page.component';
 
 @NgModule({
-    declarations: [AppComponent, HomePageComponent, LoginComponent, RegisterComponent, LoginPageComponent, ProjectsPageComponent, CreateProjectComponent, OverviewComponent, TasksComponent, HistoryComponent, TaskComponent, CreateTaskComponent, TaskInfoComponent, DeleteTaskComponent],
+    declarations: [
+        AppComponent,
+        HomePageComponent,
+        LoginComponent,
+        RegisterComponent,
+        LoginPageComponent,
+        ProjectsPageComponent,
+        CreateProjectComponent,
+        TaskComponent,
+        CreateTaskComponent,
+        TaskInfoComponent,
+        DeleteTaskComponent,
+        HomeTasksPageComponent,
+        HomeOverviewPageComponent,
+        HomeHistoryPageComponent,
+    ],
     imports: [
         HttpClientModule,
         ReactiveFormsModule,
@@ -32,6 +48,7 @@ import { DeleteTaskComponent } from './components/delete-task/delete-task.compon
         BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
+        DragDropModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
             enabled: environment.production,
             // Register the ServiceWorker as soon as the application is stable

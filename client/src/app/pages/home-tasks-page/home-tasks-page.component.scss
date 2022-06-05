@@ -13,6 +13,7 @@
 .tasks-wrapper {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .tasks-title {
@@ -20,6 +21,7 @@
     justify-content: space-between;
     align-items: center;
 }
+
 .mat-card-header-text {
     flex: 1;
 }
@@ -27,6 +29,10 @@
 
 .task {
     margin-top: 1em;
+}
+
+#done-list{
+    text-decoration: line-through;
 }
 
 #Info {
