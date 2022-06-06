@@ -50,6 +50,11 @@ export class TasksService {
         });
     }
 
+    updateTaskPosition(previousIndex : number, currentIndex: number, taskId: number){
+        if (!this.projectService.currentProject) return;
+        this.http.updateTaskPosition(previousIndex, currentIndex, taskId, this.projectService.currentProject.id).subscribe();
+    }
+
     deleteTask(taskId: number) {
         this.http.deleteTask(taskId, (this.projectService.currentProject as Project).id).subscribe(() => {
             if (taskId === this.currentTask.id) this.setCurrentTask({} as ProjectTask);

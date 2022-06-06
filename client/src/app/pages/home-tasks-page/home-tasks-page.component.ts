@@ -102,12 +102,13 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
     }
 
     onDrop(event: CdkDragDrop<ProjectTask[]>) {
-        if (!event.currentIndex) return; // Might not be necessary
         if (event.previousContainer === event.container) {
             moveItemInArray(this.tasksService.tasksTODO, event.previousIndex, event.currentIndex);
+			this.tasksService.updateTaskPosition(event.previousIndex, event.currentIndex, event.item.data.id)
             return;
         }
         transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+		console.log(this.tasksDONE)
     }
 
     onClose() {

@@ -17,3 +17,9 @@ type Task struct {
 	CreationDate time.Time `json:"creationDate"`
 	ProjectId    string    `json:"projectId"`
 }
+
+type TaskPositionRequest struct {
+	PreviousIndex int `json:"previousIndex"`
+	CurrentIndex  int `json:"currentIndex"`
+	TaskId        int `json:"taskId"`
+}

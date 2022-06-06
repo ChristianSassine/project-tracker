@@ -81,6 +81,16 @@ export class HttpHandlerService {
         );
     }
 
+    updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number, projectId: number) {
+        return this.chainAfterAuth(
+            this.http.patch<unknown>(
+                `${environment.serverUrl}/data/project/${projectId}/task/position`,
+                { previousIndex, currentIndex, taskId },
+                { withCredentials: true },
+            ),
+        );
+    }
+
     deleteTask(taskId: number, projectId: number) {
         return this.chainAfterAuth(
             this.http.delete<unknown>(`${environment.serverUrl}/data/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),

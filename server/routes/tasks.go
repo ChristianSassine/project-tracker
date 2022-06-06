@@ -128,6 +128,32 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		c.Status(http.StatusCreated)
 	})
+
+	// Updating a task position endpoint
+	taskGroup.PATCH("/project/:projectId/task/position", func(c *gin.Context) {
+		projectId, err := getProjectId(c)
+		if err != nil {
+			utilities.ErrorLog.Print(err)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		taskPositionRequest := &api.TaskPositionRequest{}
+		err = c.ShouldBind(taskPositionRequest)
+		if err != nil {
+			utilities.ErrorLog.Print(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		if err := db.UpdateTaskPosition(taskPositionRequest.PreviousIndex, taskPositionRequest.CurrentIndex, taskPositionRequest.TaskId, projectId); err != nil {
+			utilities.ErrorLog.Print(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		c.Status(http.StatusOK)
+	})
 }
 
 func getProjectId(c *gin.Context) (int, error) {
