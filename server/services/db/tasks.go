@@ -71,8 +71,8 @@ func (db *DB) AddTask(task *api.Task, projectId int) error {
 func (db *DB) UpdateTask(task *api.Task, projectId int) error {
 
 	_, err := db.DB.Exec(`
-	UPDATE tasks SET title = $1, description = $3
-	WHERE id = $4 AND project_id = $5`, task.Title, task.Description, task.Id, projectId)
+	UPDATE tasks SET title = $1, description = $2
+	WHERE id = $3 AND project_id = $4`, task.Title, task.Description, task.Id, projectId)
 	if err != nil {
 		return err
 	}
