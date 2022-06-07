@@ -4,7 +4,7 @@ import (
 	"BugTracker/api"
 	"BugTracker/middlewares"
 	"BugTracker/services/db"
-	"BugTracker/utilities"
+	log "BugTracker/utilities"
 	"net/http"
 	"strconv"
 
@@ -18,7 +18,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	taskGroup.GET("/project/:projectId/tasks", func(c *gin.Context) {
 		projectId, err := getProjectId(c)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -28,7 +28,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 		if !ok {
 			tasks, err := db.GetAllTasks(projectId)
 			if err != nil {
-				utilities.ErrorLog.Println(err)
+				log.PrintError(err)
 				c.AbortWithStatus(http.StatusNotFound)
 				return
 			}
@@ -38,7 +38,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		tasks, err := db.GetTasksByState(projectId, taskState[0])
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -49,20 +49,20 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	taskGroup.POST("/project/:projectId/task", func(c *gin.Context) {
 		projectId, err := getProjectId(c)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		task := &api.Task{}
 		if err := c.ShouldBind(task); err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		if err := db.AddTask(task, projectId); err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -75,20 +75,20 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 		task := &api.Task{}
 
 		if err := c.ShouldBind(task); err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		projectId, err := getProjectId(c)
 		if err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		if err := db.UpdateTask(task, projectId); err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -100,7 +100,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	taskGroup.DELETE("/project/:projectId/task", func(c *gin.Context) {
 		projectId, err := getProjectId(c)
 		if err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -114,13 +114,13 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		taskId, err := strconv.Atoi(taskIdString[0])
 		if err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		if err := db.DeleteTask(taskId, projectId); err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -132,7 +132,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	taskGroup.PATCH("/project/:projectId/task/position", func(c *gin.Context) {
 		projectId, err := getProjectId(c)
 		if err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -140,13 +140,13 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 		taskPositionRequest := &api.TaskPatchRequest{}
 		err = c.ShouldBind(taskPositionRequest)
 		if err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		if err := db.UpdateTaskPosition(taskPositionRequest.PreviousIndex, taskPositionRequest.CurrentIndex, taskPositionRequest.TaskId, projectId); err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -158,7 +158,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	taskGroup.PATCH("/project/:projectId/task/state", func(c *gin.Context) {
 		projectId, err := getProjectId(c)
 		if err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -166,13 +166,13 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 		taskStateRequest := &api.TaskPatchRequest{}
 		err = c.ShouldBind(taskStateRequest)
 		if err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		if err := db.UpdateTaskState(taskStateRequest.NewState, taskStateRequest.CurrentIndex, taskStateRequest.TaskId, projectId); err != nil {
-			utilities.ErrorLog.Print(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
