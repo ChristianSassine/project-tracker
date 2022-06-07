@@ -10,17 +10,17 @@ import { Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class TasksService {
-    tasksTODO: ProjectTask[];
-    tasksONGOING: ProjectTask[];
-    tasksDONE: ProjectTask[];
+    stateTasks: Map<TaskState, ProjectTask[]>
 
     currentTask: ProjectTask;
     newTaskSetObservable: Subject<ProjectTask>;
 
     constructor(private http: HttpHandlerService, private projectService: ProjectService) {
-        this.tasksTODO = [];
-        this.tasksDONE = [];
-        this.tasksONGOING = [];
+        this.stateTasks = new Map();
+        this.stateTasks.set(TaskState.TODO, [])
+        this.stateTasks.set(TaskState.ONGOING, [])
+        this.stateTasks.set(TaskState.DONE, [])
+
         this.currentTask = {} as ProjectTask;
 
         this.newTaskSetObservable = new Subject();
@@ -28,9 +28,9 @@ export class TasksService {
 
     fetchStateTasks() {
         if (!this.projectService.currentProject) return;
-        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.TODO).subscribe((data) => (this.tasksTODO = [...data]));
-        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.ONGOING).subscribe((data) => (this.tasksONGOING = [...data]));
-        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.DONE).subscribe((data) => (this.tasksDONE = [...data]));
+        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.TODO).subscribe((data) => (this.stateTasks.set(TaskState.TODO, [...data])));
+        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.ONGOING).subscribe((data) => (this.stateTasks.set(TaskState.ONGOING, [...data])));
+        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.DONE).subscribe((data) => (this.stateTasks.set(TaskState.DONE, [...data])));
     }
 
     setCurrentTask(task: ProjectTask) {
@@ -50,9 +50,15 @@ export class TasksService {
         });
     }
 
-    updateTaskPosition(previousIndex : number, currentIndex: number, taskId: number){
+    updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number) {
         if (!this.projectService.currentProject) return;
         this.http.updateTaskPosition(previousIndex, currentIndex, taskId, this.projectService.currentProject.id).subscribe();
+    }
+
+    updateTaskState(newState: TaskState, currentIndex: number, taskId: number) {
+        if (!this.projectService.currentProject) return;
+        (this.stateTasks.get(newState) as ProjectTask[])[currentIndex].state = newState;
+        this.http.updateTaskState(newState, currentIndex, taskId, this.projectService.currentProject.id).subscribe();
     }
 
     deleteTask(taskId: number) {

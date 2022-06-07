@@ -45,15 +45,16 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
     }
 
     get tasksTODO(): ProjectTask[] {
-        return this.tasksService.tasksTODO;
+        console.log(this.tasksService.stateTasks.get(TaskState.TODO))
+        return this.tasksService.stateTasks.get(TaskState.TODO) as ProjectTask[];
     }
 
     get tasksONGOING(): ProjectTask[] {
-        return this.tasksService.tasksONGOING;
+        return this.tasksService.stateTasks.get(TaskState.ONGOING) as ProjectTask[];
     }
 
     get tasksDONE(): ProjectTask[] {
-        return this.tasksService.tasksDONE;
+        return this.tasksService.stateTasks.get(TaskState.DONE) as ProjectTask[];
     }
 
     onAdd(taskState: TaskState) {
@@ -95,7 +96,6 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
     }
 
     onDelete(task: ProjectTask) {
-        // this.tasksService.deleteTask(taskId);
         this.dialog.open(DeleteTaskComponent, {
             data: task,
         });
@@ -103,11 +103,12 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
 
     onDrop(event: CdkDragDrop<ProjectTask[]>) {
         if (event.previousContainer === event.container) {
-            moveItemInArray(this.tasksService.tasksTODO, event.previousIndex, event.currentIndex);
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 			this.tasksService.updateTaskPosition(event.previousIndex, event.currentIndex, event.item.data.id)
             return;
         }
         transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+        this.tasksService.updateTaskState(event.container.id as TaskState, event.currentIndex, event.item.data.id)
 		console.log(this.tasksDONE)
     }
 

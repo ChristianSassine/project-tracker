@@ -18,8 +18,9 @@ type Task struct {
 	ProjectId    string    `json:"projectId"`
 }
 
-type TaskPositionRequest struct {
-	PreviousIndex int `json:"previousIndex"`
-	CurrentIndex  int `json:"currentIndex"`
-	TaskId        int `json:"taskId"`
+type TaskPatchRequest struct {
+	NewState      string `json:"newState"`
+	PreviousIndex int    `json:"previousIndex"`
+	CurrentIndex  int    `json:"currentIndex"`
+	TaskId        int    `json:"taskId"`
 }

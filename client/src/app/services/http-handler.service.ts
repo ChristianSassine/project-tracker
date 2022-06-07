@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
+import { TaskState } from 'src/common/task-state';
 import { environment } from 'src/environments/environment';
 import { Project } from '../interfaces/project';
 import { ProjectTask } from '../interfaces/project-task';
@@ -65,7 +66,7 @@ export class HttpHandlerService {
     }
     getTasksByState(projectId: number, state: string): Observable<ProjectTask[]> {
         return this.chainAfterAuth(
-            this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks?State=${state}`, { withCredentials: true }),
+            this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks?state=${state}`, { withCredentials: true }),
         );
     }
 
@@ -86,6 +87,16 @@ export class HttpHandlerService {
             this.http.patch<unknown>(
                 `${environment.serverUrl}/data/project/${projectId}/task/position`,
                 { previousIndex, currentIndex, taskId },
+                { withCredentials: true },
+            ),
+        );
+    }
+
+    updateTaskState(newState: TaskState, currentIndex: number, taskId: number, projectId: number) {
+        return this.chainAfterAuth(
+            this.http.patch<unknown>(
+                `${environment.serverUrl}/data/project/${projectId}/task/state`,
+                { newState, currentIndex, taskId },
                 { withCredentials: true },
             ),
         );
