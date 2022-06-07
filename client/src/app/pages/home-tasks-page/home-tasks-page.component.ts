@@ -45,7 +45,6 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
     }
 
     get tasksTODO(): ProjectTask[] {
-        console.log(this.tasksService.stateTasks.get(TaskState.TODO))
         return this.tasksService.stateTasks.get(TaskState.TODO) as ProjectTask[];
     }
 
