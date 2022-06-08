@@ -1,0 +1,33 @@
+:host {
+    flex: 1;
+}
+
+.wrapper {
+    margin: 10px;
+}
+
+.table-container{
+    margin: 0em 2em;
+}
+
+table {
+    width: 100%;
+}
+
+.utilities{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-bar{
+    width: 50%;
+}
+
+.mat-column-creationDate {
+    width: 10%;
+}
+
+.mat-column-creator {
+    width: 10%;
+}
