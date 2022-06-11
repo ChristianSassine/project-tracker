@@ -2,7 +2,6 @@ package db
 
 import (
 	"BugTracker/api"
-	"BugTracker/utilities"
 )
 
 func (db *DB) GetAllTasks(projectId int) (*[]api.Task, error) {
@@ -109,33 +108,29 @@ func (db *DB) UpdateTaskPosition(taskPreviousPosition int, taskCurrentPosition i
 	return nil
 }
 
-func (db *DB) UpdateTaskState(newState string, taskCurrentPosition int, taskId int, projectId int) error {
+func (db *DB) UpdateTaskState(newState string, taskCurrentPosition int, taskId int, projectId int) (string, error) {
 
 	// Decrementing the position for the array where it left
 	previousPosition := 0
 	previousState := ""
 
 	if err := db.DB.QueryRow(`SELECT state, position FROM tasks WHERE project_id = $1 AND id = $2`, projectId, taskId).Scan(&previousState, &previousPosition); err != nil {
-		return err
+		return "", err
 	}
 
-	utilities.InfoLog.Println(projectId, previousState, previousPosition)
-
-	result, err := db.DB.Exec(`
+	_, err := db.DB.Exec(`
 	UPDATE tasks SET position = position - 1
 	WHERE project_id = $1 AND state = $2 AND (position > $3)`, projectId, previousState, previousPosition)
 	if err != nil {
-		return err
+		return "", err
 	}
-
-	utilities.InfoLog.Println(result.RowsAffected())
 
 	// Incrementing the position for the array where it's added
 	_, err = db.DB.Exec(`
 		UPDATE tasks SET position = position + 1 
 		WHERE project_id = $1 AND (position >= $2) AND state = $3`, projectId, taskCurrentPosition, newState)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// Setting the new values
@@ -143,26 +138,27 @@ func (db *DB) UpdateTaskState(newState string, taskCurrentPosition int, taskId i
 	UPDATE tasks SET state = $1, position = $2
 	WHERE id = $3 AND project_id = $4`, newState, taskCurrentPosition, taskId, projectId)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return previousState, nil
 }
 
-func (db *DB) DeleteTask(taskId int, projectId int) error {
+func (db *DB) DeleteTask(taskId int, projectId int) (string, error) {
 
 	position := 0
-	err := db.DB.QueryRow(`DELETE FROM tasks WHERE id = $1 AND project_id = $2 RETURNING position`, taskId, projectId).Scan(&position)
+	title := ""
+	err := db.DB.QueryRow(`DELETE FROM tasks WHERE id = $1 AND project_id = $2 RETURNING position, title`, taskId, projectId).Scan(&position, &title)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	_, err = db.DB.Exec(`
 	UPDATE tasks SET position = position - 1 
 	WHERE project_id = $1 AND (position > $2)`, projectId, position)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return title, nil
 }

@@ -2,6 +2,7 @@ package db
 
 import (
 	"BugTracker/api"
+	log "BugTracker/utilities"
 	"time"
 
 	"github.com/lib/pq"
@@ -17,8 +18,11 @@ func (db *DB) AddLogWithDate(loggerId int, projectId int, date time.Time, logTyp
 }
 
 // Log with date unspecified (uses the current date)
-func (db *DB) AddLog(loggerId int, projectId int, logType string, logArgs ...string) error {
-	return db.AddLogWithDate(loggerId, projectId, time.Now(), logType, logArgs...)
+func (db *DB) AddLog(loggerId int, projectId int, logType string, logArgs ...string) {
+
+	if err := db.AddLogWithDate(loggerId, projectId, time.Now(), logType, logArgs...); err != nil {
+		log.PrintError("Failed to add the log of type '", logType, "'. For the following error: ", err)
+	}
 }
 
 func (db *DB) GetAllLogs(projectId int) (*[]api.Log, error) {

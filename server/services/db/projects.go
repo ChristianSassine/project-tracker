@@ -48,7 +48,6 @@ func (db *DB) CreateProject(userId int, title string) (*api.Project, error) {
 	return &project, nil
 }
 
-// TODO: maybe changing the name to something more understandable
 func (db *DB) IsUserInProject(userId int, projectId int) bool {
 
 	var userIdCheck int

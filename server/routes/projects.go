@@ -2,9 +2,10 @@ package routes
 
 import (
 	"BugTracker/api"
+	logType "BugTracker/common"
 	"BugTracker/services/db"
-	jwtToken "BugTracker/services/jwt"
 	log "BugTracker/utilities"
+
 	"net/http"
 	"strconv"
 
@@ -15,21 +16,12 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 
 	// Validate a jwt token
 	r.GET("/projects", func(c *gin.Context) {
-		token, err := c.Cookie("JWT_TOKEN")
+		tokenClaims, err := getTokenClaims(c)
 		if err != nil {
-			log.PrintError(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		tokenInfo, err := jwtToken.ExtractClaims(token)
-		if err != nil {
-			log.PrintError(err)
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
-
-		projects, err := db.GetUserProjects(tokenInfo.Username)
+		projects, err := db.GetUserProjects(tokenClaims.Username)
 
 		if err != nil {
 			log.PrintError(err)
@@ -40,21 +32,12 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 		c.AbortWithStatusJSON(http.StatusOK, projects)
 	})
 
-	// Project Creating handler
+	// Project Creation handler
 	r.POST("/project", func(c *gin.Context) {
-		token, err := c.Cookie("JWT_TOKEN")
 		requestInfo := api.Project{}
 
+		tokenClaims, err := getTokenClaims(c)
 		if err != nil {
-			log.PrintError(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
-		tknInfo, err := jwtToken.ExtractClaims(token)
-		if err != nil {
-			log.PrintError(err)
-			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
@@ -64,7 +47,7 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		id, err := strconv.Atoi(tknInfo.Subject)
+		id, err := strconv.Atoi(tokenClaims.Subject)
 		if err != nil {
 			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -78,14 +61,10 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		log.PrintInfo("New project :'", project.Title, "' has been created")
-
 		// Adding to the logs
-		if err := db.AddLog(id, project.Id, "PROJECT_CREATED", project.Title); err != nil {
-			log.PrintError(err)
-			c.AbortWithStatus(http.StatusBadRequest)
-			return
-		}
+		go db.AddLog(id, project.Id, logType.ProjectCreation, project.Title)
+
+		log.PrintInfo("New project :'", project.Title, "' has been created")
 
 		c.JSON(http.StatusCreated, project)
 	})

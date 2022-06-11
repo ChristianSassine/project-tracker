@@ -2,6 +2,7 @@ package routes
 
 import (
 	"BugTracker/api"
+	logType "BugTracker/common"
 	"BugTracker/middlewares"
 	"BugTracker/services/db"
 	log "BugTracker/utilities"
@@ -67,6 +68,8 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
+		go logEvent(c.Copy(), db, logType.TaskCreation, task.Title)
+
 		c.Status(http.StatusCreated)
 	})
 
@@ -119,11 +122,14 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		if err := db.DeleteTask(taskId, projectId); err != nil {
+		taskTitle, err := db.DeleteTask(taskId, projectId)
+		if err != nil {
 			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
+
+		go logEvent(c.Copy(), db, logType.TaskDeleted, taskTitle)
 
 		c.Status(http.StatusCreated)
 	})
@@ -171,22 +177,16 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		if err := db.UpdateTaskState(taskStateRequest.NewState, taskStateRequest.CurrentIndex, taskStateRequest.TaskId, projectId); err != nil {
+		previousState, err := db.UpdateTaskState(taskStateRequest.NewState, taskStateRequest.CurrentIndex, taskStateRequest.TaskId, projectId)
+		if err != nil {
 			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
+		// Adding to the logs
+		go logEvent(c.Copy(), db, logType.TaskStateModification, previousState, taskStateRequest.NewState)
+
 		c.Status(http.StatusOK)
 	})
-}
-
-func getProjectId(c *gin.Context) (int, error) {
-	projectIdString := c.Param("projectId")
-
-	projectId, err := strconv.Atoi(projectIdString)
-	if err != nil {
-		return 0, err
-	}
-	return projectId, nil
 }
