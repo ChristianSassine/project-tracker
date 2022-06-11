@@ -5,6 +5,7 @@
 
 .wrapper{
     flex: 1;
+    overflow-y: auto;
 }
 
 .info-title {
@@ -30,10 +31,6 @@
 .task-content {
     display: flex;
     flex-direction: column;
-}
-
-.field-area{
-    flex: 1;
 }
 
 #close-button {

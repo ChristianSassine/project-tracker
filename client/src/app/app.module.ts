@@ -23,6 +23,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HomeTasksPageComponent } from './pages/home-tasks-page/home-tasks-page.component';
 import { HomeOverviewPageComponent } from './pages/home-overview-page/home-overview-page.component';
 import { HomeHistoryPageComponent } from './pages/home-history-page/home-history-page.component';
+import {TextFieldModule} from '@angular/cdk/text-field';
 
 @NgModule({
     declarations: [
@@ -47,6 +48,7 @@ import { HomeHistoryPageComponent } from './pages/home-history-page/home-history
         MaterialModule,
         BrowserModule,
         AppRoutingModule,
+        TextFieldModule,
         BrowserAnimationsModule,
         DragDropModule,
         ServiceWorkerModule.register('ngsw-worker.js', {

@@ -4,7 +4,7 @@ import (
 	"BugTracker/api"
 	"BugTracker/services/db"
 	jwtToken "BugTracker/services/jwt"
-	"BugTracker/utilities"
+	log "BugTracker/utilities"
 	"net/http"
 	"strconv"
 	"time"
@@ -21,20 +21,20 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		creds := &api.LoginCreds{}
 
 		if err := c.ShouldBind(creds); err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		id, valid := db.ValidateUser(creds.Username, creds.Password)
 		if !valid {
-			utilities.InfoLog.Println("Wrong authentication for the user :", creds.Username)
+			log.PrintInfo("Wrong authentication for the user :", creds.Username)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		if err := setTokens(c, creds.Username, id); err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 		}
 
@@ -46,30 +46,30 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		creds := &api.RegistrationCreds{}
 
 		if err := c.ShouldBind(creds); err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		if exists, err := db.CheckIfUserExists(creds.Username); exists {
-			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
+			log.PrintInfo("User", creds.Username, "already exists || Error :", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		id, err := db.AddUser(creds.Username, creds.Password, creds.Email)
 		if err != nil {
-			utilities.InfoLog.Println("User", creds.Username, "already exists || Error :", err)
+			log.PrintInfo("User", creds.Username, "already exists || Error :", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		if err := setTokens(c, creds.Username, id); err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 		}
 		// TODO: remove useless logs
-		utilities.InfoLog.Println("User", creds.Username, "has been created")
+		log.PrintInfo("User", creds.Username, "has been created")
 
 		c.Status(http.StatusCreated)
 	})
@@ -78,14 +78,14 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 	group.GET("/user", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		claims, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -97,18 +97,18 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 	group.GET("/validate", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		if err := jwtToken.ValidateToken(token, false); err != nil {
 			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
-				utilities.ErrorLog.Println(err)
+				log.PrintError(err)
 				c.AbortWithStatus(http.StatusUnauthorized)
 				return
 			}
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -116,12 +116,12 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		// TODO : Might need to remove this piece of code
 		claims, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		utilities.InfoLog.Println("User", claims.Username, "has validated his token")
+		log.PrintInfo("User", claims.Username, "has validated his token")
 		c.Status(http.StatusOK)
 	})
 
@@ -130,25 +130,25 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 	group.GET("/refresh", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_REFRESH")
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		if err := jwtToken.ValidateToken(token, true); err != nil {
 			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
-				utilities.ErrorLog.Println(err)
+				log.PrintError(err)
 				c.AbortWithStatus(http.StatusUnauthorized)
 				return
 			}
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		claims, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -157,13 +157,13 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		jwtTkn, err := jwtToken.GenerateToken(claims.Username, id, time.Minute*5, false)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 
 		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
-		utilities.InfoLog.Println("User", claims.Username, "has refreshed his token")
+		log.PrintInfo("User", claims.Username, "has refreshed his token")
 		c.JSON(http.StatusOK, claims.Username)
 	})
 

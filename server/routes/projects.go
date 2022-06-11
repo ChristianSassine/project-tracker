@@ -4,7 +4,7 @@ import (
 	"BugTracker/api"
 	"BugTracker/services/db"
 	jwtToken "BugTracker/services/jwt"
-	"BugTracker/utilities"
+	log "BugTracker/utilities"
 	"net/http"
 	"strconv"
 
@@ -17,14 +17,14 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 	r.GET("/projects", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		tokenInfo, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -32,7 +32,7 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 		projects, err := db.GetUserProjects(tokenInfo.Username)
 
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
@@ -46,39 +46,47 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 		requestInfo := api.Project{}
 
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		info, err := jwtToken.ExtractClaims(token)
+		tknInfo, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		if err := c.ShouldBind(&requestInfo); err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		id, err := strconv.Atoi(info.Subject)
+		id, err := strconv.Atoi(tknInfo.Subject)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		project, err := db.CreateProject(id, requestInfo.Title)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		utilities.InfoLog.Print("New project :'", project.Title, "' has been created")
+		log.PrintInfo("New project :'", project.Title, "' has been created")
+
+		// Adding to the logs
+		if err := db.AddLog(id, project.Id, "PROJECT_CREATED", project.Title); err != nil {
+			log.PrintError(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
 		c.JSON(http.StatusCreated, project)
 	})
 }

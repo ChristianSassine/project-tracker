@@ -45,7 +45,7 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
 
         if (this.task.state != this.form.value.state) {
             const updatedStateIndex = 0;
-            this.tasksService.updateTaskState(this.form.value.state, updatedStateIndex, this.form.value.state);
+            this.tasksService.updateTaskState(this.form.value.state, updatedStateIndex, this.task.id);
         }
         this.tasksService.updateTask(sentObject);
         this.form.markAsPristine();

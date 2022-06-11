@@ -14,7 +14,7 @@ export class HomeHistoryPageComponent implements AfterViewInit {
     @ViewChild(MatSort) sort: MatSort;
 
     displayedColumns: string[] = ['creationDate', 'creator', 'log'];
-    dataSource = new MatTableDataSource<HistoryLog>();
+    dataSource = new MatTableDataSource<HistoryLog>(ELEMENT_DATA);
     constructor() {}
     ngAfterViewInit(): void {
         this.dataSource.paginator = this.paginator;
@@ -29,6 +29,12 @@ export class HomeHistoryPageComponent implements AfterViewInit {
     }
 
 	onRefresh(){
-		// TODO: implement refresh
+		// TODO : Add refreshing from server
 	}
 }
+
+const ELEMENT_DATA: HistoryLog[] = [
+    { creationDate: new Date(), creator: 'Loid', log: 'Created family' },
+    { creationDate: new Date('December 17, 1995 03:24:00'), creator: 'Anya', log: 'Punched damien' },
+    { creationDate: new Date(), creator: 'Yor', log: 'Killed everyone while drunk' },
+];

@@ -42,6 +42,7 @@ func (db *DB) AddUser(username string, password string, email string) (int, erro
 
 	row := db.DB.QueryRow("INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id", username, parsedEmail, password)
 	err := row.Scan(&id)
+
 	return id, err
 }
 

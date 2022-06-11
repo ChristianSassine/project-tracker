@@ -14,7 +14,6 @@
             type="submit"
             color="primary"
             (click)="submit()"
-            (keyup.enter)="submit()"
             [disabled]="form.get('title')?.invalid"
             matDialogClose
         >

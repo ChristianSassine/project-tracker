@@ -6,7 +6,7 @@
     margin: 10px;
 }
 
-.table-container{
+.table-container {
     margin: 0em 2em;
 }
 
@@ -14,13 +14,13 @@ table {
     width: 100%;
 }
 
-.utilities{
+.utilities {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.search-bar{
+.search-bar {
     width: 50%;
 }
 
@@ -30,4 +30,8 @@ table {
 
 .mat-column-creator {
     width: 10%;
+}
+
+::ng-deep .mat-tooltip {
+    font-size: 1em;
 }

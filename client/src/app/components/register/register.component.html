@@ -23,7 +23,6 @@
             type="submit"
             color="primary"
             (click)="submit()"
-            (keyup.enter)="submit()"
             [disabled]="form.get('username')?.invalid || form.get('password')?.invalid || form.get('email')?.invalid || isLoading"
         >
             <span *ngIf="!isLoading">{{ registerButtonText }}</span>

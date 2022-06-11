@@ -24,3 +24,9 @@ type TaskPatchRequest struct {
 	CurrentIndex  int    `json:"currentIndex"`
 	TaskId        int    `json:"taskId"`
 }
+
+type Log struct {
+	Logger  string    `json:"initiator"`
+	Content string    `json:"content"`
+	Date    time.Time `json:"date"`
+}
