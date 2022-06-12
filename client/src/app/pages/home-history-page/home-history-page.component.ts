@@ -15,7 +15,7 @@ export class HomeHistoryPageComponent implements AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    displayedColumns: string[] = ['creationDate', 'creator', 'log'];
+    displayedColumns: string[] = ['date', 'logger', 'log'];
     dataSource : MatTableDataSource<HistoryLog>;
 
     private logUpdateSubscription: Subscription;

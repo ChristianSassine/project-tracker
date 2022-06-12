@@ -19,20 +19,20 @@
         <table mat-table matSort matSortActive="name" matSortDisableClear [dataSource]="dataSource">
             
             <!-- Date Column -->
-            <ng-container matColumnDef="creationDate">
+            <ng-container matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by creationDate">Date</th>
                 <td mat-cell *matCellDef="let element">{{ element.date | date : 'short' }}</td>
             </ng-container>
 
             <!-- Creator Column -->
-            <ng-container matColumnDef="creator">
+            <ng-container matColumnDef="logger">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by creator">By</th>
                 <td mat-cell *matCellDef="let element">{{ element.logger | titlecase }}</td>
             </ng-container>
 
             <!-- Log Column -->
             <ng-container matColumnDef="log">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by log">Log</th>
+                <th mat-header-cell *matHeaderCellDef sortActionDescription="Sort by log">Log</th>
                 <!-- Passed in innerHTML so that it can bold the correct parts -->
                 <td mat-cell *matCellDef="let element"> <span [innerHTML]="element.type | logParser: element.arguments"></span></td>
             </ng-container>
