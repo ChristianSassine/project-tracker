@@ -10,16 +10,18 @@ import { Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class TasksService {
-    stateTasks: Map<TaskState, ProjectTask[]>
+    stateTasks: Map<TaskState, ProjectTask[]>;
+    recentTasks: ProjectTask[];
 
     currentTask: ProjectTask;
     newTaskSetObservable: Subject<ProjectTask>;
 
     constructor(private http: HttpHandlerService, private projectService: ProjectService) {
         this.stateTasks = new Map();
-        this.stateTasks.set(TaskState.TODO, [])
-        this.stateTasks.set(TaskState.ONGOING, [])
-        this.stateTasks.set(TaskState.DONE, [])
+        this.stateTasks.set(TaskState.TODO, []);
+        this.stateTasks.set(TaskState.ONGOING, []);
+        this.stateTasks.set(TaskState.DONE, []);
+        this.recentTasks = [];
 
         this.currentTask = {} as ProjectTask;
 
@@ -28,9 +30,20 @@ export class TasksService {
 
     fetchStateTasks() {
         if (!this.projectService.currentProject) return;
-        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.TODO).subscribe((data) => (this.stateTasks.set(TaskState.TODO, [...data])));
-        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.ONGOING).subscribe((data) => (this.stateTasks.set(TaskState.ONGOING, [...data])));
-        this.http.getTasksByState(this.projectService.currentProject.id, TaskState.DONE).subscribe((data) => (this.stateTasks.set(TaskState.DONE, [...data])));
+        this.http
+            .getTasksByState(this.projectService.currentProject.id, TaskState.TODO)
+            .subscribe((data) => this.stateTasks.set(TaskState.TODO, [...data]));
+        this.http
+            .getTasksByState(this.projectService.currentProject.id, TaskState.ONGOING)
+            .subscribe((data) => this.stateTasks.set(TaskState.ONGOING, [...data]));
+        this.http
+            .getTasksByState(this.projectService.currentProject.id, TaskState.DONE)
+            .subscribe((data) => this.stateTasks.set(TaskState.DONE, [...data]));
+    }
+
+    fetchRecentTasks() {
+        if (!this.projectService.currentProject) return;
+        this.http.getRecentTasks(this.projectService.currentProject.id).subscribe((tasks) => (this.recentTasks = [...tasks]));
     }
 
     setCurrentTask(task: ProjectTask) {

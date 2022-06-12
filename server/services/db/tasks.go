@@ -2,6 +2,7 @@ package db
 
 import (
 	"BugTracker/api"
+	"time"
 )
 
 func (db *DB) GetAllTasks(projectId int) (*[]api.Task, error) {
@@ -49,6 +50,30 @@ func (db *DB) GetTasksByState(projectId int, state string) (*[]api.Task, error) 
 	return &tasks, nil
 }
 
+func (db *DB) GetTasksWithLimit(projectId int, limit int) (*[]api.Task, error) {
+	tasks := []api.Task{}
+	task := api.Task{}
+
+	rows, err := db.DB.Query(`
+	SELECT id, title, description, state, creation_date FROM tasks 
+	WHERE project_id = $1
+	ORDER BY creation_date DESC
+	LIMIT $2`, projectId, limit)
+
+	if err != nil {
+		return &[]api.Task{}, err
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&task.Id, &task.Title, &task.Description, &task.State, &task.CreationDate); err != nil {
+			return &[]api.Task{}, err
+		}
+		tasks = append(tasks, task)
+	}
+
+	return &tasks, nil
+}
+
 func (db *DB) AddTask(task *api.Task, projectId int) error {
 	var position int = 0
 	if err := db.DB.QueryRow(`SELECT MAX(position) FROM tasks WHERE project_id = $1 AND state = $2`, projectId, task.State).Scan(&position); err != nil {
@@ -59,7 +84,7 @@ func (db *DB) AddTask(task *api.Task, projectId int) error {
 
 	_, err := db.DB.Exec(`
 	INSERT INTO tasks (title, state, description, creation_date, project_id, position)
-	VALUES ($1, $2, $3, $4, $5, $6)`, task.Title, task.State, task.Description, task.CreationDate, projectId, position)
+	VALUES ($1, $2, $3, $4, $5, $6)`, task.Title, task.State, task.Description, time.Now().Local(), projectId, position)
 	if err != nil {
 		return err
 	}

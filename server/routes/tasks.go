@@ -15,7 +15,9 @@ import (
 func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	taskGroup := r.Group("", middlewares.ValidUserProjectAccessMiddleware(db))
 
-	// Getting all tasks endpoint
+	// TODO : this might need refactoring
+
+	// Getting tasks endpoint
 	taskGroup.GET("/project/:projectId/tasks", func(c *gin.Context) {
 		projectId, err := getProjectId(c)
 		if err != nil {
@@ -27,16 +29,32 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 		urlQueries := c.Request.URL.Query()
 		taskState, ok := urlQueries["state"]
 		if !ok {
-			tasks, err := db.GetAllTasks(projectId)
-			if err != nil {
-				log.PrintError(err)
-				c.AbortWithStatus(http.StatusNotFound)
+			taskLimit, ok := urlQueries["limit"]
+			// Get without any of the specified queries returns all the project tasks
+			if !ok {
+				tasks, err := db.GetAllTasks(projectId)
+				if err != nil {
+					log.PrintError(err)
+					c.AbortWithStatus(http.StatusNotFound)
+					return
+				}
+				c.JSON(http.StatusCreated, tasks)
 				return
 			}
-			c.JSON(http.StatusCreated, tasks)
+			// Get with the limit query returns the most recent tasks limited by the limit received
+			log.PrintInfo(taskLimit[0])
+			limit, err := strconv.Atoi(taskLimit[0])
+			if err != nil {
+				log.PrintError(err)
+				c.AbortWithStatus(http.StatusBadRequest)
+				return
+			}
+			tasks, err := db.GetTasksWithLimit(projectId, limit)
+			c.JSON(http.StatusOK, tasks)
 			return
 		}
 
+		// Get with the state query returns all the tasks with the specified state in the project
 		tasks, err := db.GetTasksByState(projectId, taskState[0])
 		if err != nil {
 			log.PrintError(err)

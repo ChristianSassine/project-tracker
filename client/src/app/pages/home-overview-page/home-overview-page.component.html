@@ -1,4 +1,11 @@
-<mat-card class="tasks-container left-container"> TASKS </mat-card>
+<mat-card id="recent-container" class="left-container tasks-container">
+    <mat-card-title class="tasks-title">
+        <span id="recent-tasks-title">Recent Tasks</span>
+    </mat-card-title>
+    <div class="tasks-wrapper">
+        <app-task *ngFor="let task of recentTasks" [task]="task" class="task" > </app-task>
+    </div>
+</mat-card>
 <div class="right-container">
     <mat-card class="history-container"> HISTORY </mat-card>
     <mat-card class="stats-container"> STATS </mat-card>

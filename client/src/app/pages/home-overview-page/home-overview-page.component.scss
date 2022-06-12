@@ -20,3 +20,27 @@
 .left-container {
     margin: 10px;
 }
+
+.tasks-container {
+    flex: 1;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.tasks-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task {
+    margin-top: 1em;
+}

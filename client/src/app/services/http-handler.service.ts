@@ -64,6 +64,11 @@ export class HttpHandlerService {
     getAllTasks(projectId: number): Observable<ProjectTask[]> {
         return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks`, { withCredentials: true }));
     }
+
+    getRecentTasks(projectId: number, limit: number = 5): Observable<ProjectTask[]> {
+        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true }));
+    }
+
     getTasksByState(projectId: number, state: string): Observable<ProjectTask[]> {
         return this.chainAfterAuth(
             this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?state=${state}`, { withCredentials: true }),
