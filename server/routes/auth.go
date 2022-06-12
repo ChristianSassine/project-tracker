@@ -125,7 +125,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		c.Status(http.StatusOK)
 	})
 
-	// TODO : Handle refresh token
+	// TODO : Handle refresh token + fix time of expiration
 	// Refreshing access token endpoint.
 	group.GET("/refresh", func(c *gin.Context) {
 		token, err := c.Cookie("JWT_REFRESH")

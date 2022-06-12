@@ -1,12 +1,50 @@
+<!-- Recently Added tasks container  -->
 <mat-card id="recent-container" class="left-container tasks-container">
     <mat-card-title class="tasks-title">
-        <span id="recent-tasks-title">Recent Tasks</span>
+        <span id="recent-tasks-title">Recently Added Tasks</span>
     </mat-card-title>
     <div class="tasks-wrapper">
-        <app-task *ngFor="let task of recentTasks" [task]="task" class="task" > </app-task>
+        <app-task *ngFor="let task of recentTasks" [task]="task" class="task" (delete)="onDelete(task)"> </app-task>
     </div>
 </mat-card>
+
 <div class="right-container">
-    <mat-card class="history-container"> HISTORY </mat-card>
+    <mat-card class="history-container">
+        <mat-card-title class="tasks-title">
+            <span id="recent-history-title">Recent History Logs</span>
+        </mat-card-title>
+
+        <!-- History Table  -->
+        <div class="history-wrapper mat-elevation-z3 table-container">
+            <table mat-table [dataSource]="dataSource">
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let element">{{ element.date | date: 'short' }}</td>
+                </ng-container>
+
+                <!-- Creator Column -->
+                <ng-container matColumnDef="logger">
+                    <th mat-header-cell *matHeaderCellDef>By</th>
+                    <td mat-cell *matCellDef="let element">{{ element.logger | titlecase }}</td>
+                </ng-container>
+
+                <!-- Log Column -->
+                <ng-container matColumnDef="log">
+                    <th mat-header-cell *matHeaderCellDef>Log</th>
+                    <!-- Passed in innerHTML so that it can bold the correct parts -->
+                    <td mat-cell *matCellDef="let element"><span [innerHTML]="element.type | logParser: element.arguments"></span></td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                <!-- Row shown when there is no matching log. -->
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="3">There's no logs in the project yet</td>
+                </tr>
+            </table>
+        </div>
+    </mat-card>
     <mat-card class="stats-container"> STATS </mat-card>
 </div>

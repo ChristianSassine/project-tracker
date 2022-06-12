@@ -113,4 +113,8 @@ export class HttpHandlerService {
     getAllProjectLogs(projectId: number) {
         return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs`, { withCredentials: true }));
     }
+
+    getRecentProjectLogs(projectId: number, limit: number = 5) {
+        return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }));
+    }
 }

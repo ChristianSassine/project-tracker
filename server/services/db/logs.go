@@ -45,3 +45,26 @@ func (db *DB) GetAllLogs(projectId int) (*[]api.Log, error) {
 	}
 	return &logs, err
 }
+
+func (db *DB) GetLogsWithLimit(projectId int, limit int) (*[]api.Log, error) {
+	logs := []api.Log{}
+	log := api.Log{}
+
+	rows, err := db.DB.Query(`
+	SELECT histories.date, histories.type, histories.arguments, users.username FROM histories 
+	INNER JOIN users ON histories.user_id = users.id
+	WHERE project_id = $1 ORDER BY histories.date DESC
+	LIMIT $2`, projectId, limit)
+
+	if err != nil {
+		return &[]api.Log{}, err
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&log.Date, &log.Type, pq.Array(&log.Args), &log.Logger); err != nil {
+			return &[]api.Log{}, err
+		}
+		logs = append(logs, log)
+	}
+	return &logs, err
+}

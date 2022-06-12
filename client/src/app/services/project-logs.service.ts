@@ -9,17 +9,28 @@ import { ProjectService } from './project.service';
 })
 export class ProjectLogsService {
     projectLogs: HistoryLog[];
-    projectLogsUpdated: Subject<boolean>;
+    recentProjectLogs: HistoryLog[];
+    logsUpdatedObservable: Subject<boolean>;
+    recentLogsUpdatedObservable: Subject<boolean>;
     constructor(private projectService: ProjectService, private http: HttpHandlerService) {
-        this.projectLogsUpdated = new Subject();
+        this.logsUpdatedObservable = new Subject();
+        this.recentLogsUpdatedObservable = new Subject();
         this.projectLogs = [];
     }
 
-    getProjectLogs() {
+    fetchProjectLogs() {
         if (!this.projectService.currentProject) return;
         this.http.getAllProjectLogs(this.projectService.currentProject.id).subscribe((logs) => {
             this.projectLogs = [...logs];
-            this.projectLogsUpdated.next(true);
+            this.logsUpdatedObservable.next(true);
+        });
+    }
+
+    fetchRecentProjectLogs() {
+        if (!this.projectService.currentProject) return;
+        this.http.getRecentProjectLogs(this.projectService.currentProject.id).subscribe((logs) => {
+            this.recentProjectLogs = [...logs];
+            this.recentLogsUpdatedObservable.next(true);
         });
     }
 }

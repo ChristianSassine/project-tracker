@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ProjectTask } from 'src/app/interfaces/project-task';
+import { TaskState } from 'src/common/task-state';
 
 @Component({
     selector: 'app-task',
@@ -9,6 +10,10 @@ import { ProjectTask } from 'src/app/interfaces/project-task';
 export class TaskComponent {
     @Input() task: ProjectTask;
     @Output() delete: EventEmitter<unknown>;
+    todoState = TaskState.TODO;
+    ongoingState = TaskState.ONGOING;
+    doneState = TaskState.DONE;
+
     constructor() {
         this.delete = new EventEmitter();
     }

@@ -44,3 +44,24 @@
 .task {
     margin-top: 1em;
 }
+
+.history-container{
+    display: flex;
+    flex-direction: column;
+    .history-wrapper{
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
+table {
+    width: 100%;
+}
+
+.mat-column-date {
+    width: 20%;
+}
+
+.mat-column-logger {
+    width: 20%;
+}

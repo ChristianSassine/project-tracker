@@ -22,14 +22,13 @@ export class HomeHistoryPageComponent implements AfterViewInit, OnDestroy {
 
     constructor(private logsService: ProjectLogsService) {
         this.dataSource = new MatTableDataSource([] as HistoryLog[]);
-        this.logUpdateSubscription = this.logsService.projectLogsUpdated.subscribe(() => {
+        this.logUpdateSubscription = this.logsService.logsUpdatedObservable.subscribe(() => {
             this.dataSource.data = this.logsService.projectLogs;
         });
-        this.logsService.getProjectLogs();
+        this.logsService.fetchProjectLogs();
     }
 
     ngAfterViewInit(): void {
-        // TODO: Fix sort, it broke '-'
         this.dataSource.sort = this.sort;
         this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
         
@@ -46,7 +45,6 @@ export class HomeHistoryPageComponent implements AfterViewInit, OnDestroy {
     }
 
     onRefresh() {
-        // TODO : Add refreshing from server
-        this.logsService.getProjectLogs();
+        this.logsService.fetchProjectLogs();
     }
 }
