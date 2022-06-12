@@ -5,7 +5,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { HistoryLog } from 'src/app/interfaces/history-log';
 import { ProjectLogsService } from 'src/app/services/project-logs.service';
-import { MatTable } from '@angular/material/table';
 
 @Component({
     selector: 'app-home-history-page',
@@ -17,25 +16,24 @@ export class HomeHistoryPageComponent implements AfterViewInit, OnDestroy {
     @ViewChild(MatSort) sort: MatSort;
 
     displayedColumns: string[] = ['creationDate', 'creator', 'log'];
-    dataSource = new MatTableDataSource<HistoryLog>();
+    dataSource : MatTableDataSource<HistoryLog>;
 
     private logUpdateSubscription: Subscription;
 
-    constructor(private logsService: ProjectLogsService) {}
-
-    ngAfterViewInit(): void {
-        this.dataSource.sort = this.sort;
+    constructor(private logsService: ProjectLogsService) {
+        this.dataSource = new MatTableDataSource([] as HistoryLog[]);
         this.logUpdateSubscription = this.logsService.projectLogsUpdated.subscribe(() => {
             this.dataSource.data = this.logsService.projectLogs;
-            this.dataSource._updateChangeSubscription();
         });
-
-        this.dataSource.paginator = this.paginator;
-        // TODO: Fix sort, it broke '-'
-
-        this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-        this.dataSource.data = this.logsService.projectLogs;
         this.logsService.getProjectLogs();
+    }
+
+    ngAfterViewInit(): void {
+        // TODO: Fix sort, it broke '-'
+        this.dataSource.sort = this.sort;
+        this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+        
+        this.dataSource.paginator = this.paginator;
     }
 
     ngOnDestroy(): void {

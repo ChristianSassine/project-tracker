@@ -19,8 +19,7 @@ func (db *DB) AddLogWithDate(loggerId int, projectId int, date time.Time, logTyp
 
 // Log with date unspecified (uses the current date)
 func (db *DB) AddLog(loggerId int, projectId int, logType string, logArgs ...string) {
-
-	if err := db.AddLogWithDate(loggerId, projectId, time.Now(), logType, logArgs...); err != nil {
+	if err := db.AddLogWithDate(loggerId, projectId, time.Now().Local(), logType, logArgs...); err != nil {
 		log.PrintError("Failed to add the log of type '", logType, "'. For the following error: ", err)
 	}
 }
@@ -32,7 +31,7 @@ func (db *DB) GetAllLogs(projectId int) (*[]api.Log, error) {
 	rows, err := db.DB.Query(`
 	SELECT histories.date, histories.type, histories.arguments, users.username FROM histories 
 	INNER JOIN users ON histories.user_id = users.id
-	WHERE project_id = $1 ORDER BY histories.date`, projectId)
+	WHERE project_id = $1 ORDER BY histories.date DESC`, projectId)
 
 	if err != nil {
 		return &[]api.Log{}, err

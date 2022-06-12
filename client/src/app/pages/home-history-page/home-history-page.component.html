@@ -21,7 +21,7 @@
             <!-- Date Column -->
             <ng-container matColumnDef="creationDate">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by creationDate">Date</th>
-                <td mat-cell *matCellDef="let element">{{ element.date | date }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.date | date : 'short' }}</td>
             </ng-container>
 
             <!-- Creator Column -->
