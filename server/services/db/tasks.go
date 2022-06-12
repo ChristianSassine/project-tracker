@@ -108,21 +108,24 @@ func (db *DB) UpdateTaskPosition(taskPreviousPosition int, taskCurrentPosition i
 	return nil
 }
 
-func (db *DB) UpdateTaskState(newState string, taskCurrentPosition int, taskId int, projectId int) (string, error) {
+func (db *DB) UpdateTaskState(newState string, taskCurrentPosition int, taskId int, projectId int) (*api.Task, error) {
 
 	// Decrementing the position for the array where it left
+	previousTask := &api.Task{}
 	previousPosition := 0
-	previousState := ""
 
-	if err := db.DB.QueryRow(`SELECT state, position FROM tasks WHERE project_id = $1 AND id = $2`, projectId, taskId).Scan(&previousState, &previousPosition); err != nil {
-		return "", err
+	if err := db.DB.QueryRow(`
+	SELECT state, title, position 
+	FROM tasks WHERE project_id = $1 AND id = $2
+	`, projectId, taskId).Scan(&previousTask.State, &previousTask.Title, &previousPosition); err != nil {
+		return &api.Task{}, err
 	}
 
 	_, err := db.DB.Exec(`
 	UPDATE tasks SET position = position - 1
-	WHERE project_id = $1 AND state = $2 AND (position > $3)`, projectId, previousState, previousPosition)
+	WHERE project_id = $1 AND state = $2 AND (position > $3)`, projectId, previousTask.State, previousPosition)
 	if err != nil {
-		return "", err
+		return &api.Task{}, err
 	}
 
 	// Incrementing the position for the array where it's added
@@ -130,7 +133,7 @@ func (db *DB) UpdateTaskState(newState string, taskCurrentPosition int, taskId i
 		UPDATE tasks SET position = position + 1 
 		WHERE project_id = $1 AND (position >= $2) AND state = $3`, projectId, taskCurrentPosition, newState)
 	if err != nil {
-		return "", err
+		return &api.Task{}, err
 	}
 
 	// Setting the new values
@@ -138,10 +141,10 @@ func (db *DB) UpdateTaskState(newState string, taskCurrentPosition int, taskId i
 	UPDATE tasks SET state = $1, position = $2
 	WHERE id = $3 AND project_id = $4`, newState, taskCurrentPosition, taskId, projectId)
 	if err != nil {
-		return "", err
+		return &api.Task{}, err
 	}
 
-	return previousState, nil
+	return previousTask, nil
 }
 
 func (db *DB) DeleteTask(taskId int, projectId int) (string, error) {

@@ -1,26 +1,45 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subscription } from 'rxjs';
 import { HistoryLog } from 'src/app/interfaces/history-log';
+import { ProjectLogsService } from 'src/app/services/project-logs.service';
+import { MatTable } from '@angular/material/table';
 
 @Component({
     selector: 'app-home-history-page',
     templateUrl: './home-history-page.component.html',
     styleUrls: ['./home-history-page.component.scss'],
 })
-export class HomeHistoryPageComponent implements AfterViewInit {
+export class HomeHistoryPageComponent implements AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
     displayedColumns: string[] = ['creationDate', 'creator', 'log'];
-    dataSource = new MatTableDataSource<HistoryLog>(ELEMENT_DATA);
-    constructor() {}
+    dataSource = new MatTableDataSource<HistoryLog>();
+
+    private logUpdateSubscription: Subscription;
+
+    constructor(private logsService: ProjectLogsService) {}
+
     ngAfterViewInit(): void {
-        this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.logUpdateSubscription = this.logsService.projectLogsUpdated.subscribe(() => {
+            this.dataSource.data = this.logsService.projectLogs;
+            this.dataSource._updateChangeSubscription();
+        });
+
+        this.dataSource.paginator = this.paginator;
+        // TODO: Fix sort, it broke '-'
 
         this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+        this.dataSource.data = this.logsService.projectLogs;
+        this.logsService.getProjectLogs();
+    }
+
+    ngOnDestroy(): void {
+        this.logUpdateSubscription.unsubscribe();
     }
 
     applyFilter(event: Event) {
@@ -28,13 +47,8 @@ export class HomeHistoryPageComponent implements AfterViewInit {
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
 
-	onRefresh(){
-		// TODO : Add refreshing from server
-	}
+    onRefresh() {
+        // TODO : Add refreshing from server
+        this.logsService.getProjectLogs();
+    }
 }
-
-const ELEMENT_DATA: HistoryLog[] = [
-    { creationDate: new Date(), creator: 'Loid', log: 'Created family' },
-    { creationDate: new Date('December 17, 1995 03:24:00'), creator: 'Anya', log: 'Punched damien' },
-    { creationDate: new Date(), creator: 'Yor', log: 'Killed everyone while drunk' },
-];

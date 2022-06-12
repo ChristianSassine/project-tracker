@@ -26,7 +26,8 @@ type TaskPatchRequest struct {
 }
 
 type Log struct {
-	Logger  string    `json:"initiator"`
-	Content string    `json:"content"`
-	Date    time.Time `json:"date"`
+	Logger string    `json:"logger"`
+	Type   string    `json:"type"`
+	Args   []string  `json:"arguments"`
+	Date   time.Time `json:"date"`
 }

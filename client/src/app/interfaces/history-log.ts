@@ -1,5 +1,8 @@
+import { LogType } from "src/common/log-type";
+
 export interface HistoryLog {
-    creationDate: Date;
-    creator: string;
-    log: string;
+    date: Date;
+    logger: string;
+    type: LogType;
+    arguments?: string[];
 }

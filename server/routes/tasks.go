@@ -177,7 +177,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		previousState, err := db.UpdateTaskState(taskStateRequest.NewState, taskStateRequest.CurrentIndex, taskStateRequest.TaskId, projectId)
+		previousTask, err := db.UpdateTaskState(taskStateRequest.NewState, taskStateRequest.CurrentIndex, taskStateRequest.TaskId, projectId)
 		if err != nil {
 			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -185,7 +185,7 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 		}
 
 		// Adding to the logs
-		go logEvent(c.Copy(), db, logType.TaskStateModification, previousState, taskStateRequest.NewState)
+		go logEvent(c.Copy(), db, logType.TaskStateModification, previousTask.Title, previousTask.State, taskStateRequest.NewState)
 
 		c.Status(http.StatusOK)
 	})

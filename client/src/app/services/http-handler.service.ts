@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { TaskState } from 'src/common/task-state';
 import { environment } from 'src/environments/environment';
+import { HistoryLog } from '../interfaces/history-log';
 import { Project } from '../interfaces/project';
 import { ProjectTask } from '../interfaces/project-task';
 
@@ -50,42 +51,37 @@ export class HttpHandlerService {
         return this.http.get<string>(`${this.baseUrl}/auth/user`, { withCredentials: true });
     }
 
-    // Project and tasks handling requests
+    // Project requests
     createProjectRequest(title: string): Observable<Project> {
         return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project`, { title }, { withCredentials: true }));
     }
 
     getAllProjects(): Observable<Project[]> {
-        return this.chainAfterAuth(this.http.get<Project[]>(`${environment.serverUrl}/data/projects`, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.get<Project[]>(`${this.baseUrl}/data/projects`, { withCredentials: true }));
     }
 
+    // Tasks requests
     getAllTasks(projectId: number): Observable<ProjectTask[]> {
-        return this.chainAfterAuth(
-            this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks`, { withCredentials: true }),
-        );
+        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks`, { withCredentials: true }));
     }
     getTasksByState(projectId: number, state: string): Observable<ProjectTask[]> {
         return this.chainAfterAuth(
-            this.http.get<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/tasks?state=${state}`, { withCredentials: true }),
+            this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?state=${state}`, { withCredentials: true }),
         );
     }
 
     createTask(task: ProjectTask, projectId: number) {
-        return this.chainAfterAuth(
-            this.http.post<ProjectTask[]>(`${environment.serverUrl}/data/project/${projectId}/task`, task, { withCredentials: true }),
-        );
+        return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
     }
 
     updateTask(task: ProjectTask, projectId: number) {
-        return this.chainAfterAuth(
-            this.http.put<unknown>(`${environment.serverUrl}/data/project/${projectId}/task`, task, { withCredentials: true }),
-        );
+        return this.chainAfterAuth(this.http.put<unknown>(`${this.baseUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
     }
 
     updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number, projectId: number) {
         return this.chainAfterAuth(
             this.http.patch<unknown>(
-                `${environment.serverUrl}/data/project/${projectId}/task/position`,
+                `${this.baseUrl}/data/project/${projectId}/task/position`,
                 { previousIndex, currentIndex, taskId },
                 { withCredentials: true },
             ),
@@ -95,7 +91,7 @@ export class HttpHandlerService {
     updateTaskState(newState: TaskState, currentIndex: number, taskId: number, projectId: number) {
         return this.chainAfterAuth(
             this.http.patch<unknown>(
-                `${environment.serverUrl}/data/project/${projectId}/task/state`,
+                `${this.baseUrl}/data/project/${projectId}/task/state`,
                 { newState, currentIndex, taskId },
                 { withCredentials: true },
             ),
@@ -104,7 +100,12 @@ export class HttpHandlerService {
 
     deleteTask(taskId: number, projectId: number) {
         return this.chainAfterAuth(
-            this.http.delete<unknown>(`${environment.serverUrl}/data/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),
+            this.http.delete<unknown>(`${this.baseUrl}/data/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),
         );
+    }
+
+    // Logs requests
+    getAllProjectLogs(projectId: number) {
+        return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs`, { withCredentials: true }));
     }
 }

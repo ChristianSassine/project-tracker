@@ -18,6 +18,8 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 	r.GET("/projects", func(c *gin.Context) {
 		tokenClaims, err := getTokenClaims(c)
 		if err != nil {
+			log.PrintError(err)
+			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
@@ -29,7 +31,7 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		c.AbortWithStatusJSON(http.StatusOK, projects)
+		c.JSON(http.StatusOK, projects)
 	})
 
 	// Project Creation handler
@@ -38,6 +40,8 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		tokenClaims, err := getTokenClaims(c)
 		if err != nil {
+			log.PrintError(err)
+			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 

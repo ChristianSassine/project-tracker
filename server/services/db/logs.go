@@ -30,16 +30,16 @@ func (db *DB) GetAllLogs(projectId int) (*[]api.Log, error) {
 	log := api.Log{}
 
 	rows, err := db.DB.Query(`
-	SELECT histories.date, histories.log, users.username FROM histories 
+	SELECT histories.date, histories.type, histories.arguments, users.username FROM histories 
 	INNER JOIN users ON histories.user_id = users.id
-	WHERE project_id = $1`, projectId)
+	WHERE project_id = $1 ORDER BY histories.date`, projectId)
 
 	if err != nil {
 		return &[]api.Log{}, err
 	}
 
 	for rows.Next() {
-		if err := rows.Scan(&log.Date, &log.Content, &log.Logger); err != nil {
+		if err := rows.Scan(&log.Date, &log.Type, pq.Array(&log.Args), &log.Logger); err != nil {
 			return &[]api.Log{}, err
 		}
 		logs = append(logs, log)
