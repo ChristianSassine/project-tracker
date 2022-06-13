@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { HistoryLog } from '../interfaces/history-log';
 import { Project } from '../interfaces/project';
 import { ProjectTask } from '../interfaces/project-task';
+import { TasksStats } from '../interfaces/tasks-stats';
 
 export function tapOnSubscribe<T>(callback: () => void) {
     return (source: Observable<T>) =>
@@ -67,6 +68,10 @@ export class HttpHandlerService {
 
     getRecentTasks(projectId: number, limit: number = 5): Observable<ProjectTask[]> {
         return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true }));
+    }
+
+    getTasksStats(projectId: number): Observable<TasksStats> {
+        return this.chainAfterAuth(this.http.get<TasksStats>(`${this.baseUrl}/data/project/${projectId}/tasks/stats`, { withCredentials: true }));
     }
 
     getTasksByState(projectId: number, state: string): Observable<ProjectTask[]> {

@@ -46,5 +46,14 @@
             </table>
         </div>
     </mat-card>
-    <mat-card class="stats-container"> STATS </mat-card>
+
+    <!-- Statistics Chart  -->
+    <mat-card class="stats-container">
+        <mat-card-title class="tasks-title">
+            <span id="stats-title">Statistics</span>
+        </mat-card-title>
+        <div>
+            <canvas id="stats-canvas" #statsCanvas aria-label="Project statistics chart" role="img"></canvas>
+        </div>
+    </mat-card>
 </div>

@@ -13,6 +13,7 @@
 .right-container,
 .left-container {
     flex: 1;
+    overflow-y: auto;
 }
 
 .history-container,

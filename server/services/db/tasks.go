@@ -3,6 +3,8 @@ package db
 import (
 	"BugTracker/api"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 func (db *DB) GetAllTasks(projectId int) (*[]api.Task, error) {
@@ -72,6 +74,26 @@ func (db *DB) GetTasksWithLimit(projectId int, limit int) (*[]api.Task, error) {
 	}
 
 	return &tasks, nil
+}
+
+func (db *DB) GetTasksStats(projectId int) (*api.TaskStats, error) {
+	taskStats := api.TaskStats{}
+	statsArray := []int64{0, 0, 0}
+
+	if err := db.DB.QueryRow(`
+	SELECT(
+		ARRAY[(SELECT COUNT(*) FROM tasks WHERE state = 'TODO' AND project_id = $1),
+		(SELECT COUNT(*) FROM tasks WHERE state = 'ONGOING' AND project_id = $1),
+		(SELECT COUNT(*) FROM tasks WHERE state = 'DONE' AND project_id = $1)]
+	)`, projectId).Scan(pq.Array(&statsArray)); err != nil {
+		return &api.TaskStats{}, err
+	}
+
+	taskStats.TodoTasks = statsArray[0]
+	taskStats.OngoingTasks = statsArray[1]
+	taskStats.DoneTasks = statsArray[2]
+
+	return &taskStats, nil
 }
 
 func (db *DB) AddTask(task *api.Task, projectId int) error {

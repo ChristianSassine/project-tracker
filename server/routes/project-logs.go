@@ -34,6 +34,7 @@ func ProjectLogsRoutes(r *gin.RouterGroup, db *db.DB) {
 				return
 			}
 			c.JSON(http.StatusOK, logs)
+			return
 		}
 
 		// Get the specified limit of recently added logs

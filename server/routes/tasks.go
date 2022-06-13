@@ -38,11 +38,10 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 					c.AbortWithStatus(http.StatusNotFound)
 					return
 				}
-				c.JSON(http.StatusCreated, tasks)
+				c.JSON(http.StatusOK, tasks)
 				return
 			}
 			// Get with the limit query returns the most recent tasks limited by the limit received
-			log.PrintInfo(taskLimit[0])
 			limit, err := strconv.Atoi(taskLimit[0])
 			if err != nil {
 				log.PrintError(err)
@@ -61,7 +60,25 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
-		c.JSON(http.StatusCreated, tasks)
+		c.JSON(http.StatusOK, tasks)
+	})
+
+	// Getting tasks statistics endpoint
+	taskGroup.GET("/project/:projectId/tasks/stats", func(c *gin.Context) {
+		projectId, err := getProjectId(c)
+		if err != nil {
+			log.PrintError(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		tasksStats, err := db.GetTasksStats(projectId)
+		if err != nil {
+			log.PrintError(err)
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		c.JSON(http.StatusOK, tasksStats)
 	})
 
 	// Creating a task endpoint

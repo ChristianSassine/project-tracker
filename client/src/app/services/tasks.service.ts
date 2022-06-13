@@ -4,7 +4,8 @@ import { ProjectService } from './project.service';
 import { ProjectTask } from '../interfaces/project-task';
 import { TaskState } from 'src/common/task-state';
 import { Project } from '../interfaces/project';
-import { Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
+import { TasksStats } from '../interfaces/tasks-stats';
 
 @Injectable({
     providedIn: 'root',
@@ -21,8 +22,8 @@ export class TasksService {
         this.stateTasks.set(TaskState.TODO, []);
         this.stateTasks.set(TaskState.ONGOING, []);
         this.stateTasks.set(TaskState.DONE, []);
-        this.recentTasks = [];
 
+        this.recentTasks = [];
         this.currentTask = {} as ProjectTask;
 
         this.newTaskSetObservable = new Subject();
@@ -44,6 +45,11 @@ export class TasksService {
     fetchRecentTasks() {
         if (!this.projectService.currentProject) return;
         this.http.getRecentTasks(this.projectService.currentProject.id).subscribe((tasks) => (this.recentTasks = [...tasks]));
+    }
+
+    getTasksStats(): Observable<TasksStats>{
+        if (!this.projectService.currentProject) return of();
+        return this.http.getTasksStats(this.projectService.currentProject.id);
     }
 
     setCurrentTask(task: ProjectTask) {
