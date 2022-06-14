@@ -39,4 +39,8 @@ export class ProjectsPageComponent implements OnInit {
     openDialog() {
         this.dialog.open(CreateProjectComponent, { minWidth: this.minimumDialogWidth });
     }
+
+    onDelete(project: Project){
+        this.projectService.deleteProject(project.id);
+    }
 }

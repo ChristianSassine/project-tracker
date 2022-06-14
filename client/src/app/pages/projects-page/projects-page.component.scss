@@ -15,10 +15,14 @@
     margin-left: auto;
 }
 
-.create-project, .project{
+.create-project-container, .project-container{
     margin: 1em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+}
+
+.create-project, .project{
+    flex: 1;
 }
 
 .wrapper {

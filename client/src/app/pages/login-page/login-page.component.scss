@@ -1,8 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap');
+
 :host {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
+}
+
+.auth-title{
+    margin-bottom: 1em;
+    font-size: 3em;
+    background: #673ab71f;
+    color: #673ab7;
+    padding: 0.5em;
+    font-family: 'Oswald', sans-serif;
 }
 
 :host ::ng-deep .mat-horizontal-stepper-header-container { 

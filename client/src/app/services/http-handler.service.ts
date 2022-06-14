@@ -57,6 +57,10 @@ export class HttpHandlerService {
         return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project`, { title }, { withCredentials: true }));
     }
 
+    deleteProjectRequest(projectId: number): Observable<unknown> {
+        return this.chainAfterAuth(this.http.delete<unknown>(`${this.baseUrl}/data/project/${projectId}`, { withCredentials: true }));
+    }
+
     getAllProjects(): Observable<Project[]> {
         return this.chainAfterAuth(this.http.get<Project[]>(`${this.baseUrl}/data/projects`, { withCredentials: true }));
     }

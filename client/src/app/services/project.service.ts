@@ -52,4 +52,8 @@ export class ProjectService {
             this.changeToHomePageObservable.next(true);
         });
     }
+
+    deleteProject(projectId: number){
+        this.http.deleteProjectRequest(projectId).subscribe(()=> this.fetchProjects())
+    }
 }
