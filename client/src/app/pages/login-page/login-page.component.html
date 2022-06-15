@@ -1,5 +1,5 @@
 <mat-card class="auth-title"><span>{{displayedTitle}}</span></mat-card>
-<mat-stepper label>
+<mat-stepper label class="auth-stepper">
     <mat-step label="Login">
         <app-login [isLoading]="isLoading"></app-login>
         <button mat-button matStepperNext [disabled]="isLoading">Don't have an account? Create one!</button>

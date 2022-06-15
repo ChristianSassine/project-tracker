@@ -36,7 +36,33 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     ngAfterViewInit(): void {
-		this.taskService.getTasksStats().subscribe((stats)=> {
+		this.generateStatsChart();
+    }
+
+    ngOnDestroy(): void {
+        this.logsUpdateSubscription.unsubscribe();
+        this.statsChart.destroy();
+    }
+
+    get recentTasks() {
+        return this.taskService.recentTasks;
+    }
+
+    onDelete(task: ProjectTask) {
+        const dialogRef = this.dialog.open(DeleteTaskComponent, {
+            data: task,
+        });
+        const dialogCloseSubscription = dialogRef.afterClosed().subscribe(() => {
+            this.taskService.fetchRecentTasks();
+            this.generateStatsChart();
+            this.logService.fetchRecentProjectLogs();
+            dialogCloseSubscription.unsubscribe();
+        });
+    }
+
+    private generateStatsChart(){
+        this.taskService.getTasksStats().subscribe((stats)=> {
+            if (this.statsChart) this.statsChart.destroy();
 			const data = {
 				labels: ['Todo', 'Ongoing', 'Done'],
 				datasets: [
@@ -56,26 +82,5 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
 			} as ChartConfiguration;
 			this.statsChart = new Chart(this.statsCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D, config);
 		})
-        
-        
-    }
-
-    ngOnDestroy(): void {
-        this.logsUpdateSubscription.unsubscribe();
-        this.statsChart.destroy();
-    }
-
-    get recentTasks() {
-        return this.taskService.recentTasks;
-    }
-
-    onDelete(task: ProjectTask) {
-        const dialogRef = this.dialog.open(DeleteTaskComponent, {
-            data: task,
-        });
-        const dialogCloseSubscription = dialogRef.afterClosed().subscribe(() => {
-            this.taskService.fetchRecentTasks();
-            dialogCloseSubscription.unsubscribe();
-        });
     }
 }

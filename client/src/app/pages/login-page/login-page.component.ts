@@ -31,7 +31,7 @@ export class LoginPageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private titleWriter(){
-        const writingSpeed = 150;
+        const writingSpeed = 100;
         let i = 0;
         const writer = setInterval(()=>{
             if (i >= LoginPageComponent.fullTitle.length) {
