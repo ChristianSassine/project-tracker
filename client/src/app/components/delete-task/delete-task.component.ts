@@ -9,6 +9,9 @@ import { TasksService } from 'src/app/services/tasks.service';
     styleUrls: ['./delete-task.component.scss'],
 })
 export class DeleteTaskComponent {
+        deleteConfirmed = true;
+        deleteCanceled = false;
+
     constructor(@Inject(MAT_DIALOG_DATA) public task : ProjectTask, private taskService: TasksService) {}
 
 	onDelete(){

@@ -1,11 +1,15 @@
-<h2 mat-dialog-title>Delete task</h2>
+<h2 mat-dialog-title>Delete Project</h2>
 <mat-dialog-content>
     <div class="message"></div>
     <span>
-        Are you sure you want to delete "<b>{{ task.title }}</b> " ?
+        Are you sure you want to delete "<b>{{ project.title}}</b>" ?
+    </span>
+    <span>
+        <br><b>NOTE </b>that deleting this project will delete all it's tasks and logs
     </span>
 </mat-dialog-content>
 <mat-dialog-actions align="center" class="button-container">
     <button mat-raised-button [matDialogClose]="deleteCanceled">Cancel</button>
     <button mat-raised-button color="warn" (click)="onDelete()" [matDialogClose]="deleteConfirmed">Delete</button>
 </mat-dialog-actions>
+

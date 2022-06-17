@@ -48,6 +48,14 @@ func (db *DB) CreateProject(userId int, title string) (*api.Project, error) {
 	return &project, nil
 }
 
+func (db *DB) DeleteProject(projectId int) error {
+	if _, err := db.DB.Exec(`DELETE FROM projects WHERE id = $1`, projectId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db *DB) IsUserInProject(userId int, projectId int) bool {
 
 	var userIdCheck int

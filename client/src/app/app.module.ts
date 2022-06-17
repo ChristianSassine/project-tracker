@@ -25,6 +25,7 @@ import { HomeOverviewPageComponent } from './pages/home-overview-page/home-overv
 import { HomeHistoryPageComponent } from './pages/home-history-page/home-history-page.component';
 import {TextFieldModule} from '@angular/cdk/text-field';
 import { LogParserPipe } from './pipes/log-parser.pipe';
+import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { LogParserPipe } from './pipes/log-parser.pipe';
         HomeOverviewPageComponent,
         HomeHistoryPageComponent,
         LogParserPipe,
+        DeleteProjectComponent,
     ],
     imports: [
         HttpClientModule,

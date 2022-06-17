@@ -52,7 +52,8 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
         const dialogRef = this.dialog.open(DeleteTaskComponent, {
             data: task,
         });
-        const dialogCloseSubscription = dialogRef.afterClosed().subscribe(() => {
+        const dialogCloseSubscription = dialogRef.afterClosed().subscribe((isDeleted) => {
+            if(!isDeleted) return;
             this.taskService.fetchRecentTasks();
             this.generateStatsChart();
             this.logService.fetchRecentProjectLogs();

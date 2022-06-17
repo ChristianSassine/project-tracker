@@ -17,7 +17,7 @@ func ValidTokenMiddleware() gin.HandlerFunc {
 
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			utilities.PrintError(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -38,10 +38,10 @@ func ValidTokenMiddleware() gin.HandlerFunc {
 }
 
 // Validating that user has permissions to access the project's tasks
+// TODO: maybe needs to be renamed, too long
 func ValidUserProjectAccessMiddleware(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
-
 		if err != nil {
 			utilities.ErrorLog.Println(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -50,23 +50,21 @@ func ValidUserProjectAccessMiddleware(db *db.DB) gin.HandlerFunc {
 
 		tokenInfo, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			utilities.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
 		userId, err := strconv.Atoi(tokenInfo.Subject)
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			utilities.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		projectIdString := c.Param("projectId")
-
-		projectId, err := strconv.Atoi(projectIdString)
+		projectId, err := strconv.Atoi(c.Param("projectId"))
 		if err != nil {
-			utilities.ErrorLog.Println(err)
+			utilities.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}

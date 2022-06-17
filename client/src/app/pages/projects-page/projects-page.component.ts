@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CreateProjectComponent } from 'src/app/components/create-project/create-project.component';
+import { DeleteProjectComponent } from 'src/app/components/delete-project/delete-project.component';
 import { Project } from 'src/app/interfaces/project';
 import { ProjectService } from 'src/app/services/project.service';
 import { Paths } from 'src/common/paths';
@@ -41,6 +42,6 @@ export class ProjectsPageComponent implements OnInit {
     }
 
     onDelete(project: Project){
-        this.projectService.deleteProject(project.id);
+        this.dialog.open(DeleteProjectComponent, {data : project});
     }
 }
