@@ -198,14 +198,16 @@ func (db *DB) DeleteTask(taskId int, projectId int) (string, error) {
 
 	position := 0
 	title := ""
-	err := db.DB.QueryRow(`DELETE FROM tasks WHERE id = $1 AND project_id = $2 RETURNING position, title`, taskId, projectId).Scan(&position, &title)
+	state := ""
+
+	err := db.DB.QueryRow(`DELETE FROM tasks WHERE id = $1 AND project_id = $2 RETURNING position, title, state`, taskId, projectId).Scan(&position, &title, &state)
 	if err != nil {
 		return "", err
 	}
 
 	_, err = db.DB.Exec(`
 	UPDATE tasks SET position = position - 1 
-	WHERE project_id = $1 AND (position > $2)`, projectId, position)
+	WHERE project_id = $1 AND state = $2 AND (position > $3)`, projectId, state, position)
 	if err != nil {
 		return "", err
 	}
