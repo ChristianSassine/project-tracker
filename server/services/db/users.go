@@ -10,21 +10,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type DB struct {
-	DB *sql.DB
-}
-
-func (db *DB) Connect() {
-	connStr := "postgresql://superuser:biguser123@/go?sslmode=disable"
-	// Connect to database
-	var err error
-	db.DB, err = sql.Open("postgres", connStr)
-	if err != nil {
-		utilities.ErrorLog.Fatal(err)
-	}
-	utilities.InfoLog.Println("DB connection successful")
-}
-
 var UserDoesntExistError error = errors.New("User doesn't exist")
 
 func (db *DB) AddUser(username string, password string, email string) (int, error) {
