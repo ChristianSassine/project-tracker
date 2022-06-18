@@ -74,7 +74,8 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 		c.JSON(http.StatusCreated, project)
 	})
 
-	// Validate a jwt token
+	// Delete project
+	// TODO: might need refactor
 	r.DELETE("/project/:projectId", func(c *gin.Context) {
 		tokenClaims, err := getTokenClaims(c)
 		if err != nil {
@@ -104,7 +105,7 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		if err := db.DeleteProject(userId); err != nil {
+		if err := db.DeleteProject(projectId); err != nil {
 			log.PrintError(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return

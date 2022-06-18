@@ -4,9 +4,14 @@ WORKDIR /usr/src/
 
 COPY . .
 
+# Nginx setup with angular
 RUN apk add --update npm &&\
     npm ci &&\
     npm run build &&\
+    # Moving the generated build to the default nginx serving folder
     rm -rf /usr/share/nginx/html/* &&\
     mv -f ./dist/client/* /usr/share/nginx/html &&\
-    rm -r ./dist
+    # Removing any useless bloat in the current src directory
+    rm -r ./* &&\
+    # Configuring so that 404 pages would redirect to the login page
+    sed -i 's/#error_page  404              \/404\.html;/error_page  404              \/;/g' /etc/nginx/conf.d/default.conf
