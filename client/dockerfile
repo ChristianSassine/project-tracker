@@ -7,5 +7,6 @@ COPY . .
 RUN apk add --update npm &&\
     npm ci &&\
     npm run build &&\
-    mv ./dist/client/* /usr/share/nginx/html &&\
+    rm -rf /usr/share/nginx/html/* &&\
+    mv -f ./dist/client/* /usr/share/nginx/html &&\
     rm -r ./dist
