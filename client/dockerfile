@@ -1,0 +1,11 @@
+FROM nginx:1.22-alpine
+
+WORKDIR /usr/src/
+
+COPY . .
+
+RUN apk add --update npm &&\
+    npm ci &&\
+    npm run build &&\
+    mv ./dist/client/* /usr/share/nginx/html &&\
+    rm -r ./dist
