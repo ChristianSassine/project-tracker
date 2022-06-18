@@ -31,6 +31,8 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
         this.isONGOINGDisplayed = true;
         this.isDONEDisplayed = true;
         this.isINFOisplayed = false;
+
+        this.taskChangeSubscription = new Subscription();
     }
 
     ngOnInit(): void {

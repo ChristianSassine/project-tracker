@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { Project } from 'src/app/interfaces/project';
 import { AuthService } from 'src/app/services/auth.service';
 import { ProjectService } from 'src/app/services/project.service';
-import { TasksService } from 'src/app/services/tasks.service';
 import { Paths } from 'src/common/paths';
 
 @Component({
@@ -14,15 +13,13 @@ import { Paths } from 'src/common/paths';
 })
 export class HomePageComponent implements OnInit, OnDestroy {
     username: string;
-    title : string;
+    project: Project;
     logoutSubscription: Subscription;
 
-    constructor(
-        private projectService: ProjectService,
-        private authService: AuthService,
-        private router: Router,
-    ) {
-        this.title = '';
+    constructor(private projectService: ProjectService, private authService: AuthService, private router: Router) {
+        const noId = -1;
+        this.logoutSubscription = new Subscription();
+        this.project = {title :'', id: noId};
         this.logoutSubscription = this.authService.logoutObservable.subscribe(() => this.router.navigate([Paths.Login]));
     }
 
@@ -31,15 +28,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
             this.router.navigate([Paths.Projects]);
             return;
         }
+        this.project = this.projectService.currentProject;
         this.username = this.capitalizeFirstLetter(this.authService.username);
     }
 
     ngOnDestroy(): void {
         this.logoutSubscription.unsubscribe();
-    }
-
-    get project() {
-        return this.projectService.currentProject as Project;
     }
 
     isOverviewSelected(): boolean {

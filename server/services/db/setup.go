@@ -18,7 +18,7 @@ type DB struct {
 // )
 
 func (db *DB) Connect() {
-	connStr := "postgresql://postgres:postgres@database/project?sslmode=disable"
+	connStr := "postgresql://superuser:biguser123@/go?sslmode=disable"
 	// Connect to database
 	var err error
 	db.DB, err = sql.Open("postgres", connStr)

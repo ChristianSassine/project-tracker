@@ -23,6 +23,8 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
     private statsChart: Chart;
 
     constructor(private taskService: TasksService, private logService: ProjectLogsService, private dialog: MatDialog) {
+        this.logsUpdateSubscription = new Subscription();
+        this.statsChart = {destroy : ()=>{}} as Chart; // Empty chart
         this.dataSource = new MatTableDataSource([] as HistoryLog[]);
     }
 
