@@ -7,8 +7,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
@@ -54,13 +52,7 @@ import { DeleteProjectComponent } from './components/delete-project/delete-proje
         AppRoutingModule,
         TextFieldModule,
         BrowserAnimationsModule,
-        DragDropModule,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-            enabled: environment.production,
-            // Register the ServiceWorker as soon as the application is stable
-            // or after 30 seconds (whichever comes first).
-            registrationStrategy: 'registerWhenStable:30000',
-        }),
+        DragDropModule
     ],
     providers: [],
     bootstrap: [AppComponent],
