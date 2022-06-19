@@ -11,10 +11,12 @@ export class LogParserPipe implements PipeTransform {
 
     parseLog(type: LogType, args: string[]): string {
         switch (type) {
-            case LogType.ProjectCreation:
+            case LogType.ProjectCreated:
                 return `Created the project <b>${args[0]}</b>`;
             case LogType.ProjectDeleted:
                 return `Deleted the project <b>${args[0]}</b>`;
+            case LogType.ProjectJoined:
+                return `Joined the Project!`;
             case LogType.TaskCreation:
                 return `Created a task with the title <b>${args[0]}</b>`;
             case LogType.TaskDeleted:

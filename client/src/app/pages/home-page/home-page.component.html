@@ -1,7 +1,13 @@
+<!-- ToolBar -->
 <mat-toolbar color="primary">
-    <span>{{ project.title }}</span>
+    <span class="title">{{ project.title }}</span>
+    <span class="title-id">#{{project.id}}</span>
+    <mat-icon class="title-help" [matTooltip]="idTooltip">help</mat-icon>
 </mat-toolbar>
+
+<!-- Both the content and the sidenav contained in sidenav-container -->
 <mat-sidenav-container>
+    <!-- Sidenav -->
     <mat-sidenav opened mode="side">
         <div class="sidenav">
             <div class="username">
@@ -22,6 +28,7 @@
             <button mat-button class="button" (click)="onLogout()"><mat-icon>logout</mat-icon> Log out</button>
         </div>
     </mat-sidenav>
+    <!-- Content dependant on url -->
     <mat-sidenav-content>
         <div class="content">
             <router-outlet></router-outlet>

@@ -6,17 +6,21 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ProjectService } from 'src/app/services/project.service';
 import { Paths } from 'src/common/paths';
 
+const ID_TOOLTIP = "The # is the project id. It is shared alongside the password to share the project";
+
 @Component({
     selector: 'app-home-page',
     templateUrl: './home-page.component.html',
     styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent implements OnInit, OnDestroy {
+    idTooltip:string; 
     username: string;
     project: Project;
     logoutSubscription: Subscription;
 
     constructor(private projectService: ProjectService, private authService: AuthService, private router: Router) {
+        this.idTooltip = ID_TOOLTIP;
         const noId = -1;
         this.logoutSubscription = new Subscription();
         this.project = {title :'', id: noId};

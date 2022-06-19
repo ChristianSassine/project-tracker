@@ -5,8 +5,14 @@ import (
 )
 
 type Project struct {
-	Id    int    `json:"id"`
-	Title string `json:"title"`
+	Id       int    `json:"id"`
+	Title    string `json:"title"`
+	Password string `json:"password"`
+}
+
+type ProjectJoinRequest struct {
+	Id       int    `json:"id"`
+	Password string `json:"password"`
 }
 
 type Task struct {

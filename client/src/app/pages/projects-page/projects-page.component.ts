@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CreateProjectComponent } from 'src/app/components/create-project/create-project.component';
 import { DeleteProjectComponent } from 'src/app/components/delete-project/delete-project.component';
+import { JoinProjectComponent } from 'src/app/components/join-project/join-project.component';
 import { Project } from 'src/app/interfaces/project';
 import { ProjectService } from 'src/app/services/project.service';
 import { Paths } from 'src/common/paths';
@@ -37,8 +38,12 @@ export class ProjectsPageComponent implements OnInit {
         this.router.navigate([Paths.Home]);
     }
 
-    openDialog() {
+    onCreate() {
         this.dialog.open(CreateProjectComponent, { minWidth: this.minimumDialogWidth });
+    }
+
+    onJoin() {
+        this.dialog.open(JoinProjectComponent, { minWidth: this.minimumDialogWidth });
     }
 
     onDelete(project: Project){

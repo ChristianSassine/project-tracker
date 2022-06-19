@@ -53,8 +53,12 @@ export class HttpHandlerService {
     }
 
     // Project requests
-    createProjectRequest(title: string): Observable<Project> {
-        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project`, { title }, { withCredentials: true }));
+    createProjectRequest(title: string, password: string): Observable<Project> {
+        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project`, { title, password }, { withCredentials: true }));
+    }
+
+    joinProjectRequest(id: number, password: string): Observable<Project> {
+        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project/join`, { id, password }, { withCredentials: true }));
     }
 
     deleteProjectRequest(projectId: number): Observable<unknown> {
@@ -71,7 +75,9 @@ export class HttpHandlerService {
     }
 
     getRecentTasks(projectId: number, limit: number = 5): Observable<ProjectTask[]> {
-        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true }),
+        );
     }
 
     getTasksStats(projectId: number): Observable<TasksStats> {
@@ -124,6 +130,8 @@ export class HttpHandlerService {
     }
 
     getRecentProjectLogs(projectId: number, limit: number = 5) {
-        return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }),
+        );
     }
 }

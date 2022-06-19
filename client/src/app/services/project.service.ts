@@ -46,14 +46,21 @@ export class ProjectService {
             .subscribe((data) => (this.projects = [...data]));
     }
 
-    createProject(title: string) {
-        this.http.createProjectRequest(title).subscribe((project) => {
+    createProject(title: string, password: string) {
+        this.http.createProjectRequest(title, password).subscribe((project) => {
             this.setCurrentProject(project);
             this.changeToHomePageObservable.next(true);
         });
     }
 
-    deleteProject(projectId: number){
-        this.http.deleteProjectRequest(projectId).subscribe(()=> this.fetchProjects())
+    joinProject(id: number, password: string) {
+        this.http.joinProjectRequest(id, password).subscribe((project) => {
+            this.setCurrentProject(project);
+            this.changeToHomePageObservable.next(true);
+        });
+    }
+
+    deleteProject(projectId: number) {
+        this.http.deleteProjectRequest(projectId).subscribe(() => this.fetchProjects());
     }
 }

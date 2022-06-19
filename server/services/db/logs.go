@@ -11,7 +11,7 @@ import (
 // Log with date specified
 func (db *DB) AddLogWithDate(loggerId int, projectId int, date time.Time, logType string, logArgs ...string) error {
 	_, err := db.DB.Exec(`
-	INSERT INTO histories (user_id, project_id, date, type, arguments) 
+	INSERT INTO projects_logs (user_id, project_id, date, type, arguments) 
 	VALUES ($1, $2, $3, $4, $5)`, loggerId, projectId, date, logType, pq.Array(logArgs))
 
 	return err
@@ -29,9 +29,9 @@ func (db *DB) GetAllLogs(projectId int) (*[]api.Log, error) {
 	log := api.Log{}
 
 	rows, err := db.DB.Query(`
-	SELECT histories.date, histories.type, histories.arguments, users.username FROM histories 
-	INNER JOIN users ON histories.user_id = users.id
-	WHERE project_id = $1 ORDER BY histories.date DESC`, projectId)
+	SELECT projects_logs.date, projects_logs.type, projects_logs.arguments, users.username FROM projects_logs 
+	INNER JOIN users ON projects_logs.user_id = users.id
+	WHERE project_id = $1 ORDER BY projects_logs.date DESC`, projectId)
 
 	if err != nil {
 		return &[]api.Log{}, err
@@ -51,9 +51,9 @@ func (db *DB) GetLogsWithLimit(projectId int, limit int) (*[]api.Log, error) {
 	log := api.Log{}
 
 	rows, err := db.DB.Query(`
-	SELECT histories.date, histories.type, histories.arguments, users.username FROM histories 
-	INNER JOIN users ON histories.user_id = users.id
-	WHERE project_id = $1 ORDER BY histories.date DESC
+	SELECT projects_logs.date, projects_logs.type, projects_logs.arguments, users.username FROM projects_logs 
+	INNER JOIN users ON projects_logs.user_id = users.id
+	WHERE project_id = $1 ORDER BY projects_logs.date DESC
 	LIMIT $2`, projectId, limit)
 
 	if err != nil {

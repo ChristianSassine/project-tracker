@@ -1,0 +1,29 @@
+<form [formGroup]="form" class="wrapper">
+    <mat-card-title>Join a Project</mat-card-title>
+    <mat-card-subtitle>To join a project, enter it's corresponding ID and Password</mat-card-subtitle>
+    <!-- Project ID field -->
+    <mat-form-field appearance="fill">
+        <mat-label>Project ID</mat-label>
+        <mat-error *ngIf="form.get('id')?.invalid">An id is required and should be a number</mat-error>
+        <input matInput name="id" formControlName="id" placeholder="Ex: 18" />
+    </mat-form-field>
+    <!-- Password field -->
+    <mat-form-field appearance="fill">
+        <mat-label>Project Password</mat-label>
+        <mat-error *ngIf="form.get('password')?.invalid">A password is required</mat-error>
+        <input matInput name="password" formControlName="password" type="password" placeholder="Ex: 418IamATeapot" />
+    </mat-form-field>
+    <!-- Submit button -->
+    <button
+        #loginButton
+        class="submitButton"
+        mat-raised-button
+        type="submit"
+        color="primary"
+        (click)="submit()"
+        [disabled]="form.invalid"
+        matDialogClose
+    >
+        <span>Join!</span>
+    </button>
+</form>

@@ -41,6 +41,16 @@ mat-divider {
     background-color: #015858;
 }
 
+::ng-deep .mat-tooltip {
+    font-size: 1em;
+}
+.title-help{
+    cursor: pointer;
+}
+.title-id{
+    margin-left: 1em;
+}
+
 mat-sidenav {
     width: 200px;
     border-radius: 10px;

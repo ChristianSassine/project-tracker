@@ -21,5 +21,5 @@ func PrintError(args ...any) {
 }
 
 func PrintWarning(args ...any) {
-	InfoLog.Println(args...)
+	WarningLog.Println(args...)
 }

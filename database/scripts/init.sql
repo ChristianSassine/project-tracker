@@ -7,7 +7,8 @@ CREATE TABLE users (
 
 CREATE TABLE projects (
     id bigserial PRIMARY KEY,
-    title text NOT NULL
+    title text NOT NULL,
+	password text NOT NULL
 );
 
 CREATE TABLE users_projects (
@@ -25,7 +26,7 @@ CREATE TABLE tasks (
     project_id bigint NOT NULL REFERENCES public.projects (id) ON DELETE CASCADE
 );
 
-CREATE TABLE logs (
+CREATE TABLE projects_logs (
     id bigserial PRIMARY KEY,
     date timestamp NOT NULL,
     type text NOT NULL,

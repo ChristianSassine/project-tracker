@@ -26,6 +26,10 @@
     flex: 1;
 }
 
+.project-wrapper:last-of-type{
+    margin-bottom: 3em;
+}
+
 .wrapper {
     max-height: 100vh;
     overflow: auto;

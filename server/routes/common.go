@@ -60,3 +60,18 @@ func logEvent(c *gin.Context, db *db.DB, logType string, args ...string) {
 
 	go db.AddLog(userId, projectId, logType, args...)
 }
+
+func getUserId(c *gin.Context) (int, error) {
+	tokenClaims, err := getTokenClaims(c)
+	if err != nil {
+		return 0, err
+	}
+
+	userId, err := strconv.Atoi(tokenClaims.Subject)
+	if err != nil {
+		log.PrintError(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return 0, err
+	}
+	return userId, nil
+}

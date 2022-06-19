@@ -16,6 +16,9 @@ export class CreateProjectComponent implements OnInit {
 	projectTitleLabel:string = 'Title'
     projectTitlePlaceholder: string = 'Ex: Setting up home automation';
     projectTitleError: string = 'A title is required';
+    projectPasswordLabel:string = 'Password'
+    projectPasswordPlaceholder: string = "Ex: It'sATrap";
+    projectPasswordError: string = 'A password is required';
 	createButtonText: string = 'Create'
 	
 
@@ -24,6 +27,7 @@ export class CreateProjectComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             title: ['', Validators.required],
+            password: ['', Validators.required]
         });
     }
 
@@ -31,7 +35,7 @@ export class CreateProjectComponent implements OnInit {
         if (this.form.get('title')?.valid) {
             //TODO : Handle catch
             this.projectService
-                .createProject(this.form.value.title);
+                .createProject(this.form.value.title, this.form.value.password);
         }
     }
 }

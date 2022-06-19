@@ -64,7 +64,13 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		id, err := db.AddUser(creds.Username, creds.Password, creds.Email)
+		encryptedPassword, err := encryption.EncryptPassword(creds.Password)
+		if err != nil {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		id, err := db.AddUser(creds.Username, encryptedPassword, creds.Email)
 		if err != nil {
 			log.PrintInfo("User", creds.Username, "already exists || Error :", err)
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -162,14 +168,15 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		id, _ := strconv.Atoi(claims.Subject)
 
-		jwtTkn, err := jwtToken.GenerateToken(claims.Username, id, time.Minute*5, false)
+		jwtTkn, err := jwtToken.GenerateToken(claims.Username, id, time.Minute*60, false)
 		if err != nil {
 			log.PrintError(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 
-		c.SetCookie("JWT_TOKEN", jwtTkn, 60*5, "/", "localhost", true, true)
+		secondsToMinute, minuteToHour := 60, 60
+		c.SetCookie("JWT_TOKEN", jwtTkn, secondsToMinute*minuteToHour, "/", "localhost", true, true)
 		log.PrintInfo("User", claims.Username, "has refreshed his token")
 		c.JSON(http.StatusOK, claims.Username)
 	})
@@ -186,7 +193,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 
 func setTokens(c *gin.Context, username string, id int) error {
 	secondsToMinute, minuteToHour := 60, 60
-
+	// TODO : Remove imaginary numbers
 	jwtTkn, err := jwtToken.GenerateToken(username, id, time.Minute*60, false)
 	if err != nil {
 		return err

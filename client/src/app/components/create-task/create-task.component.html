@@ -1,11 +1,11 @@
 <form [formGroup]="form" class="form">
     <mat-card-title>Add a task</mat-card-title>
-    <mat-form-field appearance="fill" [formGroup]="form">
+    <mat-form-field appearance="fill">
         <mat-label>Title</mat-label>
         <mat-error *ngIf="form.get('title')?.invalid">A title is required</mat-error>
         <input matInput name="title" formControlName="title" [placeholder]="'Ex: Automate an automata'" />
     </mat-form-field>
-    <mat-form-field appearance="fill" [formGroup]="form">
+    <mat-form-field appearance="fill">
         <mat-label>Select a task state</mat-label>
         <mat-select name="state" formControlName="state" type="state">
             <mat-option value="TODO">TODO</mat-option>
@@ -13,7 +13,7 @@
             <mat-option value="DONE">DONE</mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="fill" [formGroup]="form">
+    <mat-form-field appearance="fill">
         <mat-label>Description</mat-label>
         <textarea
             cdkTextareaAutosize
