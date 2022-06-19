@@ -2,13 +2,13 @@
         <h2 mat-card-title>{{ title }}</h2>
         <mat-card-subtitle>{{ subtitle }}</mat-card-subtitle>
         <!-- Title field -->
-        <mat-form-field appearance="fill" [formGroup]="form">
+        <mat-form-field appearance="fill">
             <mat-label>{{ projectTitleLabel }}</mat-label>
             <mat-error *ngIf="form.get('title')?.invalid">{{ projectTitleError }}</mat-error>
             <input matInput name="title" formControlName="title" [placeholder]="projectTitlePlaceholder" />
         </mat-form-field>
         <!-- Password field -->
-        <mat-form-field appearance="fill" [formGroup]="form">
+        <mat-form-field appearance="fill">
             <mat-label>{{ projectPasswordLabel }}</mat-label>
             <mat-error *ngIf="form.get('password')?.invalid">{{ projectPasswordError }}</mat-error>
             <input matInput name="password" formControlName="password" type="password" [placeholder]="projectPasswordPlaceholder" />

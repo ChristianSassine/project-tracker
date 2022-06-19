@@ -1,12 +1,12 @@
 <form [formGroup]="form">
     <mat-card class="wrapper">
         <mat-card-title><mat-icon>person</mat-icon>{{ title }}</mat-card-title>
-        <mat-form-field appearance="fill" [formGroup]="form">
+        <mat-form-field appearance="fill">
             <mat-label>{{ usernameLabel }}</mat-label>
             <mat-error *ngIf="form.get('username')?.invalid">{{ usernameError }}</mat-error>
             <input matInput name="username" formControlName="username" [placeholder]="usernamePlaceholder" />
         </mat-form-field>
-        <mat-form-field appearance="fill" [formGroup]="form">
+        <mat-form-field appearance="fill">
             <mat-label>{{ passwordLabel }}</mat-label>
             <input matInput name="password" formControlName="password" type="password" [placeholder]="passwordPlaceholder" />
             <mat-error *ngIf="form.get('password')?.invalid">{{ passwordError }}</mat-error>
