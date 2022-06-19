@@ -3,6 +3,7 @@ package routes
 import (
 	"BugTracker/api"
 	"BugTracker/services/db"
+	"BugTracker/services/encryption"
 	jwtToken "BugTracker/services/jwt"
 	log "BugTracker/utilities"
 	"net/http"
@@ -26,8 +27,13 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 			return
 		}
 
-		id, valid := db.ValidateUser(creds.Username, creds.Password)
-		if !valid {
+		id, err := db.GetUserId(creds.Username)
+		if err != nil {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		if !checkUserPassword(id, creds.Password, db) {
 			log.PrintInfo("Wrong authentication for the user :", creds.Username)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
@@ -36,6 +42,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 		if err := setTokens(c, creds.Username, id); err != nil {
 			log.PrintError(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 
 		c.Status(http.StatusOK)
@@ -194,4 +201,12 @@ func setTokens(c *gin.Context, username string, id int) error {
 	c.SetCookie("JWT_REFRESH", refreshTkn, 0, "/api/auth/refresh", "localhost", true, true)
 
 	return nil
+}
+
+func checkUserPassword(userId int, password string, db *db.DB) bool {
+	encryptedPassword, err := db.GetUserPassword(userId)
+	if err != nil {
+		return false
+	}
+	return encryption.CheckPassword(password, encryptedPassword)
 }

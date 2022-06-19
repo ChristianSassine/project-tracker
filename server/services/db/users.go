@@ -2,7 +2,7 @@ package db
 
 import (
 	"BugTracker/api"
-	"BugTracker/utilities"
+	log "BugTracker/utilities"
 	"database/sql"
 	"errors"
 	"strings"
@@ -18,16 +18,13 @@ func (db *DB) AddUser(username string, password string, email string) (int, erro
 	username = strings.ToLower(username)
 	var parsedEmail = &sql.NullString{}
 
-	// Transforming email to null if empty
+	// Adding email if not empty
 	if email != "" {
 		parsedEmail.String = strings.ToLower(email)
 		parsedEmail.Valid = true
 		parsedEmail.Value()
 	}
-
-	row := db.DB.QueryRow("INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id", username, parsedEmail, password)
-	err := row.Scan(&id)
-
+	err := db.DB.QueryRow("INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id", username, parsedEmail, password).Scan(&id)
 	return id, err
 }
 
@@ -35,9 +32,7 @@ func (db *DB) CheckIfUserExists(username string) (bool, error) {
 	username = strings.ToLower(username)
 	count := 0
 
-	row := db.DB.QueryRow("SELECT COUNT(1) users WHERE users.username = $1", username)
-	err := row.Scan(&count)
-	if err != nil || count != 1 {
+	if err := db.DB.QueryRow("SELECT COUNT(1) users WHERE users.username = $1", username).Scan(&count); err != nil || count != 1 {
 		return false, err
 	}
 	return true, nil
@@ -47,25 +42,31 @@ func (db *DB) getUser(username string) (*api.User, error) {
 	user := &api.User{}
 
 	username = strings.ToLower(username)
-	row := db.DB.QueryRow("SELECT * FROM users WHERE users.username = $1", username)
-
-	if err := row.Scan(&user.Id, &user.Username, &user.Password, &user.Email); err != nil {
+	if err := db.DB.QueryRow("SELECT * FROM users WHERE users.username = $1", username).Scan(&user.Id, &user.Username, &user.Password, &user.Email); err != nil {
 		return nil, err
 	}
 
 	return user, nil
 }
 
-func (db *DB) ValidateUser(username string, password string) (int, bool) {
+func (db *DB) GetUserId(username string) (int, error) {
 	var id int
 
 	username = strings.ToLower(username)
-	row := db.DB.QueryRow("SELECT id FROM users WHERE users.username = $1 AND users.password = $2", username, password)
-
-	if err := row.Scan(&id); err != nil {
-		return 0, false
+	if err := db.DB.QueryRow("SELECT id FROM users WHERE users.username = $1", username).Scan(&id); err != nil {
+		return 0, err
 	}
 
-	utilities.InfoLog.Println("User", username, "is in the database")
-	return id, true
+	log.PrintInfo("User", username, "is in the database")
+	return id, nil
+}
+
+func (db *DB) GetUserPassword(id int) (string, error) {
+	var password string
+
+	if err := db.DB.QueryRow("SELECT password FROM users WHERE users.id = $1 ", id).Scan(&password); err != nil {
+		return "", err
+	}
+
+	return password, nil
 }
