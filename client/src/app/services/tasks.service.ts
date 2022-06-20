@@ -59,6 +59,10 @@ export class TasksService {
         this.newTaskSetObservable.next(task);
     }
 
+    clearCurrentTask(){
+        this.currentTask = {} as ProjectTask;
+    }
+
     uploadTask(task: ProjectTask) {
         if (!this.projectService.currentProject?.id) return;
         this.http.createTask(task, (this.projectService.currentProject as Project).id).subscribe(() => this.fetchStateTasks());

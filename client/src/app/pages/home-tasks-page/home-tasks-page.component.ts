@@ -88,6 +88,7 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
                 this.isONGOINGDisplayed = true;
                 this.isDONEDisplayed = true;
                 this.isINFODisplayed = false;
+                this.tasksService.clearCurrentTask();
                 break;
         }
     }

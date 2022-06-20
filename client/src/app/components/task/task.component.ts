@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { ProjectTask } from 'src/app/interfaces/project-task';
+import { TasksService } from 'src/app/services/tasks.service';
 import { TaskState } from 'src/common/task-state';
 
 @Component({
@@ -16,14 +17,14 @@ export class TaskComponent {
     ongoingState = TaskState.ONGOING;
     doneState = TaskState.DONE;
 
-    constructor(private elementRef: ElementRef) {
+    constructor(private elementRef: ElementRef, private tasksService: TasksService) {
         this.delete = new EventEmitter();
     }
-    
+
     // TODO: Might need to find a better way
-    @HostListener('document:click', ['$event'])
-    onClick(event: Event) {
-        if (this.elementRef.nativeElement.contains(event.target)) {
+    @HostListener('document:click')
+    onClick() {
+        if (this.tasksService.currentTask.id === this.task.id) {
             this.isSelected = true;
             return;
         }
