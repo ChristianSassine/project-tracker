@@ -11,8 +11,8 @@
         <mat-divider></mat-divider>
 
         <mat-card-subtitle id="creation-date">Creation Date: {{ task.creationDate | date }}</mat-card-subtitle>
-
-        <div >
+        <!-- Task State -->
+        <div>
             <mat-card-header>
                 <mat-card-subtitle>
                     State:
@@ -24,7 +24,7 @@
                 </mat-card-subtitle>
             </mat-card-header>
         </div>
-
+        <!-- Task title -->
         <div class="task-content">
             <mat-card-header>
                 <mat-card-subtitle>
@@ -35,7 +35,7 @@
                 <textarea matInput name="title" cdkTextareaAutosize formControlName="title" type="title"></textarea>
             </mat-form-field>
         </div>
-
+        <!-- Task Description -->
         <div class="task-content">
             <mat-card-header>
                 <mat-card-subtitle>
@@ -44,6 +44,41 @@
             </mat-card-header>
             <mat-form-field class="field-area" appearance="outline">
                 <textarea matInput name="description" cdkTextareaAutosize formControlName="description" type="description"></textarea>
+            </mat-form-field>
+        </div>
+        <!-- Task Comments -->
+        <div class="task-content">
+            <mat-card-header>
+                <mat-card-subtitle>
+                    <span>Comments:</span>
+                </mat-card-subtitle>
+            </mat-card-header>
+            <!-- Comments -->
+            <div class="comments">
+                <div class="comment-wrapper" *ngFor="let comment of comments">
+                    <mat-card
+                        class="comment"
+                        [ngClass]="{
+                            'current-user-comment': isCurrentUser(comment.commenter),
+                            'another-user-comment': !isCurrentUser(comment.commenter)
+                        }"
+                    >
+                        <mat-card-subtitle class="comment-header">
+                            <span class="commenter"><mat-icon>person</mat-icon>{{ comment.commenter | titlecase }}</span>
+                            <span><mat-icon>calendar_month</mat-icon>Date: {{ comment.date | date: 'short' }}</span>
+                        </mat-card-subtitle>
+                        <mat-card-content>{{ comment.content }}</mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+            <!-- Adding a comment -->
+            <button mat-raised-button color="primary" *ngIf="!addingComment" (click)="onAddComment()"><mat-icon>comment</mat-icon>Add a comment</button>
+            <mat-form-field appearance="fill" *ngIf="addingComment" [formGroup]="commentForm">
+                <textarea matInput cdkTextareaAutosize formControlName="content"></textarea>
+                <div class="comment-buttons">
+                    <button mat-raised-button color="warn" (click)="onCancelComment()">Cancel<mat-icon>cancel</mat-icon></button>
+                    <button mat-raised-button color="primary" (click)="onSendComment()" [disabled]="commentForm.invalid">Send<mat-icon>send</mat-icon></button>
+                </div>
             </mat-form-field>
         </div>
     </mat-card-content>

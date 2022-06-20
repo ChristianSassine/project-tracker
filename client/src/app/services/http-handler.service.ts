@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { HistoryLog } from '../interfaces/history-log';
 import { Project } from '../interfaces/project';
 import { ProjectTask } from '../interfaces/project-task';
+import { TaskComment } from '../interfaces/task-comment';
 import { TasksStats } from '../interfaces/tasks-stats';
 
 export function tapOnSubscribe<T>(callback: () => void) {
@@ -90,15 +91,15 @@ export class HttpHandlerService {
         );
     }
 
-    createTask(task: ProjectTask, projectId: number) {
+    createTask(task: ProjectTask, projectId: number): Observable<ProjectTask[]> {
         return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
     }
 
-    updateTask(task: ProjectTask, projectId: number) {
+    updateTask(task: ProjectTask, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(this.http.put<unknown>(`${this.baseUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
     }
 
-    updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number, projectId: number) {
+    updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
             this.http.patch<unknown>(
                 `${this.baseUrl}/data/project/${projectId}/task/position`,
@@ -108,7 +109,7 @@ export class HttpHandlerService {
         );
     }
 
-    updateTaskState(newState: TaskState, currentIndex: number, taskId: number, projectId: number) {
+    updateTaskState(newState: TaskState, currentIndex: number, taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
             this.http.patch<unknown>(
                 `${this.baseUrl}/data/project/${projectId}/task/state`,
@@ -118,18 +119,31 @@ export class HttpHandlerService {
         );
     }
 
-    deleteTask(taskId: number, projectId: number) {
+    deleteTask(taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
             this.http.delete<unknown>(`${this.baseUrl}/data/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),
         );
     }
 
+    // Task comments requests
+    getTaskComments(taskId: number, projectId: number): Observable<TaskComment[]> {
+        return this.chainAfterAuth(
+            this.http.get<TaskComment[]>(`${this.baseUrl}/data/project/${projectId}/task/${taskId}/comments`, { withCredentials: true }),
+        );
+    }
+
+    addTaskComment(taskId: number, taskContent: string, projectId: number): Observable<unknown> {
+        return this.chainAfterAuth(
+            this.http.post<unknown>(`${this.baseUrl}/data/project/${projectId}/task/${taskId}/comment`, taskContent, { withCredentials: true }),
+        );
+    }
+
     // Logs requests
-    getAllProjectLogs(projectId: number) {
+    getAllProjectLogs(projectId: number): Observable<HistoryLog[]> {
         return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs`, { withCredentials: true }));
     }
 
-    getRecentProjectLogs(projectId: number, limit: number = 5) {
+    getRecentProjectLogs(projectId: number, limit: number = 5): Observable<HistoryLog[]> {
         return this.chainAfterAuth(
             this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }),
         );

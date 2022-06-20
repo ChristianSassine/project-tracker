@@ -1,9 +1,13 @@
-:host{
-    cursor: pointer;
+.draggable {
+    cursor: move;
 }
 
-.task{
+.task {
     background-color: #d3d3d333;
+}
+
+.selected {
+    background-color: #05819d63;
 }
 
 .task-header{

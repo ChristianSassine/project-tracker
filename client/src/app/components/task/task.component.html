@@ -1,6 +1,12 @@
 <mat-card
     mat-ripple
-    [ngClass]="{ 'todo-task': task.state === todoState, 'ongoing-task': task.state === ongoingState, 'done-task': task.state === doneState }"
+    [ngClass]="{ 
+        'draggable' : isDraggable,
+        'todo-task': task.state === todoState, 
+        'ongoing-task': task.state === ongoingState, 
+        'done-task': task.state === doneState,
+        'selected': isSelected
+        }"
     class="task"
 >
     <mat-card-subtitle class="task-header">

@@ -6,6 +6,7 @@ import { TaskState } from 'src/common/task-state';
 import { Project } from '../interfaces/project';
 import { Observable, of, Subject } from 'rxjs';
 import { TasksStats } from '../interfaces/tasks-stats';
+import { TaskComment } from '../interfaces/task-comment';
 
 @Injectable({
     providedIn: 'root',
@@ -15,6 +16,7 @@ export class TasksService {
     recentTasks: ProjectTask[];
 
     currentTask: ProjectTask;
+    currentComments: TaskComment[];
     newTaskSetObservable: Subject<ProjectTask>;
 
     constructor(private http: HttpHandlerService, private projectService: ProjectService) {
@@ -47,7 +49,7 @@ export class TasksService {
         this.http.getRecentTasks(this.projectService.currentProject.id).subscribe((tasks) => (this.recentTasks = [...tasks]));
     }
 
-    getTasksStats(): Observable<TasksStats>{
+    getTasksStats(): Observable<TasksStats> {
         if (!this.projectService.currentProject) return of();
         return this.http.getTasksStats(this.projectService.currentProject.id);
     }
@@ -81,9 +83,22 @@ export class TasksService {
     }
 
     deleteTask(taskId: number) {
-        this.http.deleteTask(taskId, (this.projectService.currentProject as Project).id).subscribe(() => {
+        if (!this.projectService.currentProject) return;
+        this.http.deleteTask(taskId, this.projectService.currentProject.id).subscribe(() => {
             if (taskId === this.currentTask.id) this.setCurrentTask({} as ProjectTask);
             this.fetchStateTasks();
         });
+    }
+
+    fetchComments() {
+        if (!this.projectService.currentProject) return;
+        this.http
+            .getTaskComments(this.currentTask.id, this.projectService.currentProject.id)
+            .subscribe((comments) => (this.currentComments = [...comments]));
+    }
+
+    addComment(content: string) {
+        if (!this.projectService.currentProject) return;
+        this.http.addTaskComment(this.currentTask.id, content, this.projectService.currentProject.id).subscribe();
     }
 }

@@ -1,8 +1,11 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ProjectTask } from 'src/app/interfaces/project-task';
+import { AuthService } from 'src/app/services/auth.service';
 import { TasksService } from 'src/app/services/tasks.service';
+
+type Comment = { commenter: string; date: Date; content: string };
 
 @Component({
     selector: 'app-task-info',
@@ -11,16 +14,27 @@ import { TasksService } from 'src/app/services/tasks.service';
 })
 export class TaskInfoComponent implements OnInit, OnDestroy {
     form: FormGroup;
+    commentForm: FormGroup;
+    addingComment: boolean;
+    comments: Comment[] = [
+        { commenter: 'hello', date: new Date(), content: 'HelloWorld' },
+        { commenter: 'hello', date: new Date(), content: 'Compute the solar system' },
+        { commenter: 'nothello', date: new Date(), content: 'WorldHello' },
+    ];
 
     taskSubscription: Subscription;
     @Output() public closeInfo = new EventEmitter();
-    constructor(private fb: FormBuilder, private tasksService: TasksService) {}
+    constructor(private fb: FormBuilder, private tasksService: TasksService, private authService: AuthService) {}
     ngOnInit(): void {
         this.form = this.fb.group({
             title: [this.task.title],
             description: [this.task.description],
             state: [this.task.state],
         });
+        this.commentForm = this.fb.group({ content: ['', Validators.required] });
+
+        this.addingComment = false;
+        this.tasksService.fetchComments();
 
         this.taskSubscription = this.tasksService.newTaskSetObservable.subscribe(() => {
             this.ngOnInit();
@@ -36,8 +50,27 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
         return this.tasksService.currentTask;
     }
 
+    isCurrentUser(commenter: string) {
+        return commenter === this.authService.username;
+    }
+
     onClose() {
         this.closeInfo.emit(true);
+    }
+
+    onAddComment() {
+        this.addingComment = true;
+    }
+
+    onSendComment() {
+        this.tasksService.addComment(this.commentForm.value.content);
+        this.commentForm.setValue({ content: '' });
+        this.commentForm.markAsPristine();
+        this.addingComment = false;
+    }
+
+    onCancelComment() {
+        this.addingComment = false;
     }
 
     onUpdate() {

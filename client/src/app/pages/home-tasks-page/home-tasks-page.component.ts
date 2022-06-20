@@ -22,7 +22,7 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
     isTODODisplayed: boolean;
     isONGOINGDisplayed: boolean;
     isDONEDisplayed: boolean;
-    isINFOisplayed: boolean;
+    isINFODisplayed: boolean;
 
     taskChangeSubscription: Subscription;
     fetchingTasksInterval: unknown;
@@ -30,7 +30,7 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
         this.isTODODisplayed = true;
         this.isONGOINGDisplayed = true;
         this.isDONEDisplayed = true;
-        this.isINFOisplayed = false;
+        this.isINFODisplayed = false;
 
         this.taskChangeSubscription = new Subscription();
     }
@@ -69,25 +69,25 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
                 this.isTODODisplayed = true;
                 this.isONGOINGDisplayed = false;
                 this.isDONEDisplayed = false;
-                this.isINFOisplayed = true;
+                this.isINFODisplayed = true;
                 break;
             case TaskState.ONGOING:
                 this.isTODODisplayed = false;
                 this.isONGOINGDisplayed = true;
                 this.isDONEDisplayed = false;
-                this.isINFOisplayed = true;
+                this.isINFODisplayed = true;
                 break;
             case TaskState.DONE:
                 this.isTODODisplayed = false;
                 this.isONGOINGDisplayed = false;
                 this.isDONEDisplayed = true;
-                this.isINFOisplayed = true;
+                this.isINFODisplayed = true;
                 break;
             default:
                 this.isTODODisplayed = true;
                 this.isONGOINGDisplayed = true;
                 this.isDONEDisplayed = true;
-                this.isINFOisplayed = false;
+                this.isINFODisplayed = false;
                 break;
         }
     }

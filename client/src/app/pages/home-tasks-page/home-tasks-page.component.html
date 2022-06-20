@@ -17,8 +17,10 @@
             *ngFor="let task of tasksTODO"
             [task]="task"
             class="task"
+            [isDraggable]="true"
             (click)="onTask(task)"
             (delete)="onDelete(task)"
+            [id]="'task-id-' + task.id"
             cdkDrag
             [cdkDragData]="task"
         >
@@ -45,6 +47,7 @@
             *ngFor="let task of tasksONGOING"
             [task]="task"
             class="task"
+            [isDraggable]="true"
             (click)="onTask(task)"
             (delete)="onDelete(task)"
             cdkDrag
@@ -74,10 +77,11 @@
             class="task"
             (click)="onTask(task)"
             (delete)="onDelete(task)"
+            [isDraggable]="true"
             cdkDrag
             [cdkDragData]="task"
         ></app-task>
     </div>
 </mat-card>
 
-<app-task-info (closeInfo)="onClose()" id="Info" *ngIf="isINFOisplayed"></app-task-info>
+<app-task-info (closeInfo)="onClose()" id="Info" *ngIf="isINFODisplayed"></app-task-info>

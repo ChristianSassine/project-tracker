@@ -51,6 +51,11 @@ mat-divider {
     margin-left: 1em;
 }
 
+mat-toolbar{
+    display: flex;
+    justify-content: center;
+}
+
 mat-sidenav {
     width: 200px;
     border-radius: 10px;
