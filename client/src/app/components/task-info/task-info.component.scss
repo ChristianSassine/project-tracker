@@ -21,11 +21,15 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    mat-card-subtitle{
+        color: #000000d9;
+    }
 }
 
 .task-content,
 #creation-date {
     margin: 1em 0em;
+    color: rgba(0,0,0,.54);
 }
 
 .task-content {
@@ -42,9 +46,6 @@
 
 .mat-divider-horizontal {
     position: relative;
-}
-
-.comments-container {
 }
 
 .comment {
@@ -85,7 +86,15 @@
     vertical-align: middle;
 }
 
+.add-comment-button{
+    margin-right: auto;
+}
+
 mat-form-field,
 .comments {
     margin: 0 1em;
+}
+
+textarea{
+    color: black;
 }

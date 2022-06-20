@@ -72,7 +72,7 @@
                 </div>
             </div>
             <!-- Adding a comment -->
-            <button mat-raised-button color="primary" *ngIf="!addingComment" (click)="onAddComment()"><mat-icon>comment</mat-icon>Add a comment</button>
+            <button mat-raised-button color="primary" class="add-comment-button" *ngIf="!addingComment" (click)="onAddComment()"><mat-icon>comment</mat-icon>Add a comment</button>
             <mat-form-field appearance="fill" *ngIf="addingComment" [formGroup]="commentForm">
                 <textarea matInput cdkTextareaAutosize formControlName="content"></textarea>
                 <div class="comment-buttons">
