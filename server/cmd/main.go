@@ -20,7 +20,7 @@ func main() {
 
 	// Creating the route groups
 	superGroup := router.Group("/api")
-	dataGroup := superGroup.Group("/data", middlewares.ValidTokenMiddleware())
+	dataGroup := superGroup.Group("", middlewares.ValidTokenMiddleware())
 
 	// Adding the routes to the groups
 	routes.AuthRoutes(superGroup, database)

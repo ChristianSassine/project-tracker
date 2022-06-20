@@ -55,54 +55,54 @@ export class HttpHandlerService {
 
     // Project requests
     createProjectRequest(title: string, password: string): Observable<Project> {
-        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project`, { title, password }, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/project`, { title, password }, { withCredentials: true }));
     }
 
     joinProjectRequest(id: number, password: string): Observable<Project> {
-        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/data/project/join`, { id, password }, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/project/join`, { id, password }, { withCredentials: true }));
     }
 
     deleteProjectRequest(projectId: number): Observable<unknown> {
-        return this.chainAfterAuth(this.http.delete<unknown>(`${this.baseUrl}/data/project/${projectId}`, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.delete<unknown>(`${this.baseUrl}/project/${projectId}`, { withCredentials: true }));
     }
 
     getAllProjects(): Observable<Project[]> {
-        return this.chainAfterAuth(this.http.get<Project[]>(`${this.baseUrl}/data/projects`, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.get<Project[]>(`${this.baseUrl}/projects`, { withCredentials: true }));
     }
 
     // Tasks requests
     getAllTasks(projectId: number): Observable<ProjectTask[]> {
-        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks`, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.get<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/tasks`, { withCredentials: true }));
     }
 
     getRecentTasks(projectId: number, limit: number = 5): Observable<ProjectTask[]> {
         return this.chainAfterAuth(
-            this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true }),
+            this.http.get<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true }),
         );
     }
 
     getTasksStats(projectId: number): Observable<TasksStats> {
-        return this.chainAfterAuth(this.http.get<TasksStats>(`${this.baseUrl}/data/project/${projectId}/tasks/stats`, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.get<TasksStats>(`${this.baseUrl}/project/${projectId}/tasks/stats`, { withCredentials: true }));
     }
 
     getTasksByState(projectId: number, state: string): Observable<ProjectTask[]> {
         return this.chainAfterAuth(
-            this.http.get<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/tasks?state=${state}`, { withCredentials: true }),
+            this.http.get<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/tasks?state=${state}`, { withCredentials: true }),
         );
     }
 
     createTask(task: ProjectTask, projectId: number): Observable<ProjectTask[]> {
-        return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${this.baseUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/task`, task, { withCredentials: true }));
     }
 
     updateTask(task: ProjectTask, projectId: number): Observable<unknown> {
-        return this.chainAfterAuth(this.http.put<unknown>(`${this.baseUrl}/data/project/${projectId}/task`, task, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.put<unknown>(`${this.baseUrl}/project/${projectId}/task`, task, { withCredentials: true }));
     }
 
     updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
             this.http.patch<unknown>(
-                `${this.baseUrl}/data/project/${projectId}/task/position`,
+                `${this.baseUrl}/project/${projectId}/task/position`,
                 { previousIndex, currentIndex, taskId },
                 { withCredentials: true },
             ),
@@ -112,7 +112,7 @@ export class HttpHandlerService {
     updateTaskState(newState: TaskState, currentIndex: number, taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
             this.http.patch<unknown>(
-                `${this.baseUrl}/data/project/${projectId}/task/state`,
+                `${this.baseUrl}/project/${projectId}/task/state`,
                 { newState, currentIndex, taskId },
                 { withCredentials: true },
             ),
@@ -121,31 +121,31 @@ export class HttpHandlerService {
 
     deleteTask(taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
-            this.http.delete<unknown>(`${this.baseUrl}/data/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),
+            this.http.delete<unknown>(`${this.baseUrl}/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),
         );
     }
 
     // Task comments requests
     getTaskComments(taskId: number, projectId: number): Observable<TaskComment[]> {
         return this.chainAfterAuth(
-            this.http.get<TaskComment[]>(`${this.baseUrl}/data/project/${projectId}/task/${taskId}/comments`, { withCredentials: true }),
+            this.http.get<TaskComment[]>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comments`, { withCredentials: true }),
         );
     }
 
     addTaskComment(taskId: number, content: string, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
-            this.http.post<unknown>(`${this.baseUrl}/data/project/${projectId}/task/${taskId}/comment`, {content}, { withCredentials: true }),
+            this.http.post<unknown>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comment`, {content}, { withCredentials: true }),
         );
     }
 
     // Logs requests
     getAllProjectLogs(projectId: number): Observable<HistoryLog[]> {
-        return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs`, { withCredentials: true }));
+        return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/project/${projectId}/logs`, { withCredentials: true }));
     }
 
     getRecentProjectLogs(projectId: number, limit: number = 5): Observable<HistoryLog[]> {
         return this.chainAfterAuth(
-            this.http.get<HistoryLog[]>(`${this.baseUrl}/data/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }),
+            this.http.get<HistoryLog[]>(`${this.baseUrl}/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }),
         );
     }
 }
