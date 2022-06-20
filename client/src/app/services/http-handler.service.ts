@@ -132,9 +132,9 @@ export class HttpHandlerService {
         );
     }
 
-    addTaskComment(taskId: number, taskContent: string, projectId: number): Observable<unknown> {
+    addTaskComment(taskId: number, content: string, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
-            this.http.post<unknown>(`${this.baseUrl}/data/project/${projectId}/task/${taskId}/comment`, taskContent, { withCredentials: true }),
+            this.http.post<unknown>(`${this.baseUrl}/data/project/${projectId}/task/${taskId}/comment`, {content}, { withCredentials: true }),
         );
     }
 

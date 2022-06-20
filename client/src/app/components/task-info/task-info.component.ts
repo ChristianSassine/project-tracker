@@ -16,11 +16,6 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
     form: FormGroup;
     commentForm: FormGroup;
     addingComment: boolean;
-    comments: Comment[] = [
-        { commenter: 'hello', date: new Date(), content: 'HelloWorld' },
-        { commenter: 'hello', date: new Date(), content: 'Compute the solar system' },
-        { commenter: 'nothello', date: new Date(), content: 'WorldHello' },
-    ];
 
     taskSubscription: Subscription;
     @Output() public closeInfo = new EventEmitter();
@@ -44,6 +39,10 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.taskSubscription.unsubscribe();
+    }
+
+    get comments(){
+        return this.tasksService.currentComments;
     }
 
     get task(): ProjectTask {

@@ -26,6 +26,7 @@ export class TasksService {
         this.stateTasks.set(TaskState.DONE, []);
 
         this.recentTasks = [];
+        this.currentComments = [];
         this.currentTask = {} as ProjectTask;
 
         this.newTaskSetObservable = new Subject();
@@ -59,7 +60,7 @@ export class TasksService {
         this.newTaskSetObservable.next(task);
     }
 
-    clearCurrentTask(){
+    clearCurrentTask() {
         this.currentTask = {} as ProjectTask;
     }
 
@@ -103,6 +104,6 @@ export class TasksService {
 
     addComment(content: string) {
         if (!this.projectService.currentProject) return;
-        this.http.addTaskComment(this.currentTask.id, content, this.projectService.currentProject.id).subscribe();
+        this.http.addTaskComment(this.currentTask.id, content, this.projectService.currentProject.id).subscribe(() => this.fetchComments());
     }
 }

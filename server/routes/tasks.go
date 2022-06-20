@@ -16,7 +16,6 @@ func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
 	taskGroup := r.Group("", middlewares.ValidUserProjectAccessMiddleware(db))
 
 	// TODO : this might need refactoring
-
 	// Getting tasks endpoint
 	taskGroup.GET("/project/:projectId/tasks", func(c *gin.Context) {
 		projectId, err := getProjectId(c)

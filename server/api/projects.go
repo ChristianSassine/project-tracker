@@ -43,3 +43,13 @@ type Log struct {
 	Args   []string  `json:"arguments"`
 	Date   time.Time `json:"date"`
 }
+
+type Comment struct {
+	Commenter string    `json:"commenter"`
+	Content   string    `json:"content"`
+	Date      time.Time `json:"date"`
+}
+
+type CommentAddRequest struct {
+	Content string `json:"content"`
+}

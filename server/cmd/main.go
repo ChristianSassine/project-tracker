@@ -26,6 +26,7 @@ func main() {
 	routes.AuthRoutes(superGroup, database)
 	routes.ProjectsRoutes(dataGroup, database)
 	routes.TasksRoutes(dataGroup, database)
+	routes.TaskCommentsRoutes(dataGroup, database)
 	routes.ProjectLogsRoutes(dataGroup, database)
 
 	// Launching the server
