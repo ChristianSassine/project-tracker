@@ -34,3 +34,11 @@ CREATE TABLE projects_logs (
     user_id bigint NOT NULL REFERENCES public.users (id) ON DELETE CASCADE,
     project_id bigint NOT NULL REFERENCES public.projects (id) ON DELETE CASCADE
 );
+
+CREATE TABLE comments (
+    id bigserial PRIMARY KEY,
+    content text NOT NULL,
+    date timestamp NOT NULL,
+    user_id bigint NOT NULL REFERENCES public.users (id),
+    project_id bigint NOT NULL REFERENCES public.projects (id) ON DELETE CASCADE
+);
