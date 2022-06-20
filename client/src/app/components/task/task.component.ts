@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { ProjectTask } from 'src/app/interfaces/project-task';
 import { TasksService } from 'src/app/services/tasks.service';
 import { TaskState } from 'src/common/task-state';
@@ -17,7 +17,7 @@ export class TaskComponent {
     ongoingState = TaskState.ONGOING;
     doneState = TaskState.DONE;
 
-    constructor(private elementRef: ElementRef, private tasksService: TasksService) {
+    constructor(private tasksService: TasksService) {
         this.delete = new EventEmitter();
     }
 

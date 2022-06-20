@@ -11,7 +11,7 @@
     <mat-sidenav opened mode="side">
         <div class="sidenav">
             <div class="username">
-                <mat-icon>person</mat-icon> <span>{{ username }}</span>
+                <mat-icon>person</mat-icon> <span>{{ username | titlecase }}</span>
             </div>
             <mat-divider></mat-divider>
             <button mat-button class="button" [ngClass]="{ selected: isOverviewSelected() }" (click)="onOverview()">

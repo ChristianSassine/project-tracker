@@ -15,7 +15,6 @@ const ID_TOOLTIP = "The # is the project id. It is shared alongside the password
 })
 export class HomePageComponent implements OnInit, OnDestroy {
     idTooltip:string; 
-    username: string;
     project: Project;
     logoutSubscription: Subscription;
 
@@ -33,11 +32,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
             return;
         }
         this.project = this.projectService.currentProject;
-        this.username = this.capitalizeFirstLetter(this.authService.username);
     }
 
     ngOnDestroy(): void {
         this.logoutSubscription.unsubscribe();
+    }
+
+    get username(){
+        return this.authService.username
     }
 
     isOverviewSelected(): boolean {
