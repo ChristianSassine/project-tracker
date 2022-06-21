@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { catchError, Subject } from 'rxjs';
+import { ErrorShown } from 'src/common/error-shown';
 import { HistoryLog } from '../interfaces/history-log';
 import { HttpHandlerService } from './http-handler.service';
 import { ProjectService } from './project.service';
@@ -20,17 +21,23 @@ export class ProjectLogsService {
 
     fetchProjectLogs() {
         if (!this.projectService.currentProject) return;
-        this.http.getAllProjectLogs(this.projectService.currentProject.id).subscribe((logs) => {
-            this.projectLogs = [...logs];
-            this.logsUpdatedObservable.next(true);
-        });
+        this.http
+            .getAllProjectLogs(this.projectService.currentProject.id)
+            .pipe(catchError(this.http.handleError(ErrorShown.LogsUnfetchable, [])))
+            .subscribe((logs) => {
+                this.projectLogs = [...logs];
+                this.logsUpdatedObservable.next(true);
+            });
     }
 
     fetchRecentProjectLogs() {
         if (!this.projectService.currentProject) return;
-        this.http.getRecentProjectLogs(this.projectService.currentProject.id).subscribe((logs) => {
-            this.recentProjectLogs = [...logs];
-            this.recentLogsUpdatedObservable.next(true);
-        });
+        this.http
+            .getRecentProjectLogs(this.projectService.currentProject.id)
+            .pipe(catchError(this.http.handleError(ErrorShown.LogsUnfetchable, [])))
+            .subscribe((logs) => {
+                this.recentProjectLogs = [...logs];
+                this.recentLogsUpdatedObservable.next(true);
+            });
     }
 }

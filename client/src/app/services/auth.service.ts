@@ -2,7 +2,6 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, finalize, lastValueFrom, Subject } from 'rxjs';
 import { ErrorShown } from 'src/common/error-shown';
-import { ErrorNotificationService } from './error-notification.service';
 import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
 
 @Injectable({
@@ -15,7 +14,7 @@ export class AuthService {
     logoutObservable: Subject<boolean>;
     username: string;
 
-    constructor(private http: HttpHandlerService, private errorNotification: ErrorNotificationService) {
+    constructor(private http: HttpHandlerService) {
         this.ongoingRequestObservable = new Subject();
         this.logoutObservable = new Subject();
         this.loginObservable = new Subject();
@@ -33,9 +32,10 @@ export class AuthService {
             .pipe(
                 tapOnSubscribe(() => this.ongoingRequestObservable.next(true)),
                 finalize(() => this.ongoingRequestObservable.next(false)),
+                // Error Handling
                 catchError((err: HttpErrorResponse) => {
                     if (err.status === HttpStatusCode.Unauthorized) this.loginObservable.next(false);
-                    else this.errorNotification.showError(ErrorShown.ServerError)
+                    else this.http.showError(ErrorShown.ServerError);
                     throw err;
                 }),
             )
@@ -50,9 +50,10 @@ export class AuthService {
             .pipe(
                 tapOnSubscribe(() => this.ongoingRequestObservable.next(true)),
                 finalize(() => this.ongoingRequestObservable.next(false)),
+                // Error Handling
                 catchError((err: HttpErrorResponse) => {
                     if (err.status === HttpStatusCode.Unauthorized) this.creationObservable.next(false);
-                    else this.errorNotification.showError(ErrorShown.ServerError)
+                    else this.http.showError(ErrorShown.ServerError);
                     throw err;
                 }),
             )
@@ -64,8 +65,11 @@ export class AuthService {
     }
 
     logout() {
-        this.http.logoutRequest().subscribe(() => {
-            setTimeout(() => this.logoutObservable.next(true));
-        });
+        this.http
+            .logoutRequest()
+            .pipe(catchError(this.http.handleError(ErrorShown.LogoutFailed)))
+            .subscribe(() => {
+                () => this.logoutObservable.next(true);
+            });
     }
 }

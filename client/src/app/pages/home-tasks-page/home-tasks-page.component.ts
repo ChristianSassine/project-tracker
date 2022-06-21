@@ -38,8 +38,7 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.tasksService.fetchStateTasks();
         this.taskChangeSubscription = this.tasksService.newTaskSetObservable.subscribe((task) => this.showView(task.state));
-        const minuteInMilliseconds = 1000 * 60;
-        this.fetchingTasksInterval = setInterval(() => this.tasksService.fetchStateTasks(), minuteInMilliseconds);
+        this.setFetchingInterval();
     }
 
     ngOnDestroy(): void {
@@ -64,6 +63,7 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
     }
 
     showView(state: TaskState | null) {
+        if (state !== null) clearInterval(this.fetchingTasksInterval as number);
         switch (state) {
             case TaskState.TODO:
                 this.isTODODisplayed = true;
@@ -89,6 +89,7 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
                 this.isDONEDisplayed = true;
                 this.isINFODisplayed = false;
                 this.tasksService.clearCurrentTask();
+                this.setFetchingInterval()
                 break;
         }
     }
@@ -116,5 +117,10 @@ export class HomeTasksPageComponent implements OnInit, OnDestroy {
 
     onClose() {
         this.showView(null);
+    }
+
+    private setFetchingInterval(){
+        const minuteInMilliseconds = 1000 * 60;
+        this.fetchingTasksInterval = setInterval(() => this.tasksService.fetchStateTasks(), minuteInMilliseconds);
     }
 }

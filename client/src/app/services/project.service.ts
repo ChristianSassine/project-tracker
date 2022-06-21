@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { finalize, Subject } from 'rxjs';
+import { catchError, finalize, Subject } from 'rxjs';
+import { ErrorShown } from 'src/common/error-shown';
 import { Project } from '../interfaces/project';
 import { AuthService } from './auth.service';
 import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
@@ -14,6 +15,7 @@ export class ProjectService {
 
     public isLoading: boolean;
     public changeToHomePageObservable: Subject<boolean>;
+    errorNotification: any;
 
     constructor(private http: HttpHandlerService, private authService: AuthService) {
         this.projects = [
@@ -42,25 +44,35 @@ export class ProjectService {
             .pipe(
                 tapOnSubscribe(() => (this.isLoading = true)),
                 finalize(() => (this.isLoading = false)),
+                catchError(this.http.handleError(ErrorShown.ProjectsUnfetchable, [])),
             )
             .subscribe((data) => (this.projects = [...data]));
     }
 
     createProject(title: string, password: string) {
-        this.http.createProjectRequest(title, password).subscribe((project) => {
-            this.setCurrentProject(project);
-            this.changeToHomePageObservable.next(true);
-        });
+        this.http
+            .createProjectRequest(title, password)
+            .pipe(catchError(this.http.handleError<Project>(ErrorShown.ProjectUncreatable)))
+            .subscribe((project) => {
+                this.setCurrentProject(project);
+                this.changeToHomePageObservable.next(true);
+            });
     }
 
     joinProject(id: number, password: string) {
-        this.http.joinProjectRequest(id, password).subscribe((project) => {
-            this.setCurrentProject(project);
-            this.changeToHomePageObservable.next(true);
-        });
+        this.http
+            .joinProjectRequest(id, password)
+            .pipe(catchError(this.http.handleError<Project>(ErrorShown.ProjectUnjoinable)))
+            .subscribe((project) => {
+                this.setCurrentProject(project);
+                this.changeToHomePageObservable.next(true);
+            });
     }
 
     deleteProject(projectId: number) {
-        this.http.deleteProjectRequest(projectId).subscribe(() => this.fetchProjects());
+        this.http
+            .deleteProjectRequest(projectId)
+            .pipe(catchError(this.http.handleError<Project>(ErrorShown.ProjectNotDeleted)))
+            .subscribe(() => this.fetchProjects());
     }
 }

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
+import { ErrorShown } from 'src/common/error-shown';
 import { TaskState } from 'src/common/task-state';
 import { environment } from 'src/environments/environment';
 import { HistoryLog } from '../interfaces/history-log';
@@ -21,9 +23,10 @@ export function tapOnSubscribe<T>(callback: () => void) {
     providedIn: 'root',
 })
 export class HttpHandlerService {
-    constructor(private readonly http: HttpClient) {}
+    constructor(private readonly http: HttpClient, private snackBar: MatSnackBar) {}
 
     private baseUrl = environment.serverUrl;
+    private errorDuration = 3000;
 
     private chainAfterAuth<T>(observable: Observable<T>): Observable<T> {
         return this.validateAuth().pipe(mergeMap(() => observable));
@@ -147,7 +150,16 @@ export class HttpHandlerService {
         );
     }
 
-    handleError<T> (result?: T): Observable<T> {
-        return of(result as T);
+    // Error handling
+    handleError<T>(errorShown: ErrorShown, result?: T, callback?: () => void): (error: Error) => Observable<T> {
+        return () => {
+            if (callback) callback();
+            this.showError(errorShown);
+            return of(result as T);
+        };
+    }
+
+    showError(errorShown: ErrorShown) {
+        this.snackBar.open(errorShown, 'Close', { horizontalPosition: 'right', duration: this.errorDuration });
     }
 }
