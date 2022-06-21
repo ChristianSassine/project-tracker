@@ -29,7 +29,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 
 		id, err := db.GetUserId(creds.Username)
 		if err != nil {
-			c.AbortWithStatus(http.StatusNotFound)
+			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 

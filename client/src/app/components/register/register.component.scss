@@ -12,3 +12,16 @@
 mat-form-field {
     margin: 0.1em 0;
 }
+
+.failed-error {
+    transform: 3s;
+    background-color: #ff0000ad;
+    color: white;
+    display: flex;
+    margin: 1em 0;
+    align-items: center;
+    overflow-wrap: break-word;
+    mat-icon {
+        margin-right: 0.2em;
+    }
+}

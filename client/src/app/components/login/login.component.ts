@@ -4,13 +4,14 @@ import { MatButton } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { Paths } from 'src/common/paths';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
     @ViewChild('loginButton', { read: ElementRef, static: false }) private loginButton!: ElementRef;
 
     usernameLabel: string = 'Username';
@@ -25,6 +26,9 @@ export class LoginComponent {
     form: FormGroup;
     @Input() isLoading: boolean;
     buttonHeight: number;
+    requestFailed: boolean;
+
+    private requestSubscription: Subscription;
 
     constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
         this.form = this.fb.group({
@@ -33,18 +37,27 @@ export class LoginComponent {
         });
 
         this.isLoading = false;
+        this.requestFailed = false;
         this.buttonHeight = 0;
+        this.requestSubscription = new Subscription();
+    }
+
+    ngOnInit(): void {
+        this.requestSubscription = this.authService.loginObservable.subscribe((requestPassed) => {
+            if (requestPassed) this.router.navigate([Paths.Home]);
+            else this.requestFailed = true;
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.requestSubscription.unsubscribe();
     }
 
     submit() {
-
         if (this.form.get('username')?.valid && this.form.get('password')?.valid) {
             //TODO : Handle catch
             this.buttonHeight = this.loginButton.nativeElement.offsetHeight;
-            this.authService
-                .login(this.form.value.username, this.form.value.password)
-                .then(() => this.router.navigate(['/home']))
-                .catch(() => console.log('error occured'));
+            this.authService.login(this.form.value.username, this.form.value.password);
         }
     }
 }

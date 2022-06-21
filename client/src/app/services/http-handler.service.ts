@@ -29,7 +29,7 @@ export class HttpHandlerService {
         return this.validateAuth().pipe(mergeMap(() => observable));
     }
     // Authentication requests
-    loginRequest(username: string, password: string): Observable<{}> {
+    loginRequest(username: string, password: string): Observable<unknown> {
         return this.http.post(`${this.baseUrl}/auth/login`, { username, password }, { withCredentials: true });
     }
 
@@ -45,7 +45,7 @@ export class HttpHandlerService {
         return this.http.get<string>(`${this.baseUrl}/auth/refresh`, { withCredentials: true });
     }
 
-    createAccountRequest(username: string, email: string, password: string): Observable<{}> {
+    createAccountRequest(username: string, email: string, password: string): Observable<unknown> {
         return this.http.post(`${this.baseUrl}/auth/create`, { username, email, password }, { withCredentials: true });
     }
 
@@ -120,9 +120,7 @@ export class HttpHandlerService {
     }
 
     deleteTask(taskId: number, projectId: number): Observable<unknown> {
-        return this.chainAfterAuth(
-            this.http.delete<unknown>(`${this.baseUrl}/project/${projectId}/task?id=${taskId}`, { withCredentials: true }),
-        );
+        return this.chainAfterAuth(this.http.delete<unknown>(`${this.baseUrl}/project/${projectId}/task?id=${taskId}`, { withCredentials: true }));
     }
 
     // Task comments requests
@@ -134,7 +132,7 @@ export class HttpHandlerService {
 
     addTaskComment(taskId: number, content: string, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
-            this.http.post<unknown>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comment`, {content}, { withCredentials: true }),
+            this.http.post<unknown>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comment`, { content }, { withCredentials: true }),
         );
     }
 
@@ -147,5 +145,9 @@ export class HttpHandlerService {
         return this.chainAfterAuth(
             this.http.get<HistoryLog[]>(`${this.baseUrl}/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }),
         );
+    }
+
+    handleError<T> (result?: T): Observable<T> {
+        return of(result as T);
     }
 }

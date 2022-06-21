@@ -1,15 +1,16 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { catchError, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { Paths } from 'src/common/paths';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, OnDestroy {
     @ViewChild('registerButton', { read: ElementRef, static: false }) private registerButton!: ElementRef;
     form: FormGroup;
     title: string = 'User Registration';
@@ -26,7 +27,10 @@ export class RegisterComponent {
     registerButtonText: string = 'Register';
 
     @Input() isLoading: boolean;
+    requestFailed: boolean;
     buttonHeight: number;
+
+    private requestSubscription: Subscription;
 
     constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
         this.form = this.fb.group({
@@ -35,16 +39,25 @@ export class RegisterComponent {
             email: ['', Validators.email],
         });
         this.buttonHeight = 0;
+        this.requestFailed = false;
+        this.requestSubscription = new Subscription();
+    }
+
+    ngOnInit(): void {
+        this.requestSubscription = this.authService.creationObservable.subscribe((requestPassed) => {
+            if (requestPassed) this.router.navigate([Paths.Home]);
+            else this.requestFailed = true;
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.requestSubscription.unsubscribe();
     }
 
     submit() {
         if (this.form.get('username')?.valid && this.form.get('password')?.valid) {
             this.buttonHeight = this.registerButton.nativeElement.offsetHeight;
-            //TODO : Handle catch
-            this.authService
-                .createAccount(this.form.value.username, this.form.value.email, this.form.value.password)
-                .pipe(catchError(() => of({})))
-                .subscribe(() => this.router.navigate(['/home']));
+            this.authService.createAccount(this.form.value.username, this.form.value.email, this.form.value.password);
         }
     }
 }

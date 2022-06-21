@@ -1,11 +1,17 @@
 <form [formGroup]="form">
     <mat-card class="wrapper">
         <mat-card-title><mat-icon>person</mat-icon>{{ title }}</mat-card-title>
+        <!-- Warning if the request fails -->
+        <mat-card class="failed-error"  *ngIf="requestFailed">
+            <mat-icon>gpp_maybe</mat-icon>The username or the <br> password is incorrect
+        </mat-card>
+        <!-- Username field -->
         <mat-form-field appearance="fill">
             <mat-label>{{ usernameLabel }}</mat-label>
             <mat-error *ngIf="form.get('username')?.invalid">{{ usernameError }}</mat-error>
             <input matInput name="username" formControlName="username" [placeholder]="usernamePlaceholder" />
         </mat-form-field>
+        <!-- Password field -->
         <mat-form-field appearance="fill">
             <mat-label>{{ passwordLabel }}</mat-label>
             <input matInput name="password" formControlName="password" type="password" [placeholder]="passwordPlaceholder" />
