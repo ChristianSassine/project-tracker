@@ -1,7 +1,7 @@
 package main
 
 import (
-	"BugTracker/middlewares"
+	"BugTracker/handlers"
 	"BugTracker/routes"
 	"BugTracker/services/db"
 
@@ -11,7 +11,7 @@ import (
 func main() {
 	// Initializing the server and middlewares
 	router := gin.Default()
-	router.Use(middlewares.CORSMiddleware())
+	router.Use(handlers.ErrorHandler(), handlers.CORSMiddleware())
 	router.SetTrustedProxies(nil)
 
 	// Initializing database
@@ -20,7 +20,7 @@ func main() {
 
 	// Creating the route groups
 	superGroup := router.Group("/api")
-	dataGroup := superGroup.Group("", middlewares.ValidTokenMiddleware())
+	dataGroup := superGroup.Group("", handlers.ValidateToken())
 
 	// Adding the routes to the groups
 	routes.AuthRoutes(superGroup, database)

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"BugTracker/api"
-	"BugTracker/middlewares"
+	"BugTracker/handlers"
 	"BugTracker/services/db"
 	log "BugTracker/utilities"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 )
 
 func TaskCommentsRoutes(r *gin.RouterGroup, db *db.DB) {
-	taskGroup := r.Group("", middlewares.ValidUserProjectAccessMiddleware(db))
+	taskGroup := r.Group("", handlers.ValidateUserProject(db))
 
 	// Get a task's comments endpoint
 	taskGroup.GET("/project/:projectId/task/:taskId/comments", func(c *gin.Context) {

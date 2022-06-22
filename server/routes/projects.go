@@ -3,7 +3,7 @@ package routes
 import (
 	"BugTracker/api"
 	logType "BugTracker/common"
-	"BugTracker/middlewares"
+	"BugTracker/handlers"
 	"BugTracker/services/db"
 	"BugTracker/services/encryption"
 	"BugTracker/utilities"
@@ -87,7 +87,6 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 		}
 
 		if !checkProjectPassword(requestInfo.Id, requestInfo.Password, db) {
-			log.PrintWarning("HERE")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -119,7 +118,7 @@ func ProjectsRoutes(r *gin.RouterGroup, db *db.DB) {
 
 	// Delete project
 	// TODO: might need refactor
-	r.DELETE("/project/:projectId", middlewares.ValidUserProjectAccessMiddleware(db), func(c *gin.Context) {
+	r.DELETE("/project/:projectId", handlers.ValidateUserProject(db), func(c *gin.Context) {
 		projectId, err := strconv.Atoi(c.Param("projectId"))
 		if err != nil {
 			utilities.PrintError(err)

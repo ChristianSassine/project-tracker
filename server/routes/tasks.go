@@ -3,7 +3,7 @@ package routes
 import (
 	"BugTracker/api"
 	logType "BugTracker/common"
-	"BugTracker/middlewares"
+	"BugTracker/handlers"
 	"BugTracker/services/db"
 	log "BugTracker/utilities"
 	"net/http"
@@ -13,7 +13,7 @@ import (
 )
 
 func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
-	taskGroup := r.Group("", middlewares.ValidUserProjectAccessMiddleware(db))
+	taskGroup := r.Group("", handlers.ValidateUserProject(db))
 
 	// TODO : this might need refactoring
 	// Getting tasks endpoint

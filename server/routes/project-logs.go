@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"BugTracker/middlewares"
+	"BugTracker/handlers"
 	"BugTracker/services/db"
 	log "BugTracker/utilities"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 
 // TODO : Might need refactoring
 func ProjectLogsRoutes(r *gin.RouterGroup, db *db.DB) {
-	logsGroup := r.Group("", middlewares.ValidUserProjectAccessMiddleware(db))
+	logsGroup := r.Group("", handlers.ValidateUserProject(db))
 
 	// Fetch the logs of the project
 	logsGroup.GET("/project/:projectId/logs", func(c *gin.Context) {

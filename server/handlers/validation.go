@@ -1,35 +1,27 @@
-package middlewares
+package handlers
 
 import (
 	"BugTracker/services/db"
-	jwtToken "BugTracker/services/jwt"
+	jwtToken "BugTracker/services/jwt-token"
 	"BugTracker/utilities"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
 
 // Checking if the token is valid on every entry
-func ValidTokenMiddleware() gin.HandlerFunc {
+func ValidateToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			utilities.PrintError(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
 
 		if err := jwtToken.ValidateToken(token, false); err != nil {
-			if err == jwt.ErrSignatureInvalid || err == jwtToken.UnvalidTokenError {
-				utilities.ErrorLog.Println(err)
-				c.AbortWithStatus(http.StatusUnauthorized)
-				return
-			}
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
 
@@ -38,8 +30,7 @@ func ValidTokenMiddleware() gin.HandlerFunc {
 }
 
 // Validating that user has permissions to access the project's tasks
-// TODO: maybe needs to be renamed, too long
-func ValidUserProjectAccessMiddleware(db *db.DB) gin.HandlerFunc {
+func ValidateUserProject(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {

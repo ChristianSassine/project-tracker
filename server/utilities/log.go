@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	InfoLog    *log.Logger = log.New(os.Stdout, "[LOG] ", log.LstdFlags|log.Lshortfile)
-	ErrorLog   *log.Logger = log.New(os.Stderr, "[ERROR] ", log.LstdFlags|log.Lshortfile)
-	WarningLog *log.Logger = log.New(os.Stdout, "[WARNING] ", log.LstdFlags|log.Lshortfile)
+	InfoLog    *log.Logger = log.New(os.Stdout, "[LOG] ", log.LstdFlags)
+	ErrorLog   *log.Logger = log.New(os.Stderr, "[ERROR] ", log.LstdFlags)
+	WarningLog *log.Logger = log.New(os.Stdout, "[WARNING] ", log.LstdFlags)
 )
 
 func PrintInfo(args ...any) {

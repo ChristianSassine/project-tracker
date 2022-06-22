@@ -3,7 +3,6 @@ package db
 import (
 	"BugTracker/api"
 	log "BugTracker/utilities"
-	"database/sql"
 	"errors"
 	"strings"
 
@@ -12,20 +11,11 @@ import (
 
 var UserDoesntExistError error = errors.New("User doesn't exist")
 
-func (db *DB) AddUser(username string, password string, email string) (int, error) {
-	var id int
+func (db *DB) AddUser(username string, password string, email string) error {
 
 	username = strings.ToLower(username)
-	var parsedEmail = &sql.NullString{}
-
-	// Adding email if not empty
-	if email != "" {
-		parsedEmail.String = strings.ToLower(email)
-		parsedEmail.Valid = true
-		parsedEmail.Value()
-	}
-	err := db.DB.QueryRow("INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id", username, parsedEmail, password).Scan(&id)
-	return id, err
+	_, err := db.DB.Exec("INSERT INTO users (username, email, password) VALUES ($1, $2, $3)", username, email, password)
+	return err
 }
 
 func (db *DB) CheckIfUserExists(username string) (bool, error) {

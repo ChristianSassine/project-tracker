@@ -57,7 +57,10 @@ export class AuthService {
                     throw err;
                 }),
             )
-            .subscribe(() => this.creationObservable.next(true));
+            .subscribe(() => {
+                this.creationObservable.next(true);
+                this.login(username, password);
+            });
     }
 
     async isLoggedIn(): Promise<unknown> {

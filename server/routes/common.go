@@ -3,7 +3,7 @@ package routes
 import (
 	"BugTracker/api"
 	"BugTracker/services/db"
-	jwtToken "BugTracker/services/jwt"
+	jwtToken "BugTracker/services/jwt-token"
 	log "BugTracker/utilities"
 	"net/http"
 	"strconv"
