@@ -2,7 +2,6 @@ package db
 
 import (
 	"BugTracker/api"
-	log "BugTracker/utilities"
 	"errors"
 	"strings"
 
@@ -47,7 +46,6 @@ func (db *DB) GetUserId(username string) (int, error) {
 		return 0, err
 	}
 
-	log.PrintInfo("User", username, "is in the database")
 	return id, nil
 }
 

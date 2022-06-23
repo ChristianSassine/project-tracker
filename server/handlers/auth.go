@@ -177,9 +177,8 @@ func setTokens(c *gin.Context, username string, id int) error {
 	}
 
 	// Setting the tokens
-	// TODO: set the origin automatically
-	c.SetCookie("JWT_TOKEN", jwtTkn, jwtCookieExpiration, "/", "localhost", true, true)
-	c.SetCookie("JWT_REFRESH", refreshTkn, refreshCookieExpiration, "/api/auth/refresh", "localhost", true, true)
+	c.SetCookie("JWT_TOKEN", jwtTkn, jwtCookieExpiration, "/", c.Request.Header.Get("Origin"), true, true)
+	c.SetCookie("JWT_REFRESH", refreshTkn, refreshCookieExpiration, "/api/auth/refresh", c.Request.Header.Get("Origin"), true, true)
 
 	return nil
 }

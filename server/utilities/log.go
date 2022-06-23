@@ -13,13 +13,16 @@ var (
 )
 
 func PrintInfo(args ...any) {
+	InfoLog.Print(":")
 	InfoLog.Println(args...)
 }
 
 func PrintError(args ...any) {
+	InfoLog.Print(":")
 	ErrorLog.Println(args...)
 }
 
 func PrintWarning(args ...any) {
+	InfoLog.Print(":")
 	WarningLog.Println(args...)
 }

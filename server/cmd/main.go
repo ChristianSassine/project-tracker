@@ -10,6 +10,7 @@ import (
 
 func main() {
 	// Initializing the server and middlewares
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.Use(handlers.ErrorHandler(), handlers.CORSMiddleware())
 	router.SetTrustedProxies(nil)
