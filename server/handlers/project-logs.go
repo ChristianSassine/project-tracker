@@ -27,20 +27,18 @@ func GetAllProjectLogs(db *db.DB) gin.HandlerFunc {
 	}
 }
 
-func GetLimitedProjectLogs(db *db.DB) gin.HandlerFunc {
+func GetProjectLogsByLimit(db *db.DB) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-
-		projectId, err := getProjectId(c)
-		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
-			return
-		}
-
 		// Check if the limit query is specified
-		urlQueries := c.Request.URL.Query()
-		logsLimit, ok := urlQueries["limit"]
+		logsLimit, ok := c.Request.URL.Query()["limit"]
 		if ok {
+			projectId, err := getProjectId(c)
+			if err != nil {
+				c.AbortWithError(http.StatusBadRequest, err)
+				return
+			}
+
 			// Get the specified limit of recently added logs
 			limit, err := strconv.Atoi(logsLimit[0])
 			if err != nil {
