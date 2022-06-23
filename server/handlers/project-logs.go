@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"BugTracker/services/db"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -11,7 +10,6 @@ import (
 
 func GetAllProjectLogs(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log.Println("Entering all logs...")
 		projectId, err := getProjectId(c)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)

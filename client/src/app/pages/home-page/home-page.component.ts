@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ProjectService } from 'src/app/services/project.service';
 import { Paths } from 'src/common/paths';
 
-const ID_TOOLTIP = "The # is the project id. It is shared alongside the password to share the project";
+const ID_TOOLTIP = "This is the project id. It can be shared with the password to allow access to the project";
 
 @Component({
     selector: 'app-home-page',

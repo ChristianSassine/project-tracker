@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TODO : Might need refactoring
 func ProjectLogsRoutes(r *gin.RouterGroup, db *db.DB) {
 	logsGroup := r.Group("", handlers.ValidateUserProject(db))
 
