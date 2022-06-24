@@ -40,7 +40,7 @@ func getProjectId(c *gin.Context) (int, error) {
 }
 
 func logEvent(c *gin.Context, db *db.DB, logType string, args ...string) {
-
+	// LogEvents are launched in concurrency, it's better to not use the context error handling
 	tknInfo, err := getTokenClaims(c)
 	if err != nil {
 		log.PrintError("Failed to add the log of type '", logType, "'. For the following error: ", err)

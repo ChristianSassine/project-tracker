@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	projectErrors "github.com/krispier/projectManager/internal/common/project-errors"
 	"github.com/krispier/projectManager/internal/services/db"
 	jwtToken "github.com/krispier/projectManager/internal/services/jwt-token"
 
@@ -16,12 +17,12 @@ func ValidateToken() gin.HandlerFunc {
 
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			c.AbortWithError(http.StatusUnauthorized, err)
+			c.AbortWithError(http.StatusUnauthorized, projectErrors.FailedAuthToken)
 			return
 		}
 
 		if err := jwtToken.ValidateToken(token, false); err != nil {
-			c.AbortWithError(http.StatusUnauthorized, err)
+			c.AbortWithError(http.StatusUnauthorized, projectErrors.FailedAuthToken)
 			return
 		}
 
@@ -34,30 +35,30 @@ func ValidateUserProject(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			c.AbortWithError(http.StatusUnauthorized, err)
+			c.AbortWithError(http.StatusUnauthorized, projectErrors.FailedToValidateUser)
 			return
 		}
 
 		tokenInfo, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToValidateUser)
 			return
 		}
 
 		userId, err := strconv.Atoi(tokenInfo.Subject)
 		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToValidateUser)
 			return
 		}
 
 		projectId, err := strconv.Atoi(c.Param("projectId"))
 		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToValidateUser)
 			return
 		}
 
 		if !db.IsUserInProject(userId, projectId) {
-			c.AbortWithError(http.StatusUnauthorized, err)
+			c.AbortWithError(http.StatusUnauthorized, projectErrors.FailedToValidateUser)
 			return
 		}
 

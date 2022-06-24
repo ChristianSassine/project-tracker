@@ -23,7 +23,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 	group.GET("/validate", handlers.ValidateTkn)
 
 	// Refreshing access token endpoint.
-	group.GET("/refresh")
+	group.GET("/refresh", handlers.RefreshTkn)
 
 	// Logout endpoint.
 	group.GET("/logout", handlers.Logout)

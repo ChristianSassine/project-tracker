@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	projectErrors "github.com/krispier/projectManager/internal/common/project-errors"
 	"github.com/krispier/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
@@ -13,13 +14,13 @@ func GetAllProjectLogs(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		projectId, err := getProjectId(c)
 		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToFetchLogs)
 			return
 		}
 
 		logs, err := db.GetAllLogs(projectId)
 		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToFetchLogs)
 			return
 		}
 		c.JSON(http.StatusOK, logs)
@@ -36,14 +37,14 @@ func GetProjectLogsByLimit(db *db.DB) gin.HandlerFunc {
 		if ok {
 			projectId, err := getProjectId(c)
 			if err != nil {
-				c.AbortWithError(http.StatusBadRequest, err)
+				c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToFetchLogs)
 				return
 			}
 
 			// Get the specified limit of recently added logs
 			limit, err := strconv.Atoi(logsLimit[0])
 			if err != nil {
-				c.AbortWithError(http.StatusBadRequest, err)
+				c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToFetchLogs)
 				return
 			}
 
