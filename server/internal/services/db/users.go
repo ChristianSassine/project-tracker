@@ -22,7 +22,7 @@ func (db *DB) CheckIfUserExists(username string) (bool, error) {
 	username = strings.ToLower(username)
 	count := 0
 
-	if err := db.DB.QueryRow("SELECT COUNT(1) users WHERE users.username = $1", username).Scan(&count); err != nil || count != 1 {
+	if err := db.DB.QueryRow("SELECT COUNT(1) FROM users WHERE users.username = $1", username).Scan(&count); err != nil || count != 1 {
 		return false, err
 	}
 	return true, nil

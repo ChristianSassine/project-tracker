@@ -1,6 +1,7 @@
 package jwtToken
 
 import (
+	"os"
 	"strconv"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var signingKey []byte = []byte("davidLavariete")
+var signingKey []byte = []byte(os.Getenv("JWT_KEY"))
 
 func GenerateToken(username string, id int, expiryTime time.Duration, isRefreshToken bool) (string, error) {
 	tknType := "validation"

@@ -2,6 +2,8 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
 
 	"github.com/krispier/projectManager/internal/log"
 )
@@ -11,15 +13,17 @@ type DB struct {
 	DB *sql.DB
 }
 
-// const (
-// 	user     = os.Getenv("POSTGRES_USER")
-// 	dbName   = os.Getenv("POSTGRES_DB")
-// 	hostAddr = os.Getenv("POSTGRES_ADDR")
-// 	password = os.Getenv("POSTGRES_PASSWORD")
-// )
+var (
+	user     = os.Getenv("POSTGRES_USER")
+	hostAddr = os.Getenv("POSTGRES_ADDR")
+	password = os.Getenv("POSTGRES_PASSWORD")
+	dbName   = os.Getenv("POSTGRES_DB")
+)
 
 func (db *DB) Connect() {
-	connStr := "postgresql://superuser:biguser123@/go?sslmode=disable"
+	connStr := fmt.Sprintf("host=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		hostAddr, user, password, dbName)
 	// Connect to database
 	var err error
 	db.DB, err = sql.Open("postgres", connStr)

@@ -31,5 +31,5 @@ func main() {
 	routes.ProjectLogsRoutes(dataGroup, database)
 
 	// Launching the server
-	router.Run("localhost:8080")
+	router.Run()
 }

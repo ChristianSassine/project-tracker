@@ -212,6 +212,5 @@ func (db *DB) DeleteTask(taskId int, projectId int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	return title, nil
 }
