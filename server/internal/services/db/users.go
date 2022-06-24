@@ -1,9 +1,10 @@
 package db
 
 import (
-	"BugTracker/api"
 	"errors"
 	"strings"
+
+	"github.com/krispier/projectManager/internal/api"
 
 	_ "github.com/lib/pq"
 )

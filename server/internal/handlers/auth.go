@@ -1,16 +1,18 @@
 package handlers
 
 import (
-	"BugTracker/api"
-	"BugTracker/services/db"
-	"BugTracker/services/encryption"
-	jwtToken "BugTracker/services/jwt-token"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 
+	"github.com/krispier/projectManager/internal/api"
+	"github.com/krispier/projectManager/internal/services/db"
+	"github.com/krispier/projectManager/internal/services/encryption"
+	jwtToken "github.com/krispier/projectManager/internal/services/jwt-token"
+
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 const (
@@ -166,6 +168,7 @@ func FetchUsername(c *gin.Context) {
 }
 
 func setTokens(c *gin.Context, username string, id int) error {
+
 	// Generating the tokens
 	jwtTkn, err := jwtToken.GenerateToken(username, id, tknExpiration, false)
 	if err != nil {
@@ -176,9 +179,14 @@ func setTokens(c *gin.Context, username string, id int) error {
 		return err
 	}
 
+	domain, err := url.Parse(c.Request.Header.Get("Origin"))
+	if err != nil {
+		return err
+	}
+
 	// Setting the tokens
-	c.SetCookie("JWT_TOKEN", jwtTkn, jwtCookieExpiration, "/", c.Request.Header.Get("Origin"), true, true)
-	c.SetCookie("JWT_REFRESH", refreshTkn, refreshCookieExpiration, "/api/auth/refresh", c.Request.Header.Get("Origin"), true, true)
+	c.SetCookie("JWT_TOKEN", jwtTkn, jwtCookieExpiration, "/", domain.Hostname(), true, true)
+	c.SetCookie("JWT_REFRESH", refreshTkn, refreshCookieExpiration, "/api/auth/refresh", domain.Hostname(), true, true)
 
 	return nil
 }

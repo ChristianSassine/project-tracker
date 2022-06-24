@@ -1,11 +1,12 @@
 package jwtToken
 
 import (
-	"BugTracker/api"
 	"strconv"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/krispier/projectManager/internal/api"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var signingKey []byte = []byte("davidLavariete")

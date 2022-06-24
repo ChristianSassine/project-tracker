@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"BugTracker/api"
-	"BugTracker/services/db"
 	"net/http"
 	"strconv"
+
+	"github.com/krispier/projectManager/internal/api"
+	"github.com/krispier/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"BugTracker/api"
-	logType "BugTracker/common"
-	"BugTracker/services/db"
-	"BugTracker/services/encryption"
 	"net/http"
+
+	"github.com/krispier/projectManager/internal/api"
+	logType "github.com/krispier/projectManager/internal/common"
+	"github.com/krispier/projectManager/internal/services/db"
+	"github.com/krispier/projectManager/internal/services/encryption"
 
 	"github.com/gin-gonic/gin"
 )

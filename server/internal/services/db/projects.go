@@ -1,7 +1,7 @@
 package db
 
 import (
-	"BugTracker/api"
+	"github.com/krispier/projectManager/internal/api"
 )
 
 func (db *DB) GetUserProjects(id int) (*[]api.Project, error) {

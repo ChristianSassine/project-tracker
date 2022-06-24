@@ -1,8 +1,9 @@
 package db
 
 import (
-	"BugTracker/api"
 	"time"
+
+	"github.com/krispier/projectManager/internal/api"
 )
 
 func (db *DB) GetTaskComments(taskId int) (*[]api.Comment, error) {

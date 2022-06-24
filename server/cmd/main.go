@@ -1,9 +1,9 @@
 package main
 
 import (
-	"BugTracker/handlers"
-	"BugTracker/routes"
-	"BugTracker/services/db"
+	"github.com/krispier/projectManager/internal/handlers"
+	"github.com/krispier/projectManager/internal/routes"
+	"github.com/krispier/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
 )

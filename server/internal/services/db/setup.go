@@ -1,8 +1,9 @@
 package db
 
 import (
-	"BugTracker/utilities"
 	"database/sql"
+
+	"github.com/krispier/projectManager/internal/log"
 )
 
 // TODO : add database setup
@@ -23,12 +24,12 @@ func (db *DB) Connect() {
 	var err error
 	db.DB, err = sql.Open("postgres", connStr)
 	if err != nil {
-		utilities.ErrorLog.Fatal(err)
+		log.ErrorLog.Fatal(err)
 	}
 	if err := db.DB.Ping(); err != nil {
-		utilities.ErrorLog.Fatal("Connection to the database failed")
+		log.ErrorLog.Fatal("Connection to the database failed")
 	}
-	utilities.InfoLog.Println("DB connection successful")
+	log.PrintInfo("DB connection successful")
 }
 
 func (db *DB) Close() {

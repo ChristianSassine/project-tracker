@@ -1,9 +1,9 @@
 package jwtToken
 
 import (
-	"BugTracker/api"
+	"github.com/krispier/projectManager/internal/api"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func ExtractClaims(token string) (*api.Claims, error) {

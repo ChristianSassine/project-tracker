@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	log "BugTracker/utilities"
+	log "github.com/krispier/projectManager/internal/log"
 
 	"github.com/gin-gonic/gin"
 )

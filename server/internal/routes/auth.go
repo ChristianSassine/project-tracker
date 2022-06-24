@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"BugTracker/handlers"
-	"BugTracker/services/db"
+	"github.com/krispier/projectManager/internal/handlers"
+	"github.com/krispier/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
 )

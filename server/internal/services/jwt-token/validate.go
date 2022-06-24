@@ -1,10 +1,11 @@
 package jwtToken
 
 import (
-	"BugTracker/api"
 	"errors"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/krispier/projectManager/internal/api"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var UnvalidTokenError error = errors.New("The token is not valid")

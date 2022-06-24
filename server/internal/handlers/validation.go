@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"BugTracker/services/db"
-	jwtToken "BugTracker/services/jwt-token"
-	"BugTracker/utilities"
 	"net/http"
 	"strconv"
+
+	"github.com/krispier/projectManager/internal/services/db"
+	jwtToken "github.com/krispier/projectManager/internal/services/jwt-token"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,34 +34,30 @@ func ValidateUserProject(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := c.Cookie("JWT_TOKEN")
 		if err != nil {
-			utilities.ErrorLog.Println(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
 
 		tokenInfo, err := jwtToken.ExtractClaims(token)
 		if err != nil {
-			utilities.PrintError(err)
-			c.AbortWithStatus(http.StatusBadRequest)
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 
 		userId, err := strconv.Atoi(tokenInfo.Subject)
 		if err != nil {
-			utilities.PrintError(err)
-			c.AbortWithStatus(http.StatusBadRequest)
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 
 		projectId, err := strconv.Atoi(c.Param("projectId"))
 		if err != nil {
-			utilities.PrintError(err)
-			c.AbortWithStatus(http.StatusBadRequest)
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 
 		if !db.IsUserInProject(userId, projectId) {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
 
