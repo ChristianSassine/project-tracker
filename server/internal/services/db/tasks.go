@@ -127,19 +127,29 @@ func (db *DB) UpdateTask(task *api.Task, projectId int) error {
 	return nil
 }
 
-func (db *DB) UpdateTaskPosition(taskPreviousPosition int, taskCurrentPosition int, taskId int, projectId int) error {
+func (db *DB) UpdateTaskPosition(taskPreviousPosition int, taskCurrentPosition int, taskId int) error {
+
+	var currentState string
+	var projectId int
+	if err := db.DB.QueryRow(`
+	SELECT state, project_id
+	FROM tasks WHERE id = $1
+	`, taskId).Scan(&currentState, &projectId); err != nil {
+		return err
+	}
+
 	// Incrementing or decrementing the position of the other elements of the array depending on the positions
 	if taskPreviousPosition < taskCurrentPosition {
 		_, err := db.DB.Exec(`
 		UPDATE tasks SET position = position - 1 
-		WHERE project_id = $1 AND (position > $2) AND (position <= $3)`, projectId, taskPreviousPosition, taskCurrentPosition)
+		WHERE project_id = $1 AND state = $2 AND (position > $3) AND (position <= $4)`, projectId, currentState, taskPreviousPosition, taskCurrentPosition)
 		if err != nil {
 			return err
 		}
 	} else if taskPreviousPosition > taskCurrentPosition {
 		_, err := db.DB.Exec(`
 		UPDATE tasks SET position = position + 1 
-		WHERE project_id = $1 AND (position < $2) AND (position >= $3)`, projectId, taskPreviousPosition, taskCurrentPosition)
+		WHERE project_id = $1 AND state = $2 AND (position < $3) AND (position >= $4)`, projectId, currentState, taskPreviousPosition, taskCurrentPosition)
 		if err != nil {
 			return err
 		}

@@ -182,20 +182,15 @@ func DeleteTask(db *db.DB) gin.HandlerFunc {
 
 func UpdateTaskPosition(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		projectId, err := getProjectId(c)
-		if err != nil {
-			c.AbortWithError(http.StatusUnauthorized, projectErrors.FailedToUpdateTask)
-			return
-		}
 
 		taskPositionRequest := &api.TaskPatchRequest{}
-		err = c.ShouldBind(taskPositionRequest)
+		err := c.ShouldBind(taskPositionRequest)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToUpdateTask)
 			return
 		}
 
-		if err := db.UpdateTaskPosition(taskPositionRequest.PreviousIndex, taskPositionRequest.CurrentIndex, taskPositionRequest.TaskId, projectId); err != nil {
+		if err := db.UpdateTaskPosition(taskPositionRequest.PreviousIndex, taskPositionRequest.CurrentIndex, taskPositionRequest.TaskId); err != nil {
 			c.AbortWithError(http.StatusBadRequest, projectErrors.FailedToUpdateTask)
 			return
 		}
