@@ -27,4 +27,7 @@ func AuthRoutes(r *gin.RouterGroup, db *db.DB) {
 
 	// Logout endpoint.
 	group.GET("/logout", handlers.Logout)
+
+	// Check if loggedOut endpoint.
+	group.GET("/loggedOut", handlers.IsLoggedOut)
 }

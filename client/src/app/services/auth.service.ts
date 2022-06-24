@@ -67,6 +67,10 @@ export class AuthService {
         return lastValueFrom(this.http.validateAuth()).then(() => this.getUsername().then());
     }
 
+    async isLoggedOut(): Promise<unknown> {
+        return lastValueFrom(this.http.isLoggedOut());
+    }
+
     logout() {
         this.http
             .logoutRequest()

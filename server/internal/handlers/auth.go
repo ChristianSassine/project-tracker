@@ -128,6 +128,25 @@ func Login(db *db.DB) gin.HandlerFunc {
 	}
 }
 
+func IsLoggedOut(c *gin.Context) {
+	// If the cookies don't exist or have a problem, the user is disconnected
+	jwtTkn, tknErr := c.Cookie("JWT_TOKEN")
+	refreshTkn, refreshErr := c.Cookie("JWT_REFRESH")
+	if tknErr != nil && refreshErr != nil {
+		c.Status(http.StatusOK)
+		return
+	}
+
+	tknErr = jwtToken.ValidateToken(jwtTkn, false)
+	refreshErr = jwtToken.ValidateToken(refreshTkn, true)
+	if tknErr != nil && refreshErr != nil {
+		c.Status(http.StatusOK)
+		return
+	}
+
+	c.Status(http.StatusUnauthorized)
+}
+
 func CreateAccount(db *db.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Fetching the data from the body

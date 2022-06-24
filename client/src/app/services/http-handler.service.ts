@@ -40,6 +40,10 @@ export class HttpHandlerService {
         return this.http.get<unknown>(`${this.baseUrl}/auth/logout`, { withCredentials: true });
     }
 
+    isLoggedOut(): Observable<unknown> {
+        return this.http.get<unknown>(`${this.baseUrl}/auth/loggedOut`, { withCredentials: true });
+    }
+
     validateAuth(): Observable<unknown> {
         return this.http.get<unknown>(`${this.baseUrl}/auth/validate`, { withCredentials: true }).pipe(catchError((_) => this.refreshAuth()));
     }
