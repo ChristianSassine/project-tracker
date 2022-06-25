@@ -24,7 +24,7 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
 
     constructor(private taskService: TasksService, private logService: ProjectLogsService, private dialog: MatDialog) {
         this.logsUpdateSubscription = new Subscription();
-        this.statsChart = {destroy : ()=>{}} as Chart; // Empty chart
+        this.statsChart = { destroy: () => {} } as Chart; // Empty chart
         this.dataSource = new MatTableDataSource([] as HistoryLog[]);
     }
 
@@ -38,7 +38,7 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     ngAfterViewInit(): void {
-		this.generateStatsChart();
+        this.generateStatsChart();
     }
 
     ngOnDestroy(): void {
@@ -50,12 +50,16 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
         return this.taskService.recentTasks;
     }
 
+    isTasksEmpty() {
+        return this.taskService.recentTasks.length === 0;
+    }
+
     onDelete(task: ProjectTask) {
         const dialogRef = this.dialog.open(DeleteTaskComponent, {
             data: task,
         });
         const dialogCloseSubscription = dialogRef.afterClosed().subscribe((isDeleted) => {
-            if(!isDeleted) return;
+            if (!isDeleted) return;
             this.taskService.fetchRecentTasks();
             this.generateStatsChart();
             this.logService.fetchRecentProjectLogs();
@@ -63,27 +67,27 @@ export class HomeOverviewPageComponent implements OnInit, OnDestroy, AfterViewIn
         });
     }
 
-    private generateStatsChart(){
-        this.taskService.getTasksStats().subscribe((stats)=> {
+    private generateStatsChart() {
+        this.taskService.getTasksStats().subscribe((stats) => {
             if (this.statsChart) this.statsChart.destroy();
-			const data = {
-				labels: ['Todo', 'Ongoing', 'Done'],
-				datasets: [
-					{
-						label: 'Project statistics',
-						data: [stats.todoTasks, stats.ongoingTasks, stats.doneTasks],
-						backgroundColor: ['#c4c58c', '#8cc2c5', '#8cc58c'],
-						hoverOffset: 4,
-					},
-				],
-			};
+            const data = {
+                labels: ['Todo', 'Ongoing', 'Done'],
+                datasets: [
+                    {
+                        label: 'Project statistics',
+                        data: [stats.todoTasks, stats.ongoingTasks, stats.doneTasks],
+                        backgroundColor: ['#c4c58c', '#8cc2c5', '#8cc58c'],
+                        hoverOffset: 4,
+                    },
+                ],
+            };
 
-			const config = {
-				type: 'doughnut',
-				data: data,
-				options: { maintainAspectRatio: false },
-			} as ChartConfiguration;
-			this.statsChart = new Chart(this.statsCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D, config);
-		})
+            const config = {
+                type: 'doughnut',
+                data: data,
+                options: { maintainAspectRatio: false },
+            } as ChartConfiguration;
+            this.statsChart = new Chart(this.statsCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D, config);
+        });
     }
 }

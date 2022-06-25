@@ -5,6 +5,8 @@
     </mat-card-title>
     <div class="tasks-wrapper">
         <app-task *ngFor="let task of recentTasks" [task]="task" class="task" (delete)="onDelete(task)"> </app-task>
+    <span class="no-tasks" *ngIf="isTasksEmpty()"><b>There's no tasks</b></span>
+
     </div>
 </mat-card>
 
