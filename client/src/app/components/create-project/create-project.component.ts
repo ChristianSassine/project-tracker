@@ -33,7 +33,6 @@ export class CreateProjectComponent implements OnInit {
 
     submit() {
         if (this.form.get('title')?.valid) {
-            //TODO : Handle catch
             this.projectService
                 .createProject(this.form.value.title, this.form.value.password);
         }

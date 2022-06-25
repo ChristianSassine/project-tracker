@@ -23,7 +23,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
         const noId = -1;
         this.logoutSubscription = new Subscription();
         this.project = {title :'', id: noId};
-        this.logoutSubscription = this.authService.logoutObservable.subscribe(() => this.router.navigate([Paths.Login]));
+        this.logoutSubscription = this.authService.logoutObservable.subscribe(() => {
+            this.router.navigate([Paths.Login])
+        });
     }
 
     ngOnInit(): void {
@@ -71,9 +73,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }
 
     onLogout() {
-        console.log('Attempting logout');
         this.authService.logout();
-        this.router.navigate([Paths.Login]);
     }
 
     onChangeProject() {

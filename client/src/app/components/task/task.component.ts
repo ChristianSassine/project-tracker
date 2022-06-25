@@ -21,7 +21,6 @@ export class TaskComponent {
         this.delete = new EventEmitter();
     }
 
-    // TODO: Might need to find a better way
     @HostListener('document:click')
     onClick() {
         if (this.tasksService.currentTask.id === this.task.id) {

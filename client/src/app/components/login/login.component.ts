@@ -55,7 +55,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     submit() {
         if (this.form.get('username')?.valid && this.form.get('password')?.valid) {
-            //TODO : Handle catch
             this.buttonHeight = this.loginButton.nativeElement.offsetHeight;
             this.authService.login(this.form.value.username, this.form.value.password);
         }

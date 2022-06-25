@@ -14,7 +14,6 @@ import { TaskState } from 'src/common/task-state';
     styleUrls: ['./home-tasks-page.component.scss'],
 })
 export class HomeTasksPageComponent implements OnInit, OnDestroy {
-    // TODO : Might need to refactor the names
     stateTODO = TaskState.TODO;
     stateONGOING = TaskState.ONGOING;
     stateDONE = TaskState.DONE;
