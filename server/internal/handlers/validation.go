@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	projectErrors "github.com/krispier/projectManager/internal/common/project-errors"
-	"github.com/krispier/projectManager/internal/services/db"
-	jwtToken "github.com/krispier/projectManager/internal/services/jwt-token"
+	projectErrors "github.com/ChristianSassine/projectManager/internal/common/project-errors"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
+	jwtToken "github.com/ChristianSassine/projectManager/internal/services/jwt-token"
 
 	"github.com/gin-gonic/gin"
 )

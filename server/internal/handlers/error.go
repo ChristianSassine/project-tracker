@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	log "github.com/krispier/projectManager/internal/log"
+	log "github.com/ChristianSassine/projectManager/internal/log"
 
 	"github.com/gin-gonic/gin"
 )

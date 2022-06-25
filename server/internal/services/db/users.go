@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/krispier/projectManager/internal/api"
+	"github.com/ChristianSassine/projectManager/internal/api"
 
 	_ "github.com/lib/pq"
 )

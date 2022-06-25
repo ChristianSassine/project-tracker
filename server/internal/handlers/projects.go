@@ -3,11 +3,11 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/krispier/projectManager/internal/api"
-	logType "github.com/krispier/projectManager/internal/common/log-type"
-	projectErrors "github.com/krispier/projectManager/internal/common/project-errors"
-	"github.com/krispier/projectManager/internal/services/db"
-	"github.com/krispier/projectManager/internal/services/encryption"
+	"github.com/ChristianSassine/projectManager/internal/api"
+	logType "github.com/ChristianSassine/projectManager/internal/common/log-type"
+	projectErrors "github.com/ChristianSassine/projectManager/internal/common/project-errors"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
+	"github.com/ChristianSassine/projectManager/internal/services/encryption"
 
 	"github.com/gin-gonic/gin"
 )

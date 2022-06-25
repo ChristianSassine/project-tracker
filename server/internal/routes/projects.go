@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/krispier/projectManager/internal/handlers"
-	"github.com/krispier/projectManager/internal/services/db"
+	"github.com/ChristianSassine/projectManager/internal/handlers"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,4 +1,4 @@
-module github.com/krispier/projectManager
+module github.com/ChristianSassine/projectManager
 
 go 1.18
 

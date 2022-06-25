@@ -3,7 +3,7 @@ package db
 import (
 	"time"
 
-	"github.com/krispier/projectManager/internal/api"
+	"github.com/ChristianSassine/projectManager/internal/api"
 
 	"github.com/lib/pq"
 )

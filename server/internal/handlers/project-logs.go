@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	projectErrors "github.com/krispier/projectManager/internal/common/project-errors"
-	"github.com/krispier/projectManager/internal/services/db"
+	projectErrors "github.com/ChristianSassine/projectManager/internal/common/project-errors"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
 )

@@ -3,8 +3,8 @@ package db
 import (
 	"time"
 
-	"github.com/krispier/projectManager/internal/api"
-	log "github.com/krispier/projectManager/internal/log"
+	"github.com/ChristianSassine/projectManager/internal/api"
+	log "github.com/ChristianSassine/projectManager/internal/log"
 
 	"github.com/lib/pq"
 )

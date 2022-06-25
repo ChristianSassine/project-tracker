@@ -2,13 +2,11 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
 
-	"github.com/krispier/projectManager/internal/log"
+	"github.com/ChristianSassine/projectManager/internal/log"
 )
 
-// TODO : add database setup
 type DB struct {
 	DB *sql.DB
 }
@@ -21,9 +19,10 @@ var (
 )
 
 func (db *DB) Connect() {
-	connStr := fmt.Sprintf("host=%s user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		hostAddr, user, password, dbName)
+	// connStr := fmt.Sprintf("host=%s user=%s "+
+	// 	"password=%s dbname=%s sslmode=disable",
+	// 	hostAddr, user, password, dbName)
+	connStr := "postgresql://superuser:biguser123@/go?sslmode=disable"
 	// Connect to database
 	var err error
 	db.DB, err = sql.Open("postgres", connStr)

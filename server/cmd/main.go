@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/krispier/projectManager/internal/handlers"
-	"github.com/krispier/projectManager/internal/routes"
-	"github.com/krispier/projectManager/internal/services/db"
+	"github.com/ChristianSassine/projectManager/internal/handlers"
+	"github.com/ChristianSassine/projectManager/internal/routes"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
 )

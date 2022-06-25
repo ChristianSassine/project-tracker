@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/krispier/projectManager/internal/api"
+	"github.com/ChristianSassine/projectManager/internal/api"
 
 	"github.com/golang-jwt/jwt/v4"
 )

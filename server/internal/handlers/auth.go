@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/krispier/projectManager/internal/api"
-	projectErrors "github.com/krispier/projectManager/internal/common/project-errors"
-	"github.com/krispier/projectManager/internal/services/db"
-	"github.com/krispier/projectManager/internal/services/encryption"
-	jwtToken "github.com/krispier/projectManager/internal/services/jwt-token"
+	"github.com/ChristianSassine/projectManager/internal/api"
+	projectErrors "github.com/ChristianSassine/projectManager/internal/common/project-errors"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
+	"github.com/ChristianSassine/projectManager/internal/services/encryption"
+	jwtToken "github.com/ChristianSassine/projectManager/internal/services/jwt-token"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -156,7 +156,6 @@ func CreateAccount(db *db.DB) gin.HandlerFunc {
 			return
 		}
 
-		// TODO : remove handling from controller
 		// Checking if the user actually exists
 		if ok, err := db.CheckIfUserExists(creds.Username); ok || err != nil {
 			c.AbortWithError(http.StatusUnauthorized, projectErrors.FailedToCreateUser)

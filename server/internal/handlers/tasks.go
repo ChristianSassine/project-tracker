@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/krispier/projectManager/internal/api"
-	logType "github.com/krispier/projectManager/internal/common/log-type"
-	projectErrors "github.com/krispier/projectManager/internal/common/project-errors"
-	"github.com/krispier/projectManager/internal/services/db"
+	"github.com/ChristianSassine/projectManager/internal/api"
+	logType "github.com/ChristianSassine/projectManager/internal/common/log-type"
+	projectErrors "github.com/ChristianSassine/projectManager/internal/common/project-errors"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
 
 	"github.com/gin-gonic/gin"
 )
@@ -158,7 +158,6 @@ func DeleteTask(db *db.DB) gin.HandlerFunc {
 
 		taskIdString, ok := c.Request.URL.Query()["id"]
 		if !ok {
-			// TODO : Add error here
 			c.AbortWithError(http.StatusNotFound, projectErrors.FailedToDeleteTask)
 			return
 		}

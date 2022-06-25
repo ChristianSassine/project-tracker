@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/krispier/projectManager/internal/api"
+	"github.com/ChristianSassine/projectManager/internal/api"
 )
 
 func (db *DB) GetUserProjects(id int) (*[]api.Project, error) {

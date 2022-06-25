@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/krispier/projectManager/internal/api"
-	log "github.com/krispier/projectManager/internal/log"
-	"github.com/krispier/projectManager/internal/services/db"
-	jwtToken "github.com/krispier/projectManager/internal/services/jwt-token"
+	"github.com/ChristianSassine/projectManager/internal/api"
+	log "github.com/ChristianSassine/projectManager/internal/log"
+	"github.com/ChristianSassine/projectManager/internal/services/db"
+	jwtToken "github.com/ChristianSassine/projectManager/internal/services/jwt-token"
 
 	"github.com/gin-gonic/gin"
 )
