@@ -8,8 +8,8 @@ import (
 )
 
 func ProjectLogsRoutes(r *gin.RouterGroup, db *db.DB) {
-	logsGroup := r.Group("", handlers.ValidateUserProject(db))
+	logsGroup := r.Group("/project/:projectId", handlers.ValidateUserProject(db))
 
 	// Fetch the logs of the project
-	logsGroup.GET("/project/:projectId/logs", handlers.GetProjectLogsByLimit(db), handlers.GetAllProjectLogs(db))
+	logsGroup.GET("/logs", handlers.GetProjectLogsByLimit(db), handlers.GetAllProjectLogs(db))
 }

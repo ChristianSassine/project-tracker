@@ -8,26 +8,26 @@ import (
 )
 
 func TasksRoutes(r *gin.RouterGroup, db *db.DB) {
-	taskGroup := r.Group("", handlers.ValidateUserProject(db))
+	taskGroup := r.Group("/project/:projectId", handlers.ValidateUserProject(db))
 
 	// Getting tasks endpoint
-	taskGroup.GET("/project/:projectId/tasks", handlers.GetTasksByLimit(db), handlers.GetTasksByState(db), handlers.GetAllTasks(db))
+	taskGroup.GET("/tasks", handlers.GetTasksByLimit(db), handlers.GetTasksByState(db), handlers.GetAllTasks(db))
 
 	// Getting tasks statistics endpoint
-	taskGroup.GET("/project/:projectId/tasks/stats", handlers.GetTaskStats(db))
+	taskGroup.GET("/tasks/stats", handlers.GetTaskStats(db))
 
 	// Creating a task endpoint
-	taskGroup.POST("/project/:projectId/task", handlers.AddTask(db))
+	taskGroup.POST("/task", handlers.AddTask(db))
 
 	// Updating a task endpoint
-	taskGroup.PUT("/project/:projectId/task", handlers.UpdateTask(db))
+	taskGroup.PUT("/task", handlers.UpdateTask(db))
 
 	// Deleting a task endpoint
-	taskGroup.DELETE("/project/:projectId/task", handlers.DeleteTask(db))
+	taskGroup.DELETE("/task", handlers.DeleteTask(db))
 
 	// Updating a task position endpoint
-	taskGroup.PATCH("/project/:projectId/task/position", handlers.UpdateTaskPosition(db))
+	taskGroup.PATCH("/task/position", handlers.UpdateTaskPosition(db))
 
 	// Updating a task state endpoint
-	taskGroup.PATCH("/project/:projectId/task/state", handlers.UpdateTaskState(db))
+	taskGroup.PATCH("/task/state", handlers.UpdateTaskState(db))
 }

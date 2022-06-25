@@ -21,14 +21,14 @@ func main() {
 
 	// Creating the route groups
 	superGroup := router.Group("/api")
-	dataGroup := superGroup.Group("", handlers.ValidateToken())
+	subGroup := superGroup.Group("", handlers.ValidateToken())
 
 	// Adding the routes to the groups
 	routes.AuthRoutes(superGroup, database)
-	routes.ProjectsRoutes(dataGroup, database)
-	routes.TasksRoutes(dataGroup, database)
-	routes.TaskCommentsRoutes(dataGroup, database)
-	routes.ProjectLogsRoutes(dataGroup, database)
+	routes.ProjectsRoutes(subGroup, database)
+	routes.TasksRoutes(subGroup, database)
+	routes.TaskCommentsRoutes(subGroup, database)
+	routes.ProjectLogsRoutes(subGroup, database)
 
 	// Launching the server
 	router.Run()

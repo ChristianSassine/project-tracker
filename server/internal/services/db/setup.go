@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 
 	"github.com/ChristianSassine/projectManager/internal/log"
@@ -19,13 +20,13 @@ var (
 )
 
 func (db *DB) Connect() {
-	// connStr := fmt.Sprintf("host=%s user=%s "+
-	// 	"password=%s dbname=%s sslmode=disable",
-	// 	hostAddr, user, password, dbName)
-	connStr := "postgresql://superuser:biguser123@/go?sslmode=disable"
+	dbConfig := fmt.Sprintf("host=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		hostAddr, user, password, dbName)
+
 	// Connect to database
 	var err error
-	db.DB, err = sql.Open("postgres", connStr)
+	db.DB, err = sql.Open("postgres", dbConfig)
 	if err != nil {
 		log.ErrorLog.Fatal(err)
 	}
