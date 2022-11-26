@@ -11,9 +11,7 @@ func (db *DB) GetTaskComments(taskId int) (*[]api.Comment, error) {
 	comment := api.Comment{}
 
 	rows, err := db.DB.Query(`
-	SELECT users.username, comments.content, comments.date FROM comments
-	INNER JOIN users ON comments.user_id = users.id
-	WHERE task_id = $1 ORDER BY comments.date ASC`, taskId)
+	SELECT users.username, c.content, c.date FROM "comments" c INNER JOIN users ON c.user_id = users.id WHERE c.task_id = $1 ORDER BY c.date ASC`, taskId)
 
 	if err != nil {
 		return &comments, err
@@ -31,8 +29,7 @@ func (db *DB) GetTaskComments(taskId int) (*[]api.Comment, error) {
 
 func (db *DB) AddTaskComment(userId int, content string, taskId int) error {
 	if _, err := db.DB.Exec(`
-	INSERT INTO comments (user_id, content, date, task_id)
-	VALUES ($1, $2, $3, $4)`, userId, content, time.Now().Local(), taskId); err != nil {
+	INSERT INTO "comments" (user_id, content, date, task_id) VALUES ($1, $2, $3, $4)`, userId, content, time.Now().Local(), taskId); err != nil {
 		return err
 	}
 	return nil

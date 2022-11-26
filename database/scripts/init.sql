@@ -39,6 +39,6 @@ CREATE TABLE comments (
     id bigserial PRIMARY KEY,
     content text NOT NULL,
     date timestamp NOT NULL,
-    user_id bigint NOT NULL REFERENCES public.users (id),
-    project_id bigint NOT NULL REFERENCES public.projects (id) ON DELETE CASCADE
+    task_id bigint NOT NULL REFERENCES public.tasks (id) ON DELETE CASCADE,
+    user_id bigint NOT NULL REFERENCES public.users (id) ON DELETE CASCADE
 );
