@@ -7,7 +7,6 @@ import { Project } from '../interfaces/project';
 import { catchError, Observable, of, Subject } from 'rxjs';
 import { TasksStats } from '../interfaces/tasks-stats';
 import { TaskComment } from '../interfaces/task-comment';
-import { ErrorShown } from 'src/common/error-shown';
 
 @Injectable({
     providedIn: 'root',
@@ -37,24 +36,18 @@ export class TasksService {
         if (!this.projectService.currentProject) return;
         this.http
             .getTasksByState(this.projectService.currentProject.id, TaskState.TODO)
-            .pipe(catchError(this.http.handleError(ErrorShown.TasksUnfetchable, [])))
             .subscribe((data) => this.stateTasks.set(TaskState.TODO, [...data]));
         this.http
             .getTasksByState(this.projectService.currentProject.id, TaskState.ONGOING)
-            .pipe(catchError(this.http.handleError(ErrorShown.TasksUnfetchable, [])))
             .subscribe((data) => this.stateTasks.set(TaskState.ONGOING, [...data]));
         this.http
             .getTasksByState(this.projectService.currentProject.id, TaskState.DONE)
-            .pipe(catchError(this.http.handleError(ErrorShown.TasksUnfetchable, [])))
             .subscribe((data) => this.stateTasks.set(TaskState.DONE, [...data]));
     }
 
     fetchRecentTasks() {
         if (!this.projectService.currentProject) return;
-        this.http
-            .getRecentTasks(this.projectService.currentProject.id)
-            .pipe(catchError(this.http.handleError(ErrorShown.TasksUnfetchable, [])))
-            .subscribe((tasks) => (this.recentTasks = [...tasks]));
+        this.http.getRecentTasks(this.projectService.currentProject.id).subscribe((tasks) => (this.recentTasks = [...tasks]));
     }
 
     getTasksStats(): Observable<TasksStats> {
@@ -73,62 +66,44 @@ export class TasksService {
 
     uploadTask(task: ProjectTask) {
         if (!this.projectService.currentProject?.id) return;
-        this.http
-            .createTask(task, (this.projectService.currentProject as Project).id)
-            .pipe(catchError(this.http.handleError(ErrorShown.TaskUploadFailed)))
-            .subscribe(() => this.fetchStateTasks());
+        this.http.createTask(task, (this.projectService.currentProject as Project).id).subscribe(() => this.fetchStateTasks());
     }
 
     updateTask(task: ProjectTask) {
-        this.http
-            .updateTask(task, (this.projectService.currentProject as Project).id)
-            .pipe(catchError(this.http.handleError(ErrorShown.TaskUpdateFailed)))
-            .subscribe(() => {
-                this.setCurrentTask(task);
-                this.fetchStateTasks();
-            });
+        this.http.updateTask(task, (this.projectService.currentProject as Project).id).subscribe(() => {
+            this.setCurrentTask(task);
+            this.fetchStateTasks();
+        });
     }
 
     updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number) {
         if (!this.projectService.currentProject) return;
-        this.http
-            .updateTaskPosition(previousIndex, currentIndex, taskId, this.projectService.currentProject.id)
-            .pipe(catchError(this.http.handleError(ErrorShown.TaskPositionUpdateFailed)))
-            .subscribe();
+        this.http.updateTaskPosition(previousIndex, currentIndex, taskId, this.projectService.currentProject.id).subscribe();
     }
 
     updateTaskState(newState: TaskState, currentIndex: number, taskId: number) {
         if (!this.projectService.currentProject) return;
         (this.stateTasks.get(newState) as ProjectTask[])[currentIndex].state = newState;
-        this.http
-            .updateTaskState(newState, currentIndex, taskId, this.projectService.currentProject.id)
-            .pipe(catchError(this.http.handleError(ErrorShown.TaskUpdateStateFailed)))
-            .subscribe();
+        this.http.updateTaskState(newState, currentIndex, taskId, this.projectService.currentProject.id).subscribe();
     }
 
     deleteTask(taskId: number) {
         if (!this.projectService.currentProject) return;
-        this.http
-            .deleteTask(taskId, this.projectService.currentProject.id)
-            .pipe(catchError(this.http.handleError(ErrorShown.TaskDeleteFailed)))
-            .subscribe(() => {
-                if (taskId === this.currentTask.id) this.setCurrentTask({} as ProjectTask);
-                this.fetchStateTasks();
-            });
+        this.http.deleteTask(taskId, this.projectService.currentProject.id).subscribe(() => {
+            if (taskId === this.currentTask.id) this.setCurrentTask({} as ProjectTask);
+            this.fetchStateTasks();
+        });
     }
 
     fetchComments() {
         if (!this.projectService.currentProject) return;
         this.http
             .getTaskComments(this.currentTask.id, this.projectService.currentProject.id)
-            .pipe(catchError(this.http.handleError(ErrorShown.CommentsUnfetchable, [])))
             .subscribe((comments) => (this.currentComments = [...comments]));
     }
 
     addComment(content: string) {
         if (!this.projectService.currentProject) return;
-        this.http.addTaskComment(this.currentTask.id, content, this.projectService.currentProject.id)
-        .pipe(catchError(this.http.handleError(ErrorShown.CommentSendFailed)))
-        .subscribe(() => this.fetchComments());
+        this.http.addTaskComment(this.currentTask.id, content, this.projectService.currentProject.id).subscribe(() => this.fetchComments());
     }
 }

@@ -72,12 +72,9 @@ export class AuthService {
     }
 
     logout() {
-        this.http
-            .logoutRequest()
-            .pipe(catchError(this.http.handleError(ErrorShown.LogoutFailed)))
-            .subscribe(() => {
-                this.logoutObservable.next(true);
-                localStorage.clear();
-            });
+        this.http.logoutRequest().subscribe(() => {
+            this.logoutObservable.next(true);
+            localStorage.clear();
+        });
     }
 }

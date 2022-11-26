@@ -37,7 +37,9 @@ export class HttpHandlerService {
     }
 
     logoutRequest(): Observable<unknown> {
-        return this.http.get<unknown>(`${this.baseUrl}/auth/logout`, { withCredentials: true });
+        return this.http
+            .get<unknown>(`${this.baseUrl}/auth/logout`, { withCredentials: true })
+            .pipe(catchError(this.handleError(ErrorShown.LogoutFailed)));
     }
 
     isLoggedOut(): Observable<unknown> {
@@ -62,19 +64,35 @@ export class HttpHandlerService {
 
     // Project requests
     createProjectRequest(title: string, password: string): Observable<Project> {
-        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/project`, { title, password }, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .post<Project>(`${this.baseUrl}/project`, { title, password }, { withCredentials: true })
+                .pipe(catchError(this.handleError<Project>(ErrorShown.ProjectUncreatable))),
+        );
     }
 
     joinProjectRequest(id: number, password: string): Observable<Project> {
-        return this.chainAfterAuth(this.http.post<Project>(`${this.baseUrl}/project/join`, { id, password }, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .post<Project>(`${this.baseUrl}/project/join`, { id, password }, { withCredentials: true })
+                .pipe(catchError(this.handleError<Project>(ErrorShown.ProjectUnjoinable))),
+        );
     }
 
     deleteProjectRequest(projectId: number): Observable<unknown> {
-        return this.chainAfterAuth(this.http.delete<unknown>(`${this.baseUrl}/project/${projectId}`, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .delete<unknown>(`${this.baseUrl}/project/${projectId}`, { withCredentials: true })
+                .pipe(catchError(this.handleError<Project>(ErrorShown.ProjectNotDeleted))),
+        );
     }
 
     getAllProjects(): Observable<Project[]> {
-        return this.chainAfterAuth(this.http.get<Project[]>(`${this.baseUrl}/projects`, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .get<Project[]>(`${this.baseUrl}/projects`, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.ProjectsUnfetchable, []))),
+        );
     }
 
     // Tasks requests
@@ -84,7 +102,9 @@ export class HttpHandlerService {
 
     getRecentTasks(projectId: number, limit: number = 5): Observable<ProjectTask[]> {
         return this.chainAfterAuth(
-            this.http.get<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true }),
+            this.http
+                .get<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/tasks?limit=${limit}`, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.TasksUnfetchable, []))),
         );
     }
 
@@ -94,63 +114,87 @@ export class HttpHandlerService {
 
     getTasksByState(projectId: number, state: string): Observable<ProjectTask[]> {
         return this.chainAfterAuth(
-            this.http.get<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/tasks?state=${state}`, { withCredentials: true }),
+            this.http
+                .get<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/tasks?state=${state}`, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.TasksUnfetchable, []))),
         );
     }
 
     createTask(task: ProjectTask, projectId: number): Observable<ProjectTask[]> {
-        return this.chainAfterAuth(this.http.post<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/task`, task, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .post<ProjectTask[]>(`${this.baseUrl}/project/${projectId}/task`, task, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.TaskUploadFailed, []))),
+        );
     }
 
     updateTask(task: ProjectTask, projectId: number): Observable<unknown> {
-        return this.chainAfterAuth(this.http.put<unknown>(`${this.baseUrl}/project/${projectId}/task`, task, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .put<unknown>(`${this.baseUrl}/project/${projectId}/task`, task, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.TaskUpdateFailed))),
+        );
     }
 
     updateTaskPosition(previousIndex: number, currentIndex: number, taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
-            this.http.patch<unknown>(
-                `${this.baseUrl}/project/${projectId}/task/position`,
-                { previousIndex, currentIndex, taskId },
-                { withCredentials: true },
-            ),
+            this.http
+                .patch<unknown>(
+                    `${this.baseUrl}/project/${projectId}/task/position`,
+                    { previousIndex, currentIndex, taskId },
+                    { withCredentials: true },
+                )
+                .pipe(catchError(this.handleError(ErrorShown.TaskPositionUpdateFailed))),
         );
     }
 
     updateTaskState(newState: TaskState, currentIndex: number, taskId: number, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
-            this.http.patch<unknown>(
-                `${this.baseUrl}/project/${projectId}/task/state`,
-                { newState, currentIndex, taskId },
-                { withCredentials: true },
-            ),
+            this.http
+                .patch<unknown>(`${this.baseUrl}/project/${projectId}/task/state`, { newState, currentIndex, taskId }, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.TaskUpdateStateFailed))),
         );
     }
 
     deleteTask(taskId: number, projectId: number): Observable<unknown> {
-        return this.chainAfterAuth(this.http.delete<unknown>(`${this.baseUrl}/project/${projectId}/task?id=${taskId}`, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .delete<unknown>(`${this.baseUrl}/project/${projectId}/task?id=${taskId}`, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.TaskDeleteFailed))),
+        );
     }
 
     // Task comments requests
     getTaskComments(taskId: number, projectId: number): Observable<TaskComment[]> {
         return this.chainAfterAuth(
-            this.http.get<TaskComment[]>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comments`, { withCredentials: true }),
+            this.http
+                .get<TaskComment[]>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comments`, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.CommentsUnfetchable, []))),
         );
     }
 
     addTaskComment(taskId: number, content: string, projectId: number): Observable<unknown> {
         return this.chainAfterAuth(
-            this.http.post<unknown>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comment`, { content }, { withCredentials: true }),
+            this.http
+                .post<unknown>(`${this.baseUrl}/project/${projectId}/task/${taskId}/comment`, { content }, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.CommentSendFailed))),
         );
     }
 
     // Logs requests
     getAllProjectLogs(projectId: number): Observable<HistoryLog[]> {
-        return this.chainAfterAuth(this.http.get<HistoryLog[]>(`${this.baseUrl}/project/${projectId}/logs`, { withCredentials: true }));
+        return this.chainAfterAuth(
+            this.http
+                .get<HistoryLog[]>(`${this.baseUrl}/project/${projectId}/logs`, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.LogsUnfetchable, []))),
+        );
     }
 
     getRecentProjectLogs(projectId: number, limit: number = 5): Observable<HistoryLog[]> {
         return this.chainAfterAuth(
-            this.http.get<HistoryLog[]>(`${this.baseUrl}/project/${projectId}/logs?limit=${limit}`, { withCredentials: true }),
+            this.http
+                .get<HistoryLog[]>(`${this.baseUrl}/project/${projectId}/logs?limit=${limit}`, { withCredentials: true })
+                .pipe(catchError(this.handleError(ErrorShown.LogsUnfetchable, []))),
         );
     }
 
