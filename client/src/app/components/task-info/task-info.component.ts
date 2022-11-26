@@ -5,8 +5,6 @@ import { ProjectTask } from 'src/app/interfaces/project-task';
 import { AuthService } from 'src/app/services/auth.service';
 import { TasksService } from 'src/app/services/tasks.service';
 
-type Comment = { commenter: string; date: Date; content: string };
-
 @Component({
     selector: 'app-task-info',
     templateUrl: './task-info.component.html',
@@ -74,11 +72,6 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
 
     onUpdate() {
         const sentObject = { ...this.task, ...this.form.value };
-
-        if (this.task.state != this.form.value.state) {
-            const updatedStateIndex = 0;
-            this.tasksService.updateTaskState(this.form.value.state, updatedStateIndex, this.task.id);
-        }
         this.tasksService.updateTask(sentObject);
         this.form.markAsPristine();
     }

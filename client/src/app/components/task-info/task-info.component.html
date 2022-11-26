@@ -11,19 +11,6 @@
         <mat-divider></mat-divider>
 
         <mat-card-subtitle id="creation-date">Creation Date: {{ task.creationDate | date }}</mat-card-subtitle>
-        <!-- Task State -->
-        <div>
-            <mat-card-header>
-                <mat-card-subtitle>
-                    State:
-                    <mat-button-toggle-group name="state group" formControlName="state" aria-label="State Group">
-                        <mat-button-toggle value="TODO">TODO</mat-button-toggle>
-                        <mat-button-toggle value="ONGOING">ONGOING</mat-button-toggle>
-                        <mat-button-toggle value="DONE">DONE</mat-button-toggle>
-                    </mat-button-toggle-group>
-                </mat-card-subtitle>
-            </mat-card-header>
-        </div>
         <!-- Task title -->
         <div class="task-content">
             <mat-card-header>
