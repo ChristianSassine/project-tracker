@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ChristianSassine/projectManager/internal/log"
 )
@@ -30,9 +31,22 @@ func (db *DB) Connect() {
 	if err != nil {
 		log.ErrorLog.Fatal(err)
 	}
-	if err := db.DB.Ping(); err != nil {
-		log.ErrorLog.Fatal("Connection to the database failed")
+	// Trying to connect to the database before stopping
+	tries := 5
+	currentTry := 0
+	for {
+		if err := db.DB.Ping(); err != nil {
+			log.ErrorLog.Println("Connection to the database failed...Retrying")
+			if currentTry >= tries {
+				log.ErrorLog.Fatal("Connection to the database failed.")
+			}
+			currentTry++
+			time.Sleep(5 * time.Second)
+		} else {
+			break
+		}
 	}
+
 	log.PrintInfo("DB connection successful")
 }
 
