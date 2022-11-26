@@ -68,10 +68,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.router.navigate([Paths.HistoryFull]);
     }
 
-    private capitalizeFirstLetter(word: string): string {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-    }
-
     onLogout() {
         this.authService.logout();
     }

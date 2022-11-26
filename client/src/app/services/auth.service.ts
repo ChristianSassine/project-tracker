@@ -1,6 +1,5 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, finalize, lastValueFrom, Subject } from 'rxjs';
 import { ErrorShown } from 'src/common/error-shown';
 import { HttpHandlerService, tapOnSubscribe } from './http-handler.service';
@@ -78,6 +77,7 @@ export class AuthService {
             .pipe(catchError(this.http.handleError(ErrorShown.LogoutFailed)))
             .subscribe(() => {
                 this.logoutObservable.next(true);
+                localStorage.clear();
             });
     }
 }
