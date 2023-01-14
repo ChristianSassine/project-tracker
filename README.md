@@ -13,4 +13,6 @@ docker compose up
 ```
 This step might take a couple of minutes as docker needs to create the client, server and database containers.
 
+You should now be able to access the application in a browser with the following link : ```http://localhost:4200/```
+
 + **Note**: It is recommended to use Docker but you can also run it locally if you have everything setup like in the docker compose.
