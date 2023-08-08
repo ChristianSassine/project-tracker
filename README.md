@@ -28,7 +28,7 @@ git clone https://github.com/ChristianSassine/project-tracker.git
 ```shell
 docker compose up
 ```
-This step might take a couple of minutes as docker needs to create the client, server and database containers (normally a couple of minutes, the client specifically takes time to compile **Angular**).
+This step might take a couple of minutes as docker needs to create the client, server and database containers.
 
 * Access the web application on the port specified for the client in [docker-compose.yml](https://github.com/ChristianSassine/project-tracker/blob/master/docker-compose.yml) (by default 4200, replace if **changed**): `http://localhost:4200/`
 
